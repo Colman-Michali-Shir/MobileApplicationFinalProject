@@ -1,13 +1,18 @@
 package com.example.mobile_application_course
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,11 +21,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.colman24classandroid.model.Model
 import com.example.colman24classandroid.model.Student
 import com.example.mobile_application_course.Interfaces.OnItemClickListener
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
 
     var students: MutableList<Student>? = null
+    var recyclerView: RecyclerView? = null
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +42,12 @@ class MainActivity : AppCompatActivity() {
 
         students = Model.shared.students
 
-        val recyclerView: RecyclerView =
-            findViewById(R.id.students_list_recycler_view)
+        recyclerView = findViewById(R.id.students_list_recycler_view)
 
-        recyclerView.setHasFixedSize(true)
+        recyclerView?.setHasFixedSize(true)
 
         val layoutManger = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManger
+        recyclerView?.layoutManager = layoutManger
 
         val adapter = StudentsRecyclerAdapter(students)
 
@@ -50,7 +57,28 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        recyclerView.adapter = adapter
+        recyclerView?.adapter = adapter
+
+
+        findViewById<FloatingActionButton>(R.id.student_list_new_student).setOnClickListener {
+            val intent = Intent(this, NewStudentActivity::class.java)
+            resultLauncher.launch(intent)
+        }
+
+        resultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data = result.data
+                    val newStudent = data?.getBooleanExtra("newStudent", false)
+
+                    newStudent?.let {
+                        // If newStudent is true, notify the adapter that a new item has been added
+                        if (newStudent) {
+                            recyclerView?.adapter?.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
 
     }
 
@@ -119,4 +147,26 @@ class MainActivity : AppCompatActivity() {
             holder.bind(students?.get(position), position)
         }
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        Log.d("checkkkk", "hiiiiiiiiii")
+//
+//        if (resultCode == Activity.RESULT_OK) {
+//            // Get the new student from the Intent (make sure it implements Parcelable)
+//            val newStudent = data?.getBooleanExtra("newStudent", false)
+//
+//            Log.d("check", newStudent.toString())
+//
+//            newStudent?.let {
+//                // Add the new student to the Model
+//
+//
+//                // Notify the adapter that a new item has been added
+//                if (newStudent) {
+//                    recyclerView?.adapter?.notifyDataSetChanged()
+//                }
+//            }
+//        }
+//    }
 }
