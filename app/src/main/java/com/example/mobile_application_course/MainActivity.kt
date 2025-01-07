@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         students = Model.shared.students
 
         val recyclerView: RecyclerView =
-            findViewById(R.id.students_list_fragment_recycler_view)
+            findViewById(R.id.students_list_recycler_view)
 
         recyclerView.setHasFixedSize(true)
 
