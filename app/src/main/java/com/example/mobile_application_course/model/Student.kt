@@ -1,4 +1,4 @@
-package com.example.colman24classandroid.model
+package com.example.mobile_application_course
 
 data class Student(
     val name: String,

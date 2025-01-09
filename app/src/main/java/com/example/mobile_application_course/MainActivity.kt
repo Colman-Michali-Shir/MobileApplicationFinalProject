@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -18,9 +17,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.colman24classandroid.model.Model
-import com.example.colman24classandroid.model.Student
-import com.example.mobile_application_course.Interfaces.OnItemClickListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 

@@ -1,6 +1,4 @@
-package com.example.mobile_application_course.Interfaces
-
-import com.example.colman24classandroid.model.Student
+package com.example.mobile_application_course
 
 interface OnItemClickListener {
     fun onItemClick(student: Student?)
