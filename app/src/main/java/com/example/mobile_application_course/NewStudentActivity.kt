@@ -14,11 +14,11 @@ import androidx.core.view.WindowInsetsCompat
 
 
 class NewStudentActivity : AppCompatActivity() {
-    var saveButton: Button? = null
-    var cancelButton: Button? = null
-    var nameEditText: EditText? = null
-    var idEditText: EditText? = null
-    var checkBox: CheckBox? = null
+    private var saveButton: Button? = null
+    private var cancelButton: Button? = null
+    private var nameEditText: EditText? = null
+    private var idEditText: EditText? = null
+    private var checkBox: CheckBox? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -22,8 +22,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
-    var students: MutableList<Student>? = null
-    var recyclerView: RecyclerView? = null
+    private var students: MutableList<Student>? = null
+    private var recyclerView: RecyclerView? = null
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
