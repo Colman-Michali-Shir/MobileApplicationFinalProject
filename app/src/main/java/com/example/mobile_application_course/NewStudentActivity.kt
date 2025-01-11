@@ -3,7 +3,6 @@ package com.example.mobile_application_course
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -35,8 +34,6 @@ class NewStudentActivity : AppCompatActivity() {
             finish()
         }
 
-
-
         saveButton?.setOnClickListener {
             val newStudent = Student(
                 name = nameEditText?.text.toString(),
@@ -48,13 +45,9 @@ class NewStudentActivity : AppCompatActivity() {
             )
             Model.shared.addStudent(newStudent)
 
-
             val resultIntent = Intent()
-            resultIntent.putExtra("newStudent", true)
+            resultIntent.putExtra("action", "add")
             setResult(Activity.RESULT_OK, resultIntent)
-
-            Log.d("shirrr", "shir")
-
 
             finish()
         }
@@ -68,5 +61,4 @@ class NewStudentActivity : AppCompatActivity() {
         checkBox = findViewById(R.id.add_student_activity_check_box)
 
     }
-
 }

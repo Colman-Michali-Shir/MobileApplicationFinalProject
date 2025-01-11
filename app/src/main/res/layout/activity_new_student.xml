@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="428dp"
-        android:layout_height="278dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,8 +117,8 @@
         android:layout_marginStart="2dp"
         android:ems="10"
         android:text="Checked"
-        app:layout_constraintBaseline_toBaselineOf="@+id/student_row_check_box"
-        app:layout_constraintStart_toEndOf="@+id/student_row_check_box" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/add_student_activity_check_box"
+        app:layout_constraintStart_toEndOf="@+id/add_student_activity_check_box" />
 
     <Button
         android:id="@+id/add_student_activity_cancel_button"

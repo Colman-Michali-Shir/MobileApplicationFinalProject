@@ -54,8 +54,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         recyclerView?.adapter = adapter
-
-
+        
         findViewById<FloatingActionButton>(R.id.student_list_new_student).setOnClickListener {
             val intent = Intent(this, NewStudentActivity::class.java)
             resultLauncher.launch(intent)
@@ -64,18 +63,16 @@ class MainActivity : AppCompatActivity() {
         resultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val data = result.data
-                    val newStudent = data?.getBooleanExtra("newStudent", false)
-
-                    newStudent?.let {
-                        // If newStudent is true, notify the adapter that a new item has been added
-                        if (newStudent) {
-                            recyclerView?.adapter?.notifyDataSetChanged()
+                    val action = result.data?.getStringExtra("action")
+                    when (action) {
+                        "add" -> {
+                            students?.let {
+                                recyclerView?.adapter?.notifyItemInserted(it.size - 1) // Update adapter for addition
+                            }
                         }
                     }
                 }
             }
-
     }
 
     class StudentViewHolder(itemView: View, listener: OnItemClickListener?) :
@@ -133,7 +130,6 @@ class MainActivity : AppCompatActivity() {
                     false
                 )
 
-
             //this function create a new view, like before
             return StudentViewHolder(view, listener)
         }
@@ -143,26 +139,4 @@ class MainActivity : AppCompatActivity() {
             holder.bind(students?.get(position), position)
         }
     }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        Log.d("checkkkk", "hiiiiiiiiii")
-//
-//        if (resultCode == Activity.RESULT_OK) {
-//            // Get the new student from the Intent (make sure it implements Parcelable)
-//            val newStudent = data?.getBooleanExtra("newStudent", false)
-//
-//            Log.d("check", newStudent.toString())
-//
-//            newStudent?.let {
-//                // Add the new student to the Model
-//
-//
-//                // Notify the adapter that a new item has been added
-//                if (newStudent) {
-//                    recyclerView?.adapter?.notifyDataSetChanged()
-//                }
-//            }
-//        }
-//    }
 }
