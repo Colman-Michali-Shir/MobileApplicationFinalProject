@@ -1,4 +1,4 @@
-package com.example.mobile_application_course
+package com.example.mobile_application_course.model
 
 data class Student(
     val name: String,

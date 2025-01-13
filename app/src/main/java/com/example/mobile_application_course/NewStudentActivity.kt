@@ -10,6 +10,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.mobile_application_course.model.Model
+import com.example.mobile_application_course.model.Student
 
 
 class NewStudentActivity : AppCompatActivity() {
