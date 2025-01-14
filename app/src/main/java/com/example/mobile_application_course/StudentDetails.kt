@@ -10,6 +10,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class StudentDetails : AppCompatActivity() {
+    private var nameTextView: TextView? = null
+    private var idTextView: TextView? = null
+    private var phoneTextView: TextView? = null
+    private var addressTextView: TextView? = null
+    private var checkBox: CheckBox? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,28 +30,18 @@ class StudentDetails : AppCompatActivity() {
     }
 
     private fun setUp() {
-        val studentName = intent.getStringExtra("student_name")
-        val studentId = intent.getStringExtra("student_id")
-        val studentPhone = intent.getStringExtra("student_phone")
-        val studentAddress = intent.getStringExtra("student_address")
-        val studentIsChecked = intent.getBooleanExtra("student_isChecked", false)
 
+        nameTextView = findViewById(R.id.student_details_activity_name_text_view)
+        idTextView = findViewById(R.id.student_details_activity_id_text_view)
+        phoneTextView = findViewById(R.id.student_details_activity_phone_text_view)
+        addressTextView = findViewById(R.id.student_details_activity_address_text_view)
+        checkBox = findViewById(R.id.student_details_activity_check_box)
 
-        val studentNameTextView: TextView =
-            findViewById(R.id.student_details_activity_name_text_view)
-        val studentIdTextView: TextView = findViewById(R.id.student_details_activity_id_text_view)
-        val studentPhoneTextView: TextView =
-            findViewById(R.id.student_details_activity_phone_text_view)
-        val studentAddressTextView: TextView =
-            findViewById(R.id.student_details_activity_address_text_view)
-        val studentIsCheckedCheckBox: CheckBox =
-            findViewById(R.id.student_details_activity_check_box)
-
-        studentNameTextView.text = studentName
-        studentIdTextView.text = studentId
-        studentPhoneTextView.text = studentPhone
-        studentAddressTextView.text = studentAddress
-        studentIsCheckedCheckBox.isChecked = studentIsChecked
+        nameTextView?.text = intent.getStringExtra("student_name")
+        idTextView?.text = intent.getStringExtra("student_id")
+        phoneTextView?.text = intent.getStringExtra("student_phone")
+        addressTextView?.text = intent.getStringExtra("student_address")
+        checkBox?.isChecked = intent.getBooleanExtra("student_isChecked", false)
     }
 
 
