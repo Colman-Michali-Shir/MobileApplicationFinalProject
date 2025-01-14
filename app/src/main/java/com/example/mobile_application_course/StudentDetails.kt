@@ -1,15 +1,19 @@
 package com.example.mobile_application_course
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class StudentDetails : AppCompatActivity() {
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
     private var nameTextView: TextView? = null
     private var idTextView: TextView? = null
     private var phoneTextView: TextView? = null
@@ -42,6 +46,11 @@ class StudentDetails : AppCompatActivity() {
         phoneTextView?.text = intent.getStringExtra("student_phone")
         addressTextView?.text = intent.getStringExtra("student_address")
         checkBox?.isChecked = intent.getBooleanExtra("student_isChecked", false)
+
+        findViewById<Button>(R.id.student_details_activity_edit_button).setOnClickListener {
+            val intent = Intent(this, EditStudentActivity::class.java)
+            resultLauncher.launch(intent)
+        }
     }
 
 
