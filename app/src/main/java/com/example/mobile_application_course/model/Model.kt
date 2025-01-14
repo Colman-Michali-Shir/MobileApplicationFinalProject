@@ -1,4 +1,4 @@
-package com.example.colman24classandroid.model
+package com.example.mobile_application_course.model
 
 class Model private constructor() {
 
@@ -8,18 +8,7 @@ class Model private constructor() {
         val shared = Model()
     }
 
-    init {
-        for (i in 0..20) {
-            val student = Student(
-                name = "Name $i",
-                id = "Student id: $i",
-                avatarUrl = "",
-                phone = "052",
-                address = "Hadera",
-                isChecked = false
-            )
-
-            students.add(student)
-        }
+    fun addStudent(student: Student) {
+        students.add(student)
     }
 }
