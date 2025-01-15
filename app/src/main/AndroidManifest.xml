@@ -16,7 +16,7 @@
             android:name=".EditStudentActivity"
             android:exported="false" />
         <activity
-            android:name=".StudentDetails"
+            android:name=".StudentDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".NewStudentActivity"

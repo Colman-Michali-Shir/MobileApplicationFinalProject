@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var students: MutableList<Student>? = null
     private var recyclerView: RecyclerView? = null
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var adapter: StudentsRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,17 +50,13 @@ class MainActivity : AppCompatActivity() {
         val layoutManger = LinearLayoutManager(this)
         recyclerView?.layoutManager = layoutManger
 
-        val adapter = StudentsRecyclerAdapter(students)
+        adapter = StudentsRecyclerAdapter(students)
 
         adapter.listener = object : OnItemClickListener {
             override fun onItemClick(student: Student?) {
-                Log.d("TAG", "On student clicked name: $student")
-                val intent = Intent(recyclerView?.context, StudentDetails::class.java)
-                intent.putExtra("student_name", student?.name)
+                Log.d("TAG", "On student clicked: $student")
+                val intent = Intent(recyclerView?.context, StudentDetailsActivity::class.java)
                 intent.putExtra("student_id", student?.id)
-                intent.putExtra("student_phone", student?.phone)
-                intent.putExtra("student_address", student?.address)
-                intent.putExtra("student_isChecked", student?.isChecked)
                 resultLauncher.launch(intent)
             }
         }
@@ -83,6 +80,21 @@ class MainActivity : AppCompatActivity() {
                         "add" -> {
                             students?.let {
                                 recyclerView?.adapter?.notifyItemInserted(it.size - 1) // Update adapter for addition
+                            }
+                        }
+
+                        "delete" -> {
+                            val position = result.data?.getIntExtra("deletedStudentPosition", -1)
+                            if (position != -1 && position != null) {
+                                adapter.notifyItemRemoved(position)
+                            }
+                        }
+
+                        "edit" -> {
+                            val studentId = result.data?.getStringExtra("editStudentId")
+                            val position = students?.indexOfFirst { it.id == studentId }
+                            if (position != -1 && position != null) {
+                                adapter.notifyItemChanged(position)
                             }
                         }
                     }

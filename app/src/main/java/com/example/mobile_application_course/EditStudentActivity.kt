@@ -15,6 +15,10 @@ import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 
 class EditStudentActivity : AppCompatActivity() {
+    private var students: MutableList<Student>? = null
+    private var student: Student? = null
+    private var studentId: String? = null
+
     private var saveButton: Button? = null
     private var cancelButton: Button? = null
     private var deleteButton: Button? = null
@@ -24,11 +28,6 @@ class EditStudentActivity : AppCompatActivity() {
     private var addressEditText: EditText? = null
     private var checkBox: CheckBox? = null
 
-    private var studentName = intent.getStringExtra("student_name")
-    private val studentId = intent.getStringExtra("student_id")
-    private val studentPhone = intent.getStringExtra("student_phone")
-    private val studentAddress = intent.getStringExtra("student_address")
-    private val studentIsChecked = intent.getBooleanExtra("student_isChecked", false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,34 +42,47 @@ class EditStudentActivity : AppCompatActivity() {
         Log.d("TAG", "EditStudentActivity")
         setUp()
 
-//        cancelButton?.setOnClickListener {
-//            finish()
-//        }
-//
-//        saveButton?.setOnClickListener {
-////            val newStudent = Student(
-////                name = nameEditText?.text.toString(),
-////                id = idEditText?.text.toString(),
-////                phone = phoneEditText?.text.toString(),
-////                address = addressEditText?.text.toString(),
-////                avatarUrl = null,
-////                isChecked = checkBox?.isChecked ?: false
-////            )
-////            Model.shared.addStudent(newStudent)
-////
-////            val resultIntent = Intent()
-////            resultIntent.putExtra("action", "add")
-////            setResult(Activity.RESULT_OK, resultIntent)
-//
-//            finish()
-//        }
+        cancelButton?.setOnClickListener {
+            finish()
+        }
 
-//        deleteButton?.setOnClickListener {
-//            finish()
-//        }
+        saveButton?.setOnClickListener {
+            val updatedName = nameEditText?.text.toString()
+            val updatedId = idEditText?.text.toString()
+            val updatedPhone = phoneEditText?.text.toString()
+            val updatedAddress = addressEditText?.text.toString()
+            val updatedIsChecked = checkBox?.isChecked ?: false
+
+            student?.apply {
+                id = updatedId
+                name = updatedName
+                phone = updatedPhone
+                address = updatedAddress
+                isChecked = updatedIsChecked
+            }
+
+            val resultIntent = Intent()
+            resultIntent.putExtra("editStudentId", updatedId)
+            resultIntent.putExtra("action", "edit")
+            setResult(RESULT_OK, resultIntent)
+            finish()
+        }
+
+        deleteButton?.setOnClickListener {
+            val position = students?.indexOfFirst { it.id == studentId }
+            students?.removeIf { it.id == studentId }
+
+            val resultIntent = Intent()
+            resultIntent.putExtra("deletedStudentPosition", position)
+            resultIntent.putExtra("action", "delete")
+            setResult(RESULT_OK, resultIntent)
+            finish()
+        }
     }
 
     private fun setUp() {
+        students = Model.shared.students
+
         saveButton = findViewById(R.id.edit_student_activity_save_button)
         cancelButton = findViewById(R.id.edit_student_activity_cancel_button)
         deleteButton = findViewById(R.id.edit_student_activity_delete_button)
@@ -80,10 +92,13 @@ class EditStudentActivity : AppCompatActivity() {
         addressEditText = findViewById(R.id.edit_student_activity_address_edit_text)
         checkBox = findViewById(R.id.edit_student_activity_check_box)
 
-        nameEditText?.setText(studentName)
-        idEditText?.setText(studentId)
-        phoneEditText?.setText(studentPhone)
-        addressEditText?.setText(studentAddress)
-        checkBox?.isChecked = studentIsChecked
+        studentId = intent.getStringExtra("student_id")
+        student = Model.shared.students.find { it.id == studentId }
+
+        nameEditText?.setText(student?.name)
+        idEditText?.setText(student?.id)
+        phoneEditText?.setText(student?.phone)
+        addressEditText?.setText(student?.address)
+        checkBox?.isChecked = student?.isChecked ?: false
     }
 }
