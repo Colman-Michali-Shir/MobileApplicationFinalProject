@@ -53,7 +53,14 @@ class MainActivity : AppCompatActivity() {
 
         adapter.listener = object : OnItemClickListener {
             override fun onItemClick(student: Student?) {
-                Log.d("TAG", "On student clicked name: ${student?.name}")
+                Log.d("TAG", "On student clicked name: $student")
+                val intent = Intent(recyclerView?.context, StudentDetails::class.java)
+                intent.putExtra("student_name", student?.name)
+                intent.putExtra("student_id", student?.id)
+                intent.putExtra("student_phone", student?.phone)
+                intent.putExtra("student_address", student?.address)
+                intent.putExtra("student_isChecked", student?.isChecked)
+                resultLauncher.launch(intent)
             }
         }
 
