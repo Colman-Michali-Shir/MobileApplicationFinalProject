@@ -60,11 +60,11 @@ class NewStudentActivity : AppCompatActivity() {
     private fun setUp() {
         saveButton = findViewById(R.id.add_student_activity_save_button)
         cancelButton = findViewById(R.id.add_student_activity_cancel_button)
-        nameEditText = findViewById(R.id.add_student_activity_name_edit_text)
-        idEditText = findViewById(R.id.add_student_activity_id_edit_text)
-        phoneEditText = findViewById(R.id.add_student_activity_phone_edit_text)
-        addressEditText =  findViewById(R.id.add_student_activity_address_edit_text)
-        checkBox = findViewById(R.id.add_student_activity_check_box)
+        nameEditText = findViewById(R.id.student_name_edit_text)
+        idEditText = findViewById(R.id.student_id_edit_text)
+        phoneEditText = findViewById(R.id.student_phone_edit_text)
+        addressEditText = findViewById(R.id.student_address_edit_text)
+        checkBox = findViewById(R.id.student_check_box)
 
     }
 }
