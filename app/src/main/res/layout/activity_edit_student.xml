@@ -161,6 +161,4 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/edit_student_activity_delete_button" />
 
-    <!--    /  android:layout_marginBottom="40dp"-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>

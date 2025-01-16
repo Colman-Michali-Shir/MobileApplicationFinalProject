@@ -1,9 +1,7 @@
 package com.example.mobile_application_course
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -39,7 +37,6 @@ class EditStudentActivity : AppCompatActivity() {
             insets
         }
 
-        Log.d("TAG", "EditStudentActivity")
         setUp()
 
         cancelButton?.setOnClickListener {
