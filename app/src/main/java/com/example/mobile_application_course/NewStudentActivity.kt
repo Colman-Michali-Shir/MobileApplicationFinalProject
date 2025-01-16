@@ -1,12 +1,8 @@
 package com.example.mobile_application_course
 
 import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -81,7 +77,7 @@ class NewStudentActivity : AppCompatActivity() {
                     timeFormat.parse(it)?.let { birthTime -> Time(birthTime.time) }
                 }
             )
-            
+
             Model.shared.addStudent(newStudent)
 
             val resultIntent = Intent()

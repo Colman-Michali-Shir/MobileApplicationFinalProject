@@ -139,7 +139,8 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView6" />
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        android:focusable="false" />
 
     <TextView
         android:id="@+id/textView7"
@@ -160,6 +161,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView7"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView7" />
+        app:layout_constraintStart_toEndOf="@+id/textView7"
+        android:focusable="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
