@@ -7,10 +7,14 @@ import com.example.mobile_application_course.interfaces.OnItemClickListener
 import com.example.mobile_application_course.R
 import com.example.mobile_application_course.model.Student
 
-class StudentsRecyclerAdapter(private val students: List<Student>?) :
+class StudentsRecyclerAdapter(private var students: List<Student>?) :
     RecyclerView.Adapter<StudentViewHolder>() {
 
     var listener: OnItemClickListener? = null
+
+    fun set(students: List<Student>?) {
+        this.students = students
+    }
 
     override fun getItemCount(): Int = students?.size ?: 0
 
