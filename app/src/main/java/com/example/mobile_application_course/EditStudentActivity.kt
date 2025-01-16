@@ -91,10 +91,12 @@ class EditStudentActivity : AppCompatActivity() {
         position = intent.getIntExtra("studentPosition", -1)
         student = Model.shared.getStudentInPosition(position)
 
-        nameEditText?.setText(student?.name)
-        idEditText?.setText(student?.id)
-        phoneEditText?.setText(student?.phone)
-        addressEditText?.setText(student?.address)
-        checkBox?.isChecked = student?.isChecked ?: false
+        student?.let {
+            nameEditText?.setText(it.name)
+            idEditText?.setText(it.id)
+            phoneEditText?.setText(it.phone)
+            addressEditText?.setText(it.address)
+            checkBox?.isChecked = it.isChecked
+        }
     }
 }

@@ -4,5 +4,4 @@ import com.example.mobile_application_course.model.Student
 
 interface OnItemClickListener {
     fun onItemClick(position: Int)
-    fun onItemClick(student: Student?)
 }

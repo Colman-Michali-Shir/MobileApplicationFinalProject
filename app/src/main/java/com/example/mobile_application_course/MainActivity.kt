@@ -59,10 +59,6 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("studentPosition", position)
                 resultLauncher.launch(intent)
             }
-
-            override fun onItemClick(student: Student?) {
-                Log.d("TAG", "On student clicked name: ${student?.name}")
-            }
         }
 
         recyclerView?.adapter = adapter
