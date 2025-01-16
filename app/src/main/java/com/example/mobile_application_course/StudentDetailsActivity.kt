@@ -72,11 +72,7 @@ class StudentDetailsActivity : AppCompatActivity() {
                     val action = result.data?.getStringExtra("action")
                     when (action) {
                         "edit" -> {
-                            val position =
-                                result.data?.getIntExtra("editStudentPosition", -1)
-                                    ?: currentPosition
-
-                            val student = Model.shared.getStudentInPosition(position)
+                            val student = Model.shared.getStudentInPosition(currentPosition)
                             student.let {
                                 idTextView?.text = it.id
                                 nameTextView?.text = it.name
@@ -86,19 +82,16 @@ class StudentDetailsActivity : AppCompatActivity() {
                             }
 
                             val resultIntent = Intent()
-                            resultIntent.putExtra("editStudentPosition", position)
+                            resultIntent.putExtra("editStudentPosition", currentPosition)
                             resultIntent.putExtra("action", "edit")
                             setResult(RESULT_OK, resultIntent)
                         }
 
                         "delete" -> {
-                            val position =
-                                result.data?.getIntExtra("deletedStudentPosition", -1)
-                                    ?: currentPosition
                             val resultIntent = Intent()
                             resultIntent.putExtra(
                                 "deletedStudentPosition",
-                                position
+                                currentPosition
                             )
                             resultIntent.putExtra("action", "delete")
                             setResult(RESULT_OK, resultIntent)

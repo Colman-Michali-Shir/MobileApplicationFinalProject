@@ -59,7 +59,6 @@ class EditStudentActivity : AppCompatActivity() {
             }
 
             val resultIntent = Intent()
-            resultIntent.putExtra("editStudentPosition", position)
             resultIntent.putExtra("action", "edit")
             setResult(RESULT_OK, resultIntent)
             finish()
@@ -69,7 +68,6 @@ class EditStudentActivity : AppCompatActivity() {
             students?.removeAt(position)
 
             val resultIntent = Intent()
-            resultIntent.putExtra("deletedStudentPosition", position)
             resultIntent.putExtra("action", "delete")
             setResult(RESULT_OK, resultIntent)
             finish()
