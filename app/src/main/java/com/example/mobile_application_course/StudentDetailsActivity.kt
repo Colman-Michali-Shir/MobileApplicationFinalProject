@@ -3,7 +3,6 @@ package com.example.mobile_application_course
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
@@ -15,6 +14,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class StudentDetailsActivity : AppCompatActivity() {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -25,7 +26,10 @@ class StudentDetailsActivity : AppCompatActivity() {
     private var idTextView: TextView? = null
     private var phoneTextView: TextView? = null
     private var addressTextView: TextView? = null
+    private var birthDateTextView: TextView? = null
+    private var birthTimeTextView: TextView? = null
     private var checkBox: CheckBox? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +51,9 @@ class StudentDetailsActivity : AppCompatActivity() {
         idTextView = findViewById(R.id.student_details_activity_id_text_view)
         phoneTextView = findViewById(R.id.student_details_activity_phone_text_view)
         addressTextView = findViewById(R.id.student_details_activity_address_text_view)
+        birthDateTextView = findViewById(R.id.student_details_activity_birth_date_text_view)
+        birthTimeTextView = findViewById(R.id.student_details_activity_birth_time_text_view)
+
         checkBox = findViewById(R.id.student_details_activity_check_box)
 
         currentPosition = intent.getIntExtra("studentPosition", -1)
@@ -57,6 +64,18 @@ class StudentDetailsActivity : AppCompatActivity() {
         phoneTextView?.text = student?.phone
         addressTextView?.text = student?.address
         checkBox?.isChecked = student?.isChecked ?: false
+        birthDateTextView?.text = student?.birthDate?.let {
+            SimpleDateFormat(
+                "dd/MM/yyyy",
+                Locale.getDefault()
+            ).format(it)
+        }
+        birthTimeTextView?.text = student?.birthTime?.let {
+            SimpleDateFormat(
+                "HH:mm",
+                Locale.getDefault()
+            ).format(it)
+        }
 
         findViewById<Button>(R.id.student_details_activity_edit_button).setOnClickListener {
             val intent = Intent(this, EditStudentActivity::class.java)
@@ -79,6 +98,18 @@ class StudentDetailsActivity : AppCompatActivity() {
                                 phoneTextView?.text = it.phone
                                 addressTextView?.text = it.address
                                 checkBox?.isChecked = it.isChecked
+                                birthDateTextView?.text = it.birthDate?.let { birthDate ->
+                                    SimpleDateFormat(
+                                        "dd/MM/yyyy",
+                                        Locale.getDefault()
+                                    ).format(birthDate)
+                                }
+                                birthTimeTextView?.text = it.birthTime?.let { birthTime ->
+                                    SimpleDateFormat(
+                                        "HH:mm",
+                                        Locale.getDefault()
+                                    ).format(birthTime)
+                                }
                             }
 
                             val resultIntent = Intent()
@@ -101,6 +132,4 @@ class StudentDetailsActivity : AppCompatActivity() {
                 }
             }
     }
-
-
 }

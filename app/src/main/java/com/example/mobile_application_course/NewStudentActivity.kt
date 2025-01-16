@@ -1,8 +1,12 @@
 package com.example.mobile_application_course
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -12,6 +16,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
+import com.example.mobile_application_course.pickersDialog.showDatePickerDialog
+import com.example.mobile_application_course.pickersDialog.showTimePickerDialog
+import java.sql.Time
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class NewStudentActivity : AppCompatActivity() {
@@ -22,6 +31,9 @@ class NewStudentActivity : AppCompatActivity() {
     private var phoneEditText: EditText? = null
     private var addressEditText: EditText? = null
     private var checkBox: CheckBox? = null
+    private var birthDateEditText: EditText? = null
+    private var birthTimeEditText: EditText? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,28 +45,6 @@ class NewStudentActivity : AppCompatActivity() {
             insets
         }
         setUp()
-
-        cancelButton?.setOnClickListener {
-            finish()
-        }
-
-        saveButton?.setOnClickListener {
-            val newStudent = Student(
-                name = nameEditText?.text.toString(),
-                id = idEditText?.text.toString(),
-                phone = phoneEditText?.text.toString(),
-                address = addressEditText?.text.toString(),
-                avatarUrl = null,
-                isChecked = checkBox?.isChecked ?: false
-            )
-            Model.shared.addStudent(newStudent)
-
-            val resultIntent = Intent()
-            resultIntent.putExtra("action", "add")
-            setResult(Activity.RESULT_OK, resultIntent)
-
-            finish()
-        }
     }
 
     private fun setUp() {
@@ -65,6 +55,43 @@ class NewStudentActivity : AppCompatActivity() {
         phoneEditText = findViewById(R.id.student_phone_edit_text)
         addressEditText = findViewById(R.id.student_address_edit_text)
         checkBox = findViewById(R.id.student_check_box)
+        birthDateEditText = findViewById(R.id.student_birth_date_edit_text)
+        birthTimeEditText = findViewById(R.id.student_birth_time_edit_text)
 
+
+        cancelButton?.setOnClickListener {
+            finish()
+        }
+
+        saveButton?.setOnClickListener {
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+
+            val newStudent = Student(
+                name = nameEditText?.text.toString(),
+                id = idEditText?.text.toString(),
+                phone = phoneEditText?.text.toString(),
+                address = addressEditText?.text.toString(),
+                avatarUrl = null,
+                isChecked = checkBox?.isChecked ?: false,
+                birthDate = birthDateEditText?.text.toString().takeIf { it.isNotBlank() }
+                    ?.let { dateFormat.parse(it) },
+                birthTime = birthTimeEditText?.text.toString().takeIf { it.isNotBlank() }?.let {
+                    timeFormat.parse(it)?.let { birthTime -> Time(birthTime.time) }
+                }
+            )
+            
+            Model.shared.addStudent(newStudent)
+
+            val resultIntent = Intent()
+            resultIntent.putExtra("action", "add")
+            setResult(Activity.RESULT_OK, resultIntent)
+
+            finish()
+        }
+
+        birthDateEditText?.let { showDatePickerDialog(it, this) }
+        birthTimeEditText?.let { showTimePickerDialog(it, this) }
     }
 }
