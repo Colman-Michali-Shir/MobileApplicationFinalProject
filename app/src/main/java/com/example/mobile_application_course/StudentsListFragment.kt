@@ -28,13 +28,12 @@ class StudentsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         val view = inflater.inflate(R.layout.fragment_students_list, container, false)
 
         students = Model.shared.students
 
         recyclerView = view.findViewById(R.id.students_list_fragment_recycler_view)
-
         recyclerView?.setHasFixedSize(true)
 
         val layoutManger = LinearLayoutManager(context)
@@ -45,28 +44,22 @@ class StudentsListFragment : Fragment() {
         adapter.listener = object : OnItemClickListener {
             override fun onItemClick(position: Int) {
                 Log.d("TAG", "On click Activity listener on position $position")
-//                val intent = Intent(recyclerView?.context, StudentDetailsActivity::class.java)
-//                intent.putExtra("studentPosition", position)
-//                resultLauncher.launch(intent)
 
-
+                val action =
+                    StudentsListFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
+                        position
+                    )
+                Navigation.findNavController(view).navigate(action)
             }
         }
 
         recyclerView?.adapter = adapter
 
-        val b: FloatingActionButton = view.findViewById(R.id.student_list_new_student)
-        val action = StudentsListFragmentDirections.actionGlobalNewStudentFragment()
-        b.setOnClickListener(Navigation.createNavigateOnClickListener(action))
-//        view.findViewById<FloatingActionButton>(R.id.student_list_new_student).setOnClickListener {
-//
-//            Log.d("TAG", "FloatingActionButton")
-//
-//
-//            Log.d("TAG", "action $action")
-//
-//            Navigation.createNavigateOnClickListener(action)
-//        }
+        view.findViewById<FloatingActionButton>(R.id.student_list_new_student).setOnClickListener {
+            Log.d("TAG", "FloatingActionButton")
+            val action = StudentsListFragmentDirections.actionGlobalNewStudentFragment()
+            Navigation.findNavController(view).navigate(action)
+        }
 
         return view
     }

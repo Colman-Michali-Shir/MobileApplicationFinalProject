@@ -55,21 +55,21 @@ class NewStudentFragment : Fragment() {
     }
 
     private fun onSaveClicked(view: View) {
-//        val newStudent = Student(
-//            name = nameEditText?.text.toString(),
-//            id = idEditText?.text.toString(),
-//            phone = phoneEditText?.text.toString(),
-//            address = addressEditText?.text.toString(),
-//            avatarUrl = null,
-//            isChecked = checkBox?.isChecked ?: false
-//        )
-//        Model.shared.addStudent(newStudent)
+        val newStudent = Student(
+            name = nameEditText?.text.toString(),
+            id = idEditText?.text.toString(),
+            phone = phoneEditText?.text.toString(),
+            address = addressEditText?.text.toString(),
+            avatarUrl = null,
+            isChecked = checkBox?.isChecked ?: false
+        )
+        Model.shared.addStudent(newStudent)
 
 //        val resultIntent = Intent()
 //        resultIntent.putExtra("action", "add")
 //        setResult(Activity.RESULT_OK, resultIntent)
 //
-//        Navigation.findNavController(view).popBackStack()
+        Navigation.findNavController(view).popBackStack()
     }
 
     private fun onCancelClicked(view: View) {

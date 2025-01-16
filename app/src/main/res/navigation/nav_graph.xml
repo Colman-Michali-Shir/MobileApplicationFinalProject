@@ -9,7 +9,11 @@
         android:id="@+id/studentsListFragment"
         android:name="com.example.mobile_application_course.StudentsListFragment"
         android:label="fragment_students_list"
-        tools:layout="@layout/fragment_students_list" />
+        tools:layout="@layout/fragment_students_list">
+        <action
+            android:id="@+id/action_studentsListFragment_to_studentDetailsFragment"
+            app:destination="@id/studentDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newStudentFragment"
         android:name="com.example.mobile_application_course.NewStudentFragment"
@@ -18,4 +22,25 @@
     <action
         android:id="@+id/action_global_newStudentFragment"
         app:destination="@id/newStudentFragment" />
+    <fragment
+        android:id="@+id/studentDetailsFragment"
+        android:name="com.example.mobile_application_course.StudentDetailsFragment"
+        android:label="fragment_student_details"
+        tools:layout="@layout/fragment_student_details">
+        <argument
+            android:name="position"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_studentDetailsFragment_to_editStudentFragment"
+            app:destination="@id/editStudentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editStudentFragment"
+        android:name="com.example.mobile_application_course.EditStudentFragment"
+        android:label="fragment_edit_student"
+        tools:layout="@layout/fragment_edit_student">
+        <argument
+            android:name="position"
+            app:argType="integer" />
+    </fragment>
 </navigation>
