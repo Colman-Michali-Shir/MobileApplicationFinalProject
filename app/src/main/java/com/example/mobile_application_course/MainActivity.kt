@@ -53,11 +53,15 @@ class MainActivity : AppCompatActivity() {
         adapter = StudentsRecyclerAdapter(students)
 
         adapter.listener = object : OnItemClickListener {
-            override fun onItemClick(student: Student?) {
-                Log.d("TAG", "On student clicked: $student")
+            override fun onItemClick(position: Int) {
+                Log.d("TAG", "On click Activity listener on position $position")
                 val intent = Intent(recyclerView?.context, StudentDetailsActivity::class.java)
-                intent.putExtra("student_id", student?.id)
+                intent.putExtra("studentPosition", position)
                 resultLauncher.launch(intent)
+            }
+
+            override fun onItemClick(student: Student?) {
+                Log.d("TAG", "On student clicked name: ${student?.name}")
             }
         }
 
@@ -83,18 +87,17 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
 
+                        "edit" -> {
+                            val position = result.data?.getIntExtra("editStudentPosition", -1)
+                            if (position != -1 && position != null) {
+                                adapter.notifyItemChanged(position)
+                            }
+                        }
+
                         "delete" -> {
                             val position = result.data?.getIntExtra("deletedStudentPosition", -1)
                             if (position != -1 && position != null) {
                                 adapter.notifyItemRemoved(position)
-                            }
-                        }
-
-                        "edit" -> {
-                            val studentId = result.data?.getStringExtra("editStudentId")
-                            val position = students?.indexOfFirst { it.id == studentId }
-                            if (position != -1 && position != null) {
-                                adapter.notifyItemChanged(position)
                             }
                         }
                     }

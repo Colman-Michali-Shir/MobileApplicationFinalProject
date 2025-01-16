@@ -19,7 +19,7 @@ import com.example.mobile_application_course.model.Student
 class StudentDetailsActivity : AppCompatActivity() {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private var student: Student? = null
-    private var studentId: String? = null
+    private var currentPosition: Int = 0
 
     private var nameTextView: TextView? = null
     private var idTextView: TextView? = null
@@ -49,18 +49,18 @@ class StudentDetailsActivity : AppCompatActivity() {
         addressTextView = findViewById(R.id.student_details_activity_address_text_view)
         checkBox = findViewById(R.id.student_details_activity_check_box)
 
-        studentId = intent.getStringExtra("student_id")
-        student = Model.shared.students.find { it.id == studentId }
+        currentPosition = intent.getIntExtra("studentPosition", -1)
+        student = Model.shared.getStudentInPosition(currentPosition)
 
         nameTextView?.text = student?.name
-        idTextView?.text = studentId
+        idTextView?.text = student?.id
         phoneTextView?.text = student?.phone
         addressTextView?.text = student?.address
         checkBox?.isChecked = student?.isChecked ?: false
 
         findViewById<Button>(R.id.student_details_activity_edit_button).setOnClickListener {
             val intent = Intent(this, EditStudentActivity::class.java)
-            intent.putExtra("student_id", studentId)
+            intent.putExtra("studentPosition", currentPosition)
             resultLauncher.launch(intent)
         }
     }
@@ -72,26 +72,33 @@ class StudentDetailsActivity : AppCompatActivity() {
                     val action = result.data?.getStringExtra("action")
                     when (action) {
                         "edit" -> {
-                            val studentId = result.data?.getStringExtra("editStudentId")
-                            val student = Model.shared.students.find { it.id == studentId }
-                            student?.let {
+                            val position =
+                                result.data?.getIntExtra("editStudentPosition", -1)
+                                    ?: currentPosition
+
+                            val student = Model.shared.getStudentInPosition(position)
+                            student.let {
                                 idTextView?.text = it.id
                                 nameTextView?.text = it.name
                                 phoneTextView?.text = it.phone
                                 addressTextView?.text = it.address
                                 checkBox?.isChecked = it.isChecked
                             }
+
                             val resultIntent = Intent()
-                            resultIntent.putExtra("editStudentId", studentId)
+                            resultIntent.putExtra("editStudentPosition", position)
                             resultIntent.putExtra("action", "edit")
                             setResult(RESULT_OK, resultIntent)
                         }
 
                         "delete" -> {
+                            val position =
+                                result.data?.getIntExtra("deletedStudentPosition", -1)
+                                    ?: currentPosition
                             val resultIntent = Intent()
                             resultIntent.putExtra(
                                 "deletedStudentPosition",
-                                result.data?.getIntExtra("deletedStudentPosition", -1)
+                                position
                             )
                             resultIntent.putExtra("action", "delete")
                             setResult(RESULT_OK, resultIntent)

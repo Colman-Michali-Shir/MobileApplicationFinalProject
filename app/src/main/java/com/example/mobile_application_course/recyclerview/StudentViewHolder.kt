@@ -30,6 +30,7 @@ class StudentViewHolder(itemView: View, listener: OnItemClickListener?) :
         }
 
         itemView.setOnClickListener {
+            listener?.onItemClick(adapterPosition)
             listener?.onItemClick(student)
         }
     }

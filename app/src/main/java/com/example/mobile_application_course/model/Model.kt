@@ -11,4 +11,8 @@ class Model private constructor() {
     fun addStudent(student: Student) {
         students.add(student)
     }
+
+    fun getStudentInPosition(position: Int): Student {
+        return students[position]
+    }
 }

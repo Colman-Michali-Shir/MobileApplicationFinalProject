@@ -15,7 +15,7 @@ import com.example.mobile_application_course.model.Student
 class EditStudentActivity : AppCompatActivity() {
     private var students: MutableList<Student>? = null
     private var student: Student? = null
-    private var studentId: String? = null
+    private var position: Int = 0
 
     private var saveButton: Button? = null
     private var cancelButton: Button? = null
@@ -59,15 +59,14 @@ class EditStudentActivity : AppCompatActivity() {
             }
 
             val resultIntent = Intent()
-            resultIntent.putExtra("editStudentId", updatedId)
+            resultIntent.putExtra("editStudentPosition", position)
             resultIntent.putExtra("action", "edit")
             setResult(RESULT_OK, resultIntent)
             finish()
         }
 
         deleteButton?.setOnClickListener {
-            val position = students?.indexOfFirst { it.id == studentId }
-            students?.removeIf { it.id == studentId }
+            students?.removeAt(position)
 
             val resultIntent = Intent()
             resultIntent.putExtra("deletedStudentPosition", position)
@@ -89,8 +88,8 @@ class EditStudentActivity : AppCompatActivity() {
         addressEditText = findViewById(R.id.edit_student_activity_address_edit_text)
         checkBox = findViewById(R.id.edit_student_activity_check_box)
 
-        studentId = intent.getStringExtra("student_id")
-        student = Model.shared.students.find { it.id == studentId }
+        position = intent.getIntExtra("studentPosition", -1)
+        student = Model.shared.getStudentInPosition(position)
 
         nameEditText?.setText(student?.name)
         idEditText?.setText(student?.id)
