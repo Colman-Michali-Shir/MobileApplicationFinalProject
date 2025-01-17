@@ -10,7 +10,7 @@
     <include
         android:id="@+id/student_input_form"
         layout="@layout/student_input_form" />
-
+    
     <Button
         android:id="@+id/edit_student_activity_cancel_button"
         android:layout_width="0dp"
