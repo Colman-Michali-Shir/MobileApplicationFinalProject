@@ -1,4 +1,4 @@
-package com.example.mobile_application_course
+package com.example.mobile_application_course.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,14 +9,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.mobile_application_course.R
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 import com.example.mobile_application_course.pickersDialog.showDatePickerDialog
 import com.example.mobile_application_course.pickersDialog.showTimePickerDialog
 import com.example.mobile_application_course.utils.DateTimeUtils
 import java.sql.Time
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class EditStudentActivity : AppCompatActivity() {
     private var students: MutableList<Student>? = null

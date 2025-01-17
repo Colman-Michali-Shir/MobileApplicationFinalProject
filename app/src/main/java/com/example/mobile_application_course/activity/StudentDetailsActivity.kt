@@ -1,4 +1,4 @@
-package com.example.mobile_application_course
+package com.example.mobile_application_course.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.mobile_application_course.R
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 import com.example.mobile_application_course.utils.DateTimeUtils

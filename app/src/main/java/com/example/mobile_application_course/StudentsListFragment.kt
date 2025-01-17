@@ -1,13 +1,11 @@
 package com.example.mobile_application_course
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +19,6 @@ class StudentsListFragment : Fragment() {
 
     private var students: MutableList<Student>? = null
     private var recyclerView: RecyclerView? = null
-    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private lateinit var adapter: StudentsRecyclerAdapter
 
     override fun onCreateView(
@@ -56,12 +53,10 @@ class StudentsListFragment : Fragment() {
         recyclerView?.adapter = adapter
 
         view.findViewById<FloatingActionButton>(R.id.student_list_new_student).setOnClickListener {
-            Log.d("TAG", "FloatingActionButton")
             val action = StudentsListFragmentDirections.actionGlobalNewStudentFragment()
             Navigation.findNavController(view).navigate(action)
         }
 
         return view
     }
-
 }

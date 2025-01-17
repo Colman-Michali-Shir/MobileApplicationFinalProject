@@ -1,7 +1,5 @@
 package com.example.mobile_application_course
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,6 +12,10 @@ import android.widget.EditText
 import androidx.navigation.Navigation
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
+import com.example.mobile_application_course.pickersDialog.showDatePickerDialog
+import com.example.mobile_application_course.pickersDialog.showTimePickerDialog
+import com.example.mobile_application_course.utils.DateTimeUtils
+import java.sql.Time
 
 class NewStudentFragment : Fragment() {
 
@@ -24,6 +26,8 @@ class NewStudentFragment : Fragment() {
     private var phoneEditText: EditText? = null
     private var addressEditText: EditText? = null
     private var checkBox: CheckBox? = null
+    private var birthDateEditText: EditText? = null
+    private var birthTimeEditText: EditText? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +55,11 @@ class NewStudentFragment : Fragment() {
         phoneEditText = view.findViewById(R.id.student_phone_edit_text)
         addressEditText = view.findViewById(R.id.student_address_edit_text)
         checkBox = view.findViewById(R.id.student_check_box)
+        birthDateEditText = view.findViewById(R.id.student_birth_date_edit_text)
+        birthTimeEditText = view.findViewById(R.id.student_birth_time_edit_text)
 
+        birthDateEditText?.let { showDatePickerDialog(it, context) }
+        birthTimeEditText?.let { showTimePickerDialog(it, context) }
     }
 
     private fun onSaveClicked(view: View) {
@@ -61,19 +69,19 @@ class NewStudentFragment : Fragment() {
             phone = phoneEditText?.text.toString(),
             address = addressEditText?.text.toString(),
             avatarUrl = null,
-            isChecked = checkBox?.isChecked ?: false
+            isChecked = checkBox?.isChecked ?: false,
+            birthDate = birthDateEditText?.text.toString().takeIf { it.isNotBlank() }
+                ?.let { DateTimeUtils.parseDate(it) },
+            birthTime = birthTimeEditText?.text.toString().takeIf { it.isNotBlank() }?.let {
+                DateTimeUtils.parseTime(it)?.let { birthTime -> Time(birthTime.time) }
+            }
         )
         Model.shared.addStudent(newStudent)
 
-//        val resultIntent = Intent()
-//        resultIntent.putExtra("action", "add")
-//        setResult(Activity.RESULT_OK, resultIntent)
-//
         Navigation.findNavController(view).popBackStack()
     }
 
     private fun onCancelClicked(view: View) {
-        Log.d("TAG", "onCancelClicked")
         Navigation.findNavController(view).popBackStack()
     }
 

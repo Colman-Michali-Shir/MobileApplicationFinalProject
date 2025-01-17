@@ -1,6 +1,5 @@
 package com.example.mobile_application_course
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,10 +9,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.navigation.Navigation
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
+import com.example.mobile_application_course.pickersDialog.showDatePickerDialog
+import com.example.mobile_application_course.pickersDialog.showTimePickerDialog
+import com.example.mobile_application_course.utils.DateTimeUtils
+import java.sql.Time
 
 
 class EditStudentFragment : Fragment() {
@@ -28,6 +30,8 @@ class EditStudentFragment : Fragment() {
     private var idEditText: EditText? = null
     private var phoneEditText: EditText? = null
     private var addressEditText: EditText? = null
+    private var birthDateEditText: EditText? = null
+    private var birthTimeEditText: EditText? = null
     private var checkBox: CheckBox? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +46,7 @@ class EditStudentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         val view = inflater.inflate(R.layout.fragment_edit_student, container, false)
 
         setUp(view)
@@ -66,6 +70,8 @@ class EditStudentFragment : Fragment() {
         phoneEditText = view.findViewById(R.id.student_phone_edit_text)
         addressEditText = view.findViewById(R.id.student_address_edit_text)
         checkBox = view.findViewById(R.id.student_check_box)
+        birthDateEditText = view.findViewById(R.id.student_birth_date_edit_text)
+        birthTimeEditText = view.findViewById(R.id.student_birth_time_edit_text)
 
         student = Model.shared.getStudentInPosition(position)
 
@@ -75,7 +81,20 @@ class EditStudentFragment : Fragment() {
             phoneEditText?.setText(it.phone)
             addressEditText?.setText(it.address)
             checkBox?.isChecked = it.isChecked
+            birthDateEditText?.setText(it.birthDate?.let { birthDate ->
+                DateTimeUtils.formatDate(
+                    birthDate
+                )
+            })
+            birthTimeEditText?.setText(it.birthTime?.let { birthTime ->
+                DateTimeUtils.formatTime(
+                    birthTime
+                )
+            })
         }
+
+        birthDateEditText?.let { showDatePickerDialog(it, context) }
+        birthTimeEditText?.let { showTimePickerDialog(it, context) }
     }
 
     private fun onSaveClicked(view: View) {
@@ -84,6 +103,8 @@ class EditStudentFragment : Fragment() {
         val updatedPhone = phoneEditText?.text.toString()
         val updatedAddress = addressEditText?.text.toString()
         val updatedIsChecked = checkBox?.isChecked ?: false
+        val updatedBirthDate = birthDateEditText?.text.toString()
+        val updatedBirthTime = birthTimeEditText?.text.toString()
 
         student?.apply {
             id = updatedId
@@ -91,30 +112,27 @@ class EditStudentFragment : Fragment() {
             phone = updatedPhone
             address = updatedAddress
             isChecked = updatedIsChecked
+            birthDate = updatedBirthDate.takeIf { it.isNotBlank() }
+                ?.let { DateTimeUtils.parseDate(it) }
+            birthTime = updatedBirthTime.takeIf { it.isNotBlank() }?.let {
+                DateTimeUtils.parseTime(it)?.let { birthTime -> Time(birthTime.time) }
+            }
         }
-
-//        val resultIntent = Intent()
-//        resultIntent.putExtra("action", "edit")
-//        setResult(RESULT_OK, resultIntent)
-//        finish()
 
         Navigation.findNavController(view).popBackStack()
     }
 
     private fun onCancelClicked(view: View) {
-        Log.d("TAG", "onCancelClicked")
         Navigation.findNavController(view).popBackStack()
     }
 
     private fun onDeleteClicked(view: View) {
-
         students?.removeAt(position)
 
-
-//        val resultIntent = Intent()
-//        resultIntent.putExtra("action", "delete")
-//        setResult(RESULT_OK, resultIntent)
-        Navigation.findNavController(view).popBackStack()
+        Navigation.findNavController(view).popBackStack(
+            R.id.studentsListFragment,
+            false
+        )
     }
 
 }
