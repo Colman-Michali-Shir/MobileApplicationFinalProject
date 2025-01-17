@@ -13,6 +13,7 @@ import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 import com.example.mobile_application_course.pickersDialog.showDatePickerDialog
 import com.example.mobile_application_course.pickersDialog.showTimePickerDialog
+import com.example.mobile_application_course.utils.DateTimeUtils
 import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -52,8 +53,6 @@ class EditStudentActivity : AppCompatActivity() {
         }
 
         saveButton?.setOnClickListener {
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
             val updatedName = nameEditText?.text.toString()
             val updatedId = idEditText?.text.toString()
             val updatedPhone = phoneEditText?.text.toString()
@@ -69,9 +68,9 @@ class EditStudentActivity : AppCompatActivity() {
                 address = updatedAddress
                 isChecked = updatedIsChecked
                 birthDate = updatedBirthDate.takeIf { it.isNotBlank() }
-                    ?.let { dateFormat.parse(it) }
+                    ?.let { DateTimeUtils.parseDate(it) }
                 birthTime = updatedBirthTime.takeIf { it.isNotBlank() }?.let {
-                    timeFormat.parse(it)?.let { birthTime -> Time(birthTime.time) }
+                    DateTimeUtils.parseTime(it)?.let { birthTime -> Time(birthTime.time) }
                 }
             }
 
@@ -109,17 +108,22 @@ class EditStudentActivity : AppCompatActivity() {
         position = intent.getIntExtra("studentPosition", -1)
         student = Model.shared.getStudentInPosition(position)
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
         student?.let {
             nameEditText?.setText(it.name)
             idEditText?.setText(it.id)
             phoneEditText?.setText(it.phone)
             addressEditText?.setText(it.address)
             checkBox?.isChecked = it.isChecked
-            birthDateEditText?.setText(it.birthDate?.let { birthDate -> dateFormat.format(birthDate) })
-            birthTimeEditText?.setText(it.birthTime?.let { birthTime -> timeFormat.format(birthTime) })
+            birthDateEditText?.setText(it.birthDate?.let { birthDate ->
+                DateTimeUtils.formatDate(
+                    birthDate
+                )
+            })
+            birthTimeEditText?.setText(it.birthTime?.let { birthTime ->
+                DateTimeUtils.formatTime(
+                    birthTime
+                )
+            })
         }
 
 

@@ -14,8 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.mobile_application_course.utils.DateTimeUtils
 
 class StudentDetailsActivity : AppCompatActivity() {
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
@@ -65,16 +64,10 @@ class StudentDetailsActivity : AppCompatActivity() {
         addressTextView?.text = student?.address
         checkBox?.isChecked = student?.isChecked ?: false
         birthDateTextView?.text = student?.birthDate?.let {
-            SimpleDateFormat(
-                "dd/MM/yyyy",
-                Locale.getDefault()
-            ).format(it)
+            DateTimeUtils.formatDate(it)
         }
         birthTimeTextView?.text = student?.birthTime?.let {
-            SimpleDateFormat(
-                "HH:mm",
-                Locale.getDefault()
-            ).format(it)
+            DateTimeUtils.formatTime(it)
         }
 
         findViewById<Button>(R.id.student_details_activity_edit_button).setOnClickListener {
@@ -99,16 +92,10 @@ class StudentDetailsActivity : AppCompatActivity() {
                                 addressTextView?.text = it.address
                                 checkBox?.isChecked = it.isChecked
                                 birthDateTextView?.text = it.birthDate?.let { birthDate ->
-                                    SimpleDateFormat(
-                                        "dd/MM/yyyy",
-                                        Locale.getDefault()
-                                    ).format(birthDate)
+                                    DateTimeUtils.formatDate(birthDate)
                                 }
                                 birthTimeTextView?.text = it.birthTime?.let { birthTime ->
-                                    SimpleDateFormat(
-                                        "HH:mm",
-                                        Locale.getDefault()
-                                    ).format(birthTime)
+                                    DateTimeUtils.formatTime(birthTime)
                                 }
                             }
 

@@ -3,9 +3,8 @@ package com.example.mobile_application_course.pickersDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.EditText
-import java.text.SimpleDateFormat
+import com.example.mobile_application_course.utils.DateTimeUtils
 import java.util.Calendar
-import java.util.Locale
 
 fun showTimePickerDialog(v: EditText, context: Context) {
     v.let { editTextTime ->
@@ -20,10 +19,7 @@ fun showTimePickerDialog(v: EditText, context: Context) {
                     val selectedTime = Calendar.getInstance()
                     selectedTime.set(Calendar.HOUR_OF_DAY, selectedHour)
                     selectedTime.set(Calendar.MINUTE, selectedMinute)
-                    val timeFormat =
-                        SimpleDateFormat("HH:mm", Locale.getDefault()) // 24-hour format
-                    editTextTime.setText(timeFormat.format(selectedTime.time))
-
+                    editTextTime.setText(DateTimeUtils.formatTime(selectedTime.time))
                 },
                 hour,
                 minute,

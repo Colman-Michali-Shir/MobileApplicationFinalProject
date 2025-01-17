@@ -14,6 +14,7 @@ import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 import com.example.mobile_application_course.pickersDialog.showDatePickerDialog
 import com.example.mobile_application_course.pickersDialog.showTimePickerDialog
+import com.example.mobile_application_course.utils.DateTimeUtils
 import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -60,10 +61,6 @@ class NewStudentActivity : AppCompatActivity() {
         }
 
         saveButton?.setOnClickListener {
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-
-
             val newStudent = Student(
                 name = nameEditText?.text.toString(),
                 id = idEditText?.text.toString(),
@@ -72,9 +69,9 @@ class NewStudentActivity : AppCompatActivity() {
                 avatarUrl = null,
                 isChecked = checkBox?.isChecked ?: false,
                 birthDate = birthDateEditText?.text.toString().takeIf { it.isNotBlank() }
-                    ?.let { dateFormat.parse(it) },
+                    ?.let { DateTimeUtils.parseDate(it) },
                 birthTime = birthTimeEditText?.text.toString().takeIf { it.isNotBlank() }?.let {
-                    timeFormat.parse(it)?.let { birthTime -> Time(birthTime.time) }
+                    DateTimeUtils.parseTime(it)?.let { birthTime -> Time(birthTime.time) }
                 }
             )
 

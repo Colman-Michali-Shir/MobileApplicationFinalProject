@@ -3,9 +3,8 @@ package com.example.mobile_application_course.pickersDialog
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.EditText
-import java.text.SimpleDateFormat
+import com.example.mobile_application_course.utils.DateTimeUtils
 import java.util.Calendar
-import java.util.Locale
 
 fun showDatePickerDialog(v: EditText, context: Context) {
     v.let { editTextDate ->
@@ -20,8 +19,7 @@ fun showDatePickerDialog(v: EditText, context: Context) {
                 { _, selectedYear, selectedMonth, selectedDay ->
                     val selectedDate = Calendar.getInstance()
                     selectedDate.set(selectedYear, selectedMonth, selectedDay)
-                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    editTextDate.setText(dateFormat.format(selectedDate.time))
+                    editTextDate.setText(DateTimeUtils.formatDate(selectedDate.time))
                 }, year, month, day
             )
 
