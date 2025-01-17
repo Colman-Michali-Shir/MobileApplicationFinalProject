@@ -1,4 +1,4 @@
-package com.example.mobile_application_course.recyclerview
+package com.example.mobile_application_course.adapter
 
 import android.view.View
 import android.widget.CheckBox

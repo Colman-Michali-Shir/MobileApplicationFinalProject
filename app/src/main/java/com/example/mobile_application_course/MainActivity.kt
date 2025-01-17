@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile_application_course.interfaces.OnItemClickListener
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
-import com.example.mobile_application_course.recyclerview.StudentsRecyclerAdapter
+import com.example.mobile_application_course.adapter.StudentsRecyclerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
