@@ -34,6 +34,13 @@ class StudentDetailsFragment : Fragment() {
         } ?: 0
     }
 
+    override fun onResume() {
+        super.onResume()
+        student?.let {
+            checkBox?.isChecked = it.isChecked
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
