@@ -1,7 +1,6 @@
 package com.example.mobile_application_course
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,12 +35,8 @@ class NewStudentFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_new_student, container, false)
 
-        Log.d("TAG", "NewStudentFragment")
-
         setUp(view)
-
         cancelButton?.setOnClickListener(::onCancelClicked)
-
         saveButton?.setOnClickListener(::onSaveClicked)
 
         return view

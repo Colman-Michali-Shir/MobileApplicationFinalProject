@@ -1,7 +1,6 @@
 package com.example.mobile_application_course
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -40,8 +39,6 @@ class StudentsListFragment : Fragment() {
 
         adapter.listener = object : OnItemClickListener {
             override fun onItemClick(position: Int) {
-                Log.d("TAG", "On click Activity listener on position $position")
-
                 val action =
                     StudentsListFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
                         position
