@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +12,6 @@ import com.example.mobile_application_course.interfaces.OnItemClickListener
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 import com.example.mobile_application_course.adapter.StudentsRecyclerAdapter
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class StudentsListFragment : Fragment() {
 
@@ -44,7 +42,6 @@ class StudentsListFragment : Fragment() {
                     StudentsListFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
                         position
                     )
-
                 Navigation.findNavController(view).navigate(action)
             }
         }

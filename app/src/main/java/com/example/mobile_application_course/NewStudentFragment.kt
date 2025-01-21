@@ -87,9 +87,4 @@ class NewStudentFragment : Fragment() {
     private fun onCancelClicked(view: View) {
         Navigation.findNavController(view).popBackStack()
     }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        super.onCreateOptionsMenu(menu, inflater)
-    }
 }

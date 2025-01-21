@@ -1,7 +1,6 @@
 package com.example.mobile_application_course
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,13 +8,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 import com.example.mobile_application_course.utils.DateTimeUtils
@@ -35,11 +30,11 @@ class StudentDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         currentPosition = arguments?.let {
             StudentDetailsFragmentArgs.fromBundle(it).position
         } ?: 0
-        setHasOptionsMenu(true)
     }
 
     override fun onResume() {
@@ -61,19 +56,15 @@ class StudentDetailsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("shir", "hiiiiiiiiiii")
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.editStudentFragment -> {
-                // Navigate to EditStudentFragment
-                val action =
-                    StudentDetailsFragmentDirections.actionStudentDetailsFragmentToEditStudentFragment(
-                        currentPosition
-                    )
+                val action = StudentDetailsFragmentDirections
+                    .actionStudentDetailsFragmentToEditStudentFragment(currentPosition)
                 findNavController().navigate(action)
-                return true
+                true
             }
 
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -101,6 +92,5 @@ class StudentDetailsFragment : Fragment() {
                 DateTimeUtils.formatTime(birthTime)
             }
         }
-
     }
 }

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/studentsListFragment"
         android:name="com.example.mobile_application_course.StudentsListFragment"
-        android:label="Student List"
+        android:label="Students List"
         tools:layout="@layout/fragment_students_list">
         <action
             android:id="@+id/action_studentsListFragment_to_studentDetailsFragment"
