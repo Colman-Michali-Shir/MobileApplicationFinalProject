@@ -58,7 +58,6 @@ class EditStudentFragment : Fragment() {
         return view
     }
 
-
     private fun setUp(view: View) {
         students = Model.shared.students
 
