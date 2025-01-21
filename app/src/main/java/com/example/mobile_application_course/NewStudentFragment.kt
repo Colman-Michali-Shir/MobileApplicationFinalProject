@@ -28,6 +28,12 @@ class NewStudentFragment : Fragment() {
     private var birthDateEditText: EditText? = null
     private var birthTimeEditText: EditText? = null
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,5 +85,4 @@ class NewStudentFragment : Fragment() {
     private fun onCancelClicked(view: View) {
         Navigation.findNavController(view).popBackStack()
     }
-
 }
