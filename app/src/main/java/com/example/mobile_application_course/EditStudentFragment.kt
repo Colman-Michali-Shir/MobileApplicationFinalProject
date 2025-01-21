@@ -120,7 +120,7 @@ class EditStudentFragment : Fragment() {
         }
 
         context?.let {
-            showSaveSuccessDialog(it)
+            showSaveSuccessDialog(it, "edit")
         }
 
         Navigation.findNavController(view).popBackStack()

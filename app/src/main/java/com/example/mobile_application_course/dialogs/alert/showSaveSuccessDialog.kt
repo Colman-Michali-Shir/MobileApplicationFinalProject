@@ -3,10 +3,10 @@ package com.example.mobile_application_course.dialogs.alert
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
 
-fun showSaveSuccessDialog(context: Context) {
+fun showSaveSuccessDialog(context: Context, operation: String) {
     val builder = AlertDialog.Builder(context)
-    builder.setTitle("Save Successful")
-    builder.setMessage("The save operation was completed successfully")
+    builder.setTitle("${operation.replaceFirstChar { it.uppercase() }} Successful")
+    builder.setMessage("The $operation operation was completed successfully")
     builder.setPositiveButton("OK") { dialog, _ ->
         dialog.dismiss()
     }

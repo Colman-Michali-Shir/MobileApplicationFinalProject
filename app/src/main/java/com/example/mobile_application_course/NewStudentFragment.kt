@@ -74,7 +74,7 @@ class NewStudentFragment : Fragment() {
         )
         Model.shared.addStudent(newStudent)
         context?.let {
-            showSaveSuccessDialog(it)
+            showSaveSuccessDialog(it, "add")
         }
         Navigation.findNavController(view).popBackStack()
     }
