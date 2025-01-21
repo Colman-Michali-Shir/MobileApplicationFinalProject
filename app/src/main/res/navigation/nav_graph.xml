@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/studentsListFragment"
         android:name="com.example.mobile_application_course.StudentsListFragment"
-        android:label="fragment_students_list"
+        android:label="Student List"
         tools:layout="@layout/fragment_students_list">
         <action
             android:id="@+id/action_studentsListFragment_to_studentDetailsFragment"
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/newStudentFragment"
         android:name="com.example.mobile_application_course.NewStudentFragment"
-        android:label="fragment_new_student"
+        android:label="Add Student"
         tools:layout="@layout/fragment_new_student" />
     <action
         android:id="@+id/action_global_newStudentFragment"
@@ -25,7 +25,7 @@
     <fragment
         android:id="@+id/studentDetailsFragment"
         android:name="com.example.mobile_application_course.StudentDetailsFragment"
-        android:label="fragment_student_details"
+        android:label="Student Details"
         tools:layout="@layout/fragment_student_details">
         <argument
             android:name="position"
@@ -37,7 +37,7 @@
     <fragment
         android:id="@+id/editStudentFragment"
         android:name="com.example.mobile_application_course.EditStudentFragment"
-        android:label="fragment_edit_student"
+        android:label="Edit Student"
         tools:layout="@layout/fragment_edit_student">
         <argument
             android:name="position"

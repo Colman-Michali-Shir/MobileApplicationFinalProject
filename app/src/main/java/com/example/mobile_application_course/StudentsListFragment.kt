@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,16 +44,12 @@ class StudentsListFragment : Fragment() {
                     StudentsListFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
                         position
                     )
+
                 Navigation.findNavController(view).navigate(action)
             }
         }
 
         recyclerView?.adapter = adapter
-
-        view.findViewById<FloatingActionButton>(R.id.student_list_new_student).setOnClickListener {
-            val action = StudentsListFragmentDirections.actionGlobalNewStudentFragment()
-            Navigation.findNavController(view).navigate(action)
-        }
 
         return view
     }

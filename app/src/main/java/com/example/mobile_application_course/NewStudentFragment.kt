@@ -3,6 +3,8 @@ package com.example.mobile_application_course
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -27,6 +29,12 @@ class NewStudentFragment : Fragment() {
     private var checkBox: CheckBox? = null
     private var birthDateEditText: EditText? = null
     private var birthTimeEditText: EditText? = null
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,4 +88,8 @@ class NewStudentFragment : Fragment() {
         Navigation.findNavController(view).popBackStack()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 }
