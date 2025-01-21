@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.navigation.Navigation
-import com.example.mobile_application_course.dialogs.alert.showSaveSuccessDialog
+import com.example.mobile_application_course.dialogs.alert.showSuccessOperationDialog
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
 import com.example.mobile_application_course.dialogs.pickers.showDatePickerDialog
@@ -119,7 +119,7 @@ class EditStudentFragment : Fragment() {
         }
 
         context?.let {
-            showSaveSuccessDialog(it, "edit")
+            showSuccessOperationDialog(it, "edit")
         }
 
         Navigation.findNavController(view).popBackStack()
