@@ -58,11 +58,6 @@ class EditStudentFragment : Fragment() {
 
         return view
     }
-    
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        super.onCreateOptionsMenu(menu, inflater)
-    }
 
     private fun setUp(view: View) {
         students = Model.shared.students

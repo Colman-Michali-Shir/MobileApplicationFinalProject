@@ -38,9 +38,6 @@ class MainActivity : AppCompatActivity() {
                 activity = this,
                 navController = it,
             )
-            it.addOnDestinationChangedListener { _, _, _ ->
-                invalidateOptionsMenu() // Refresh the menu when fragment changes
-            }
         }
     }
 
