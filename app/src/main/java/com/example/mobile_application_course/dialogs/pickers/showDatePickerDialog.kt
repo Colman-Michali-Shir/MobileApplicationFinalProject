@@ -1,4 +1,4 @@
-package com.example.mobile_application_course.pickersDialog
+package com.example.mobile_application_course.dialogs.pickers
 
 import android.app.DatePickerDialog
 import android.content.Context
