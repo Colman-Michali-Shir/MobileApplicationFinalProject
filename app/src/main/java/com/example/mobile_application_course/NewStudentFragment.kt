@@ -9,10 +9,11 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.navigation.Navigation
+import com.example.mobile_application_course.dialogs.alert.showSuccessOperationDialog
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
-import com.example.mobile_application_course.pickersDialog.showDatePickerDialog
-import com.example.mobile_application_course.pickersDialog.showTimePickerDialog
+import com.example.mobile_application_course.dialogs.pickers.showDatePickerDialog
+import com.example.mobile_application_course.dialogs.pickers.showTimePickerDialog
 import com.example.mobile_application_course.utils.DateTimeUtils
 import java.sql.Time
 
@@ -78,7 +79,9 @@ class NewStudentFragment : Fragment() {
             }
         )
         Model.shared.addStudent(newStudent)
-
+        context?.let {
+            showSuccessOperationDialog(it, "add")
+        }
         Navigation.findNavController(view).popBackStack()
     }
 
