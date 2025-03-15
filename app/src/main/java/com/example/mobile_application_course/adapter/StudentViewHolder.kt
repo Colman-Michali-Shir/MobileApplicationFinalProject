@@ -1,5 +1,6 @@
 package com.example.mobile_application_course.adapter
 
+import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mobile_application_course.interfaces.OnItemClickListener
 import com.example.mobile_application_course.R
 import com.example.mobile_application_course.model.Student
+import java.util.logging.Logger
 
 class StudentViewHolder(itemView: View, listener: OnItemClickListener?) :
     RecyclerView.ViewHolder(itemView) {
@@ -30,7 +32,7 @@ class StudentViewHolder(itemView: View, listener: OnItemClickListener?) :
         }
 
         itemView.setOnClickListener {
-            listener?.onItemClick(adapterPosition)
+            student?.id?.let { listener?.onItemClick(it) }
         }
     }
 

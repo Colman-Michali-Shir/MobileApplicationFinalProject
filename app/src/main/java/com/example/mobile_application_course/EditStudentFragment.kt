@@ -5,10 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.EditText
 import androidx.navigation.Navigation
+import com.example.mobile_application_course.databinding.FragmentEditStudentBinding
 import com.example.mobile_application_course.dialogs.alert.showSuccessOperationDialog
 import com.example.mobile_application_course.model.Model
 import com.example.mobile_application_course.model.Student
@@ -17,96 +15,72 @@ import com.example.mobile_application_course.dialogs.pickers.showTimePickerDialo
 import com.example.mobile_application_course.utils.DateTimeUtils
 import java.sql.Time
 
-
 class EditStudentFragment : Fragment() {
-    private var students: MutableList<Student>? = null
     private var student: Student? = null
-    private var position: Int = 0
+    private var id: String = ""
 
-    private var saveButton: Button? = null
-    private var cancelButton: Button? = null
-    private var deleteButton: Button? = null
-    private var nameEditText: EditText? = null
-    private var idEditText: EditText? = null
-    private var phoneEditText: EditText? = null
-    private var addressEditText: EditText? = null
-    private var birthDateEditText: EditText? = null
-    private var birthTimeEditText: EditText? = null
-    private var checkBox: CheckBox? = null
+    private var binding: FragmentEditStudentBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        position = arguments?.let {
-            EditStudentFragmentArgs.fromBundle(it).position
-        } ?: 0
+        id = arguments?.let {
+            EditStudentFragmentArgs.fromBundle(it).id
+        } ?: ""
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentEditStudentBinding.inflate(inflater, container, false)
 
-        val view = inflater.inflate(R.layout.fragment_edit_student, container, false)
+        setUp()
+        binding?.cancelButton?.setOnClickListener(::onCancelClicked)
+        binding?.saveButton?.setOnClickListener(::onSaveClicked)
+        binding?.deleteButton?.setOnClickListener(::onDeleteClicked)
 
-        setUp(view)
-
-        cancelButton?.setOnClickListener(::onCancelClicked)
-        saveButton?.setOnClickListener(::onSaveClicked)
-        deleteButton?.setOnClickListener(::onDeleteClicked)
-
-        return view
+        return binding?.root
     }
 
-    private fun setUp(view: View) {
-        students = Model.shared.students
+    private fun setUp() {
+        Model.shared.getStudentById(id) {
+            student = it
+            student?.let { student ->
+                binding?.studentInputForm?.apply {
+                    nameEditText.setText(student.name)
+                    idEditText.setText(student.id)
+                    phoneEditText.setText(student.phone ?: "")
+                    addressEditText.setText(student.address ?: "")
+                    checkBox.isChecked = student.isChecked
 
-        saveButton = view.findViewById(R.id.edit_student_fragment_save_button)
-        cancelButton = view.findViewById(R.id.edit_student_fragment_cancel_button)
-        deleteButton = view.findViewById(R.id.edit_student_fragment_delete_button)
-        nameEditText = view.findViewById(R.id.student_name_edit_text)
-        idEditText = view.findViewById(R.id.student_id_edit_text)
-        phoneEditText = view.findViewById(R.id.student_phone_edit_text)
-        addressEditText = view.findViewById(R.id.student_address_edit_text)
-        checkBox = view.findViewById(R.id.student_check_box)
-        birthDateEditText = view.findViewById(R.id.student_birth_date_edit_text)
-        birthTimeEditText = view.findViewById(R.id.student_birth_time_edit_text)
+                    birthDateEditText.setText(
+                        student.birthDate?.let(DateTimeUtils::formatDate) ?: ""
+                    )
+                    birthTimeEditText.setText(
+                        student.birthTime?.let(DateTimeUtils::formatTime) ?: ""
+                    )
 
-        student = Model.shared.getStudentInPosition(position)
+                    showDatePickerDialog(birthDateEditText, context)
+                    showTimePickerDialog(birthTimeEditText, context)
+                }
+            }
 
-        student?.let {
-            nameEditText?.setText(it.name)
-            idEditText?.setText(it.id)
-            phoneEditText?.setText(it.phone)
-            addressEditText?.setText(it.address)
-            checkBox?.isChecked = it.isChecked
-            birthDateEditText?.setText(it.birthDate?.let { birthDate ->
-                DateTimeUtils.formatDate(
-                    birthDate
-                )
-            })
-            birthTimeEditText?.setText(it.birthTime?.let { birthTime ->
-                DateTimeUtils.formatTime(
-                    birthTime
-                )
-            })
         }
-
-        birthDateEditText?.let { showDatePickerDialog(it, context) }
-        birthTimeEditText?.let { showTimePickerDialog(it, context) }
     }
 
     private fun onSaveClicked(view: View) {
-        val updatedName = nameEditText?.text.toString()
-        val updatedId = idEditText?.text.toString()
-        val updatedPhone = phoneEditText?.text.toString()
-        val updatedAddress = addressEditText?.text.toString()
-        val updatedIsChecked = checkBox?.isChecked ?: false
-        val updatedBirthDate = birthDateEditText?.text.toString()
-        val updatedBirthTime = birthTimeEditText?.text.toString()
+        val updatedName = binding?.studentInputForm?.nameEditText?.text.toString()
+        val updatedId = binding?.studentInputForm?.idEditText?.text.toString()
+        val updatedPhone = binding?.studentInputForm?.phoneEditText?.text.toString()
+        val updatedAddress = binding?.studentInputForm?.addressEditText?.text.toString()
+        val updatedIsChecked = binding?.studentInputForm?.checkBox?.isChecked ?: false
+        val updatedBirthDate = binding?.studentInputForm?.birthDateEditText?.text.toString()
+        val updatedBirthTime = binding?.studentInputForm?.birthTimeEditText?.text.toString()
 
         student?.apply {
-            id = updatedId
+            // I don't want update id
+//            id = updatedId
             name = updatedName
             phone = updatedPhone
             address = updatedAddress
@@ -118,11 +92,16 @@ class EditStudentFragment : Fragment() {
             }
         }
 
-        context?.let {
-            showSuccessOperationDialog(it, "edit")
+
+        student?.let {
+            Model.shared.updateStudent(it) {
+                Navigation.findNavController(view).popBackStack()
+                context?.let { it ->
+                    showSuccessOperationDialog(it, "edit")
+                }
+            }
         }
 
-        Navigation.findNavController(view).popBackStack()
     }
 
     private fun onCancelClicked(view: View) {
@@ -130,12 +109,20 @@ class EditStudentFragment : Fragment() {
     }
 
     private fun onDeleteClicked(view: View) {
-        students?.removeAt(position)
+        student?.let {
+            Model.shared.deleteStudent(it) {
+                Navigation.findNavController(view).popBackStack(
+                    R.id.studentsListFragment,
+                    false
+                )
+            }
+        }
 
-        Navigation.findNavController(view).popBackStack(
-            R.id.studentsListFragment,
-            false
-        )
+
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
 }

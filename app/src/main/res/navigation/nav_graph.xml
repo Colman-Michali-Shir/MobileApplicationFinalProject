@@ -28,8 +28,8 @@
         android:label="Student Details"
         tools:layout="@layout/fragment_student_details">
         <argument
-            android:name="position"
-            app:argType="integer" />
+            android:name="id"
+            app:argType="string" />
         <action
             android:id="@+id/action_studentDetailsFragment_to_editStudentFragment"
             app:destination="@id/editStudentFragment" />
@@ -40,7 +40,7 @@
         android:label="Edit Student"
         tools:layout="@layout/fragment_edit_student">
         <argument
-            android:name="position"
-            app:argType="integer" />
+            android:name="id"
+            app:argType="string" />
     </fragment>
 </navigation>
