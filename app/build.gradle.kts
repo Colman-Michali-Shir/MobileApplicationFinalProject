@@ -3,15 +3,16 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.navigation.safeargs)
     id("kotlin-kapt")
+    alias(libs.plugins.google.services)
 
 }
 
 android {
-    namespace = "com.example.mobile_application_course"
+    namespace = "com.example.foodie_finder"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.mobile_application_course"
+        applicationId = "com.example.foodie_finder"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
@@ -58,4 +59,8 @@ dependencies {
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+
 }
