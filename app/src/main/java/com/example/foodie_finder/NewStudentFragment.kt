@@ -1,16 +1,16 @@
 package com.example.foodie_finder
 
 import android.app.AlertDialog
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
 import com.example.foodie_finder.databinding.FragmentNewStudentBinding
@@ -44,7 +44,7 @@ class NewStudentFragment : Fragment() {
         binding?.saveButton?.setOnClickListener(::onSaveClicked)
         binding?.studentInputForm?.birthDateEditText?.let { showDatePickerDialog(it, context) }
         binding?.studentInputForm?.birthTimeEditText?.let { showTimePickerDialog(it, context) }
-        
+
         cameraLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
                 if (bitmap != null) {
@@ -100,8 +100,11 @@ class NewStudentFragment : Fragment() {
 
         binding?.progressBar?.visibility = View.VISIBLE
         if (didSetProfileImage) {
-            binding?.studentInputForm?.studentImageView?.isDrawingCacheEnabled = true
-            binding?.studentInputForm?.studentImageView?.buildDrawingCache()
+            binding?.studentInputForm?.studentImageView?.let { view ->
+                val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                view.draw(canvas)
+            }
             val bitmap =
                 (binding?.studentInputForm?.studentImageView?.drawable as BitmapDrawable).bitmap
             Model.shared.addStudent(newStudent, bitmap) {
