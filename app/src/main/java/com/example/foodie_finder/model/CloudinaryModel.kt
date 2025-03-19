@@ -11,15 +11,15 @@ import com.cloudinary.android.policy.UploadPolicy
 import com.example.foodie_finder.base.MyApplication
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.io.path.CopyActionContext
+import com.example.foodie_finder.BuildConfig
 
 class CloudinaryModel {
 
     init {
         val config = mapOf(
-            "cloud_name" to "dduknzebx",
-            "api_key" to "369888339756796",
-            "api_secret" to "FYHFACdsbVlamUqXCG6jXbPOEBg"
+            "cloud_name" to BuildConfig.CLOUDINARY_CLOUD_NAME,
+            "api_key" to BuildConfig.CLOUDINARY_API_KEY,
+            "api_secret" to BuildConfig.CLOUDINARY_API_SECRET,
         )
 
         MyApplication.Globals.context?.let {
