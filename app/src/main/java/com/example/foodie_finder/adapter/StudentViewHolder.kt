@@ -1,27 +1,22 @@
 package com.example.foodie_finder.adapter
 
-import android.view.View
 import android.widget.CheckBox
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.R
+import com.example.foodie_finder.interfaces.OnItemClickListener
+import com.example.foodie_finder.databinding.StudentListRowBinding
 import com.example.foodie_finder.model.Student
+import com.squareup.picasso.Picasso
 
-class StudentViewHolder(itemView: View, listener: OnItemClickListener?) :
-    RecyclerView.ViewHolder(itemView) {
+class StudentViewHolder(
+    private val binding: StudentListRowBinding, listener: OnItemClickListener?
+) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    private var nameTextView: TextView? = null
-    private var idTextView: TextView? = null
-    private var checkBox: CheckBox? = null
     private var student: Student? = null
 
     init {
-        nameTextView = itemView.findViewById(R.id.student_row_name_text_view)
-        idTextView = itemView.findViewById(R.id.student_row_id_text_view)
-        checkBox = itemView.findViewById(R.id.student_row_check_box)
-
-        checkBox?.apply {
+        binding.studentRowCheckBox.apply {
             setOnClickListener { view ->
                 (tag as? Int)?.let {
                     student?.isChecked = (view as? CheckBox)?.isChecked ?: false
@@ -36,12 +31,20 @@ class StudentViewHolder(itemView: View, listener: OnItemClickListener?) :
 
     fun bind(student: Student?, position: Int) {
         this.student = student
-        nameTextView?.text = student?.name
-        idTextView?.text = student?.id
+        binding.studentRowNameTextView.text = student?.name
+        binding.studentRowIdTextView.text = student?.id
 
-        checkBox?.apply {
+        binding.studentRowCheckBox.apply {
             isChecked = student?.isChecked ?: false
             tag = position
+        }
+
+        student?.avatarUrl?.let { avatarUrl ->
+            val url = avatarUrl.ifBlank { return }
+            Picasso.get()
+                .load(url)
+                .placeholder(R.drawable.woman)
+                .into(binding.studentRowImageView)
         }
     }
 }

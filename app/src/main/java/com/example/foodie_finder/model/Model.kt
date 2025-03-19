@@ -1,6 +1,8 @@
 package com.example.foodie_finder.model
 
+import android.graphics.Bitmap
 import android.os.Looper
+import android.util.Log
 import androidx.core.os.HandlerCompat
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllStudentsCallback
@@ -12,10 +14,11 @@ import java.util.concurrent.Executors
 
 class Model private constructor() {
 
-    private val executor = Executors.newSingleThreadExecutor()
-    private val mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
-    private val database: AppLocalDbRepository = AppLocalDb.database
+    //    private val executor = Executors.newSingleThreadExecutor()
+//    private val mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
+//    private val database: AppLocalDbRepository = AppLocalDb.database
     private val firebaseModel = FirebaseModel()
+    private val cloudinaryModel = CloudinaryModel()
 
     companion object {
         val shared = Model()
@@ -23,63 +26,51 @@ class Model private constructor() {
 
     fun deleteStudent(student: Student, callback: EmptyCallback) {
         firebaseModel.delete(student, callback)
-
-//        executor.execute {
-//            database.studentDao().delete(student)
-//            Thread.sleep(1000)
-//            mainHandler.post {
-//                callback()
-//            }
-//        }
     }
 
-    fun addStudent(student: Student, callback: EmptyCallback) {
-        firebaseModel.add(student, callback)
+    fun addStudent(student: Student, profileImage: Bitmap?, callback: EmptyCallback) {
+        firebaseModel.add(student) {
+            profileImage?.let {
+                uploadImageToCloudinary(
+                    image = it,
+                    name = student.id,
+                    onSuccess = { url ->
+                        val st = student.copy(avatarUrl = url)
+                        firebaseModel.add(st, callback)
+                    },
+                    onError = { callback() }
+                )
 
-//        executor.execute {
-//            database.studentDao().addStudent(student)
-//            Thread.sleep(1000)
-//
-//            mainHandler.post {
-//                callback()
-//            }
-//        }
+            } ?: callback()
+        }
+
     }
 
     fun updateStudent(student: Student, callback: EmptyCallback) {
         firebaseModel.update(student, callback)
-
-        executor.execute {
-            database.studentDao().updateStudent(student)
-            Thread.sleep(1000)
-
-            mainHandler.post {
-                callback()
-            }
-        }
     }
 
     fun getStudentById(id: String, callback: GetStudentByIdCallback) {
         firebaseModel.getStudentById(id, callback)
-//        executor.execute {
-//            val student = database.studentDao().getStudentById(id)
-//            mainHandler.post {
-//                callback(student)
-//            }
-//        }
+
     }
 
 
     fun getAllStudents(callback: GetAllStudentsCallback) {
         firebaseModel.getAllStudents(callback)
+    }
 
-//        executor.execute {
-//            val students = database.studentDao().getAllStudents()
-//            Thread.sleep(1000)
-//
-//            mainHandler.post {
-//                callback(students)
-//            }
-//        }
+    private fun uploadImageToCloudinary(
+        image: Bitmap,
+        name: String?,
+        onSuccess: (String) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        cloudinaryModel.uploadBitmap(
+            bitmap = image,
+            name = name,
+            onSuccess = onSuccess,
+            onError = onError
+        )
     }
 }

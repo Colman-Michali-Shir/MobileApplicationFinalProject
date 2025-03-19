@@ -23,7 +23,12 @@ class StudentsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentStudentsListBinding.inflate(inflater, container, false)
-
+//        private var viewModel: StudentViewModel? = null
+//
+//        override fun onAttach(context: Context) {
+//            super.onAttach(context)
+//            viewModel = ViewModelProvider(this)[StudentsListViewModel::class.java]
+//        }
         binding?.recyclerView?.setHasFixedSize(true)
         adapter = StudentsRecyclerAdapter(students)
         val layoutManger = LinearLayoutManager(context)

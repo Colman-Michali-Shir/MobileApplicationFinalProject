@@ -20,24 +20,6 @@ class FirebaseModel {
         }
 
         database.firestoreSettings = setting
-
-//        val auth = Firebase.auth
-//
-////        auth.createUserWithEmailAndPassword("talzi@colman.ac.il", "supperStrong")
-//
-//        auth.currentUser?.uid?.let {
-//
-//            Log.i("TAG", auth.currentUser?.uid ?: "No use uuid")
-//
-//            val json = hashMapOf(
-//                "name" to "Tal",
-//                "email" to "talzi@colman.ac.il"
-//            )
-//            database.collection("users").document(it).set(json)
-//                .addOnCompleteListener {
-//                    Log.i("TAG", auth.currentUser?.uid + "Saved" ?: "No use uuid")
-//                }
-//        }
     }
 
     fun getAllStudents(callback: GetAllStudentsCallback) {

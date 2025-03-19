@@ -1,11 +1,17 @@
 package com.example.foodie_finder
 
+import android.app.AlertDialog
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
 import com.example.foodie_finder.databinding.FragmentNewStudentBinding
 import com.example.foodie_finder.dialogs.alert.showSuccessOperationDialog
@@ -19,6 +25,9 @@ import java.sql.Time
 
 class NewStudentFragment : Fragment() {
     private var binding: FragmentNewStudentBinding? = null
+    private var didSetProfileImage = false
+    private var cameraLauncher: ActivityResultLauncher<Void?>? = null
+    private var galleryLauncher: ActivityResultLauncher<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,13 +40,45 @@ class NewStudentFragment : Fragment() {
     ): View? {
         binding = FragmentNewStudentBinding.inflate(inflater, container, false)
 
-
         binding?.cancelButton?.setOnClickListener(::onCancelClicked)
         binding?.saveButton?.setOnClickListener(::onSaveClicked)
         binding?.studentInputForm?.birthDateEditText?.let { showDatePickerDialog(it, context) }
         binding?.studentInputForm?.birthTimeEditText?.let { showTimePickerDialog(it, context) }
+        
+        cameraLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+                if (bitmap != null) {
+                    binding?.studentInputForm?.studentImageView?.setImageBitmap(bitmap)
+                    didSetProfileImage = true
+                }
+            }
 
+        galleryLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+                uri?.let {
+                    binding?.studentInputForm?.studentImageView?.setImageURI(it)
+                    didSetProfileImage = true
+                }
+            }
+
+        binding?.studentInputForm?.addPhotoImageButton?.setOnClickListener {
+            showImageSourceChooser()
+        }
         return binding?.root
+
+    }
+
+    private fun showImageSourceChooser() {
+        val options = arrayOf("Take Photo", "Choose from Gallery")
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select Image Source")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> cameraLauncher?.launch(null)
+                    1 -> galleryLauncher?.launch("image/*")
+                }
+            }.show()
     }
 
     private fun onSaveClicked(view: View) {
@@ -58,12 +99,25 @@ class NewStudentFragment : Fragment() {
         )
 
         binding?.progressBar?.visibility = View.VISIBLE
-
-        Model.shared.addStudent(newStudent) {
-            binding?.progressBar?.visibility = View.GONE
-            Navigation.findNavController(view).popBackStack()
-            context?.let {
-                showSuccessOperationDialog(it, "add")
+        if (didSetProfileImage) {
+            binding?.studentInputForm?.studentImageView?.isDrawingCacheEnabled = true
+            binding?.studentInputForm?.studentImageView?.buildDrawingCache()
+            val bitmap =
+                (binding?.studentInputForm?.studentImageView?.drawable as BitmapDrawable).bitmap
+            Model.shared.addStudent(newStudent, bitmap) {
+                binding?.progressBar?.visibility = View.GONE
+                Navigation.findNavController(view).popBackStack()
+                context?.let {
+                    showSuccessOperationDialog(it, "add")
+                }
+            }
+        } else {
+            Model.shared.addStudent(newStudent, null) {
+                binding?.progressBar?.visibility = View.GONE
+                Navigation.findNavController(view).popBackStack()
+                context?.let {
+                    showSuccessOperationDialog(it, "add")
+                }
             }
         }
     }
