@@ -19,6 +19,10 @@ dependencyResolutionManagement {
     }
 }
 
+<<<<<<< HEAD
 rootProject.name = "Foodie-Finder"
+=======
+rootProject.name = "Mobile-Application-Course"
+>>>>>>> main
 include(":app")
  

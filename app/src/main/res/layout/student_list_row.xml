@@ -10,8 +10,13 @@
         android:id="@+id/student_row_image_view"
         android:layout_width="100dp"
         android:layout_height="100dp"
+<<<<<<< HEAD
         android:layout_marginTop="4dp"
         android:scaleType="fitCenter"
+=======
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+>>>>>>> main
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

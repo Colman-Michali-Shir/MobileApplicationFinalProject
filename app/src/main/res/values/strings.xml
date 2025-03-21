@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">Foodie-Finder</string>
+=======
+    <string name="app_name">Mobile-Application-Course</string>
+>>>>>>> main
 </resources>
