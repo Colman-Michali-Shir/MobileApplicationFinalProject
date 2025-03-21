@@ -11,11 +11,7 @@
         layout="@layout/student_input_form" />
 
     <Button
-<<<<<<< HEAD
         android:id="@+id/cancelButton"
-=======
-        android:id="@+id/edit_student_fragment_cancel_button"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -25,24 +21,15 @@
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-<<<<<<< HEAD
         app:layout_constraintEnd_toStartOf="@+id/deleteButton"
         app:layout_constraintHorizontal_bias="0.5" />
 
     <Button
         android:id="@+id/deleteButton"
-=======
-        app:layout_constraintEnd_toStartOf="@+id/edit_student_fragment_delete_button"
-        app:layout_constraintHorizontal_bias="0.5" />
-
-    <Button
-        android:id="@+id/edit_student_fragment_delete_button"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="4dp"
-<<<<<<< HEAD
         app:layout_constraintBaseline_toBaselineOf="@+id/cancelButton"
         android:backgroundTint="#2196F3"
         android:text="Delete"
@@ -52,34 +39,15 @@
 
     <Button
         android:id="@+id/saveButton"
-=======
-        app:layout_constraintBaseline_toBaselineOf="@+id/edit_student_fragment_cancel_button"
-        android:backgroundTint="#2196F3"
-        android:text="Delete"
-        app:layout_constraintEnd_toStartOf="@+id/edit_student_fragment_save_button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/edit_student_fragment_cancel_button" />
-
-    <Button
-        android:id="@+id/edit_student_fragment_save_button"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
-<<<<<<< HEAD
         app:layout_constraintBaseline_toBaselineOf="@+id/deleteButton"
-=======
-        app:layout_constraintBaseline_toBaselineOf="@+id/edit_student_fragment_delete_button"
->>>>>>> main
         android:backgroundTint="#2196F3"
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-<<<<<<< HEAD
         app:layout_constraintStart_toEndOf="@+id/deleteButton" />
-=======
-        app:layout_constraintStart_toEndOf="@+id/edit_student_fragment_delete_button" />
->>>>>>> main
 
 </androidx.constraintlayout.widget.ConstraintLayout>

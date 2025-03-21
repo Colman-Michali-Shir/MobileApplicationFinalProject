@@ -7,12 +7,8 @@
     android:layout_height="match_parent">
 
     <ImageView
-<<<<<<< HEAD
         android:scaleType="fitCenter"
         android:id="@+id/studentImageView"
-=======
-        android:id="@+id/student_image_view"
->>>>>>> main
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="8dp"
@@ -21,7 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/woman" />
 
-<<<<<<< HEAD
     <ImageButton
         android:id="@+id/addPhotoImageButton"
         android:layout_width="wrap_content"
@@ -33,8 +28,6 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
 
-=======
->>>>>>> main
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -43,17 +36,10 @@
         android:layout_marginTop="30dp"
         android:text="Name:"
         app:layout_constraintStart_toStartOf="parent"
-<<<<<<< HEAD
         app:layout_constraintTop_toBottomOf="@+id/studentImageView" />
 
     <EditText
         android:id="@+id/nameEditText"
-=======
-        app:layout_constraintTop_toBottomOf="@+id/student_image_view" />
-
-    <EditText
-        android:id="@+id/student_name_edit_text"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -74,11 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
-<<<<<<< HEAD
         android:id="@+id/idEditText"
-=======
-        android:id="@+id/student_id_edit_text"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -99,11 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <EditText
-<<<<<<< HEAD
         android:id="@+id/phoneEditText"
-=======
-        android:id="@+id/student_phone_edit_text"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -124,11 +102,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
-<<<<<<< HEAD
         android:id="@+id/addressEditText"
-=======
-        android:id="@+id/student_address_edit_text"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -140,11 +114,7 @@
         app:layout_constraintStart_toEndOf="@+id/textView4" />
 
     <CheckBox
-<<<<<<< HEAD
         android:id="@+id/checkBox"
-=======
-        android:id="@+id/student_check_box"
->>>>>>> main
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -158,13 +128,8 @@
         android:layout_marginStart="2dp"
         android:ems="10"
         android:text="Checked"
-<<<<<<< HEAD
         app:layout_constraintBaseline_toBaselineOf="@+id/checkBox"
         app:layout_constraintStart_toEndOf="@+id/checkBox" />
-=======
-        app:layout_constraintBaseline_toBaselineOf="@+id/student_check_box"
-        app:layout_constraintStart_toEndOf="@+id/student_check_box" />
->>>>>>> main
 
 
     <TextView
@@ -173,19 +138,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Birth date:"
-<<<<<<< HEAD
         app:layout_constraintStart_toStartOf="@+id/checkBox"
         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
     <EditText
         android:id="@+id/birthDateEditText"
-=======
-        app:layout_constraintStart_toStartOf="@+id/student_check_box"
-        app:layout_constraintTop_toBottomOf="@+id/student_check_box" />
-
-    <EditText
-        android:id="@+id/student_birth_date_edit_text"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -207,11 +164,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
-<<<<<<< HEAD
         android:id="@+id/birthTimeEditText"
-=======
-        android:id="@+id/student_birth_time_edit_text"
->>>>>>> main
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
