@@ -4,12 +4,12 @@ import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.R
 import com.example.foodie_finder.interfaces.OnItemClickListener
-import com.example.foodie_finder.databinding.StudentListRowBinding
+import com.example.foodie_finder.databinding.PostListRowBinding
 import com.example.foodie_finder.model.Student
 import com.squareup.picasso.Picasso
 
 class StudentViewHolder(
-    private val binding: StudentListRowBinding, listener: OnItemClickListener?
+    private val binding: PostListRowBinding, listener: OnItemClickListener?
 ) :
     RecyclerView.ViewHolder(binding.root) {
 

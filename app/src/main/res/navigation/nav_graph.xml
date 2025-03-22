@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/studentsListFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_studentsListFragment"
-            app:destination="@id/studentsListFragment" />
+            app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
@@ -25,59 +25,78 @@
         tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_registerFragment_to_studentsListFragment"
-            app:destination="@id/studentsListFragment" />
+            app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/studentsListFragment"
-        android:name="com.example.foodie_finder.StudentsListFragment"
-        android:label="Students List"
-        tools:layout="@layout/fragment_students_list">
+        android:id="@+id/homeFragment"
+        android:name="com.example.foodie_finder.HomeFragment"
+        tools:layout="@layout/fragment_posts_list">
         <action
             android:id="@+id/action_studentsListFragment_to_studentDetailsFragment"
+            app:destination="@id/postDetailsFragment" />
             app:destination="@id/studentDetailsFragment" />
         <action
             android:id="@+id/action_studentsListFragment_to_newStudentFragment"
-            app:destination="@id/newStudentFragment" />
+            app:destination="@id/newPostFragment" />
 
         <action
             android:id="@+id/action_studentsListFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/newStudentFragment"
-        android:name="com.example.foodie_finder.NewStudentFragment"
-        android:label="Add Student"
-        tools:layout="@layout/fragment_new_student" />
     <action
-        android:id="@+id/action_global_newStudentFragment"
-        app:destination="@id/newStudentFragment" />
+        android:id="@+id/action_global_newPostFragment"
+        app:destination="@id/newPostFragment" />
 
     <fragment
-        android:id="@+id/studentDetailsFragment"
-        android:name="com.example.foodie_finder.StudentDetailsFragment"
-        android:label="Student Details"
-        tools:layout="@layout/fragment_student_details">
+        android:id="@+id/postDetailsFragment"
+        android:name="com.example.foodie_finder.PostDetailsFragment"
+        android:label="Post Details"
+        tools:layout="@layout/fragment_post_details">
         <argument
             android:name="id"
             app:argType="string" />
         <action
-            android:id="@+id/action_studentDetailsFragment_to_editStudentFragment"
-            app:destination="@id/editStudentFragment" />
+            android:id="@+id/action_postDetailsFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/editStudentFragment"
-        android:name="com.example.foodie_finder.EditStudentFragment"
+        android:id="@+id/editPostFragment"
+        android:name="com.example.foodie_finder.EditPostFragment"
         android:label="Edit Student"
-        tools:layout="@layout/fragment_edit_student">
+        tools:layout="@layout/fragment_edit_post">
         <argument
             android:name="id"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/newPostFragment"
+        android:name="com.example.foodie_finder.NewPostFragment"
+        android:label="Add Student"
+        tools:layout="@layout/fragment_new_post" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.foodie_finder.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search"/>
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.foodie_finder.ProfileFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_profile"/>
+
+    <fragment
+        android:id="@+id/savedPostsFragment"
+        android:name="com.example.foodie_finder.SavedPostsFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_saved_posts"/>
 
 </navigation>
