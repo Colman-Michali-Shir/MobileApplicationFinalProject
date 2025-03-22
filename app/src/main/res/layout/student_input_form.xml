@@ -7,7 +7,8 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/student_image_view"
+        android:scaleType="fitCenter"
+        android:id="@+id/studentImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="8dp"
@@ -15,6 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/woman" />
+
+    <ImageButton
+        android:id="@+id/addPhotoImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/add_photo"
+        app:layout_constraintBottom_toBottomOf="@+id/studentImageView"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
     <TextView
         android:id="@+id/textView"
@@ -24,10 +36,10 @@
         android:layout_marginTop="30dp"
         android:text="Name:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/student_image_view" />
+        app:layout_constraintTop_toBottomOf="@+id/studentImageView" />
 
     <EditText
-        android:id="@+id/student_name_edit_text"
+        android:id="@+id/nameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -48,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
-        android:id="@+id/student_id_edit_text"
+        android:id="@+id/idEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -69,7 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <EditText
-        android:id="@+id/student_phone_edit_text"
+        android:id="@+id/phoneEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -90,7 +102,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
-        android:id="@+id/student_address_edit_text"
+        android:id="@+id/addressEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -102,7 +114,7 @@
         app:layout_constraintStart_toEndOf="@+id/textView4" />
 
     <CheckBox
-        android:id="@+id/student_check_box"
+        android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -116,8 +128,8 @@
         android:layout_marginStart="2dp"
         android:ems="10"
         android:text="Checked"
-        app:layout_constraintBaseline_toBaselineOf="@+id/student_check_box"
-        app:layout_constraintStart_toEndOf="@+id/student_check_box" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/checkBox"
+        app:layout_constraintStart_toEndOf="@+id/checkBox" />
 
 
     <TextView
@@ -126,11 +138,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Birth date:"
-        app:layout_constraintStart_toStartOf="@+id/student_check_box"
-        app:layout_constraintTop_toBottomOf="@+id/student_check_box" />
+        app:layout_constraintStart_toStartOf="@+id/checkBox"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
     <EditText
-        android:id="@+id/student_birth_date_edit_text"
+        android:id="@+id/birthDateEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -152,7 +164,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
-        android:id="@+id/student_birth_time_edit_text"
+        android:id="@+id/birthTimeEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"

@@ -2,20 +2,40 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.navigation.safeargs)
+    id("kotlin-kapt")
+    alias(libs.plugins.google.services)
+
 }
 
 android {
-    namespace = "com.example.mobile_application_course"
+    namespace = "com.example.foodie_finder"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.mobile_application_course"
+        applicationId = "com.example.foodie_finder"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "CLOUDINARY_CLOUD_NAME",
+            "\"${project.properties["CLOUDINARY_CLOUD_NAME"] ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "CLOUDINARY_API_KEY",
+            "\"${project.properties["CLOUDINARY_API_KEY"] ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "CLOUDINARY_API_SECRET",
+            "\"${project.properties["CLOUDINARY_API_SECRET"] ?: ""}\""
+        )
+
     }
 
     buildTypes {
@@ -34,10 +54,18 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+
 }
 
 dependencies {
 
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -49,4 +77,9 @@ dependencies {
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+    implementation(libs.picasso)
+    implementation(libs.cloudinary.android)
 }
