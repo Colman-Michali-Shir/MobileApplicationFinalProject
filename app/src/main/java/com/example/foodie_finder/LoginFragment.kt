@@ -78,7 +78,6 @@ class LoginFragment : Fragment() {
                     }
                 }
 
-                // Show toast if no specific error fields
                 if (errorFields.isNullOrEmpty()) {
                     Toast.makeText(
                         requireContext(),

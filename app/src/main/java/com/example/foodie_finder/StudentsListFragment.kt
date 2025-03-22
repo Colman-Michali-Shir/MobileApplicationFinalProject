@@ -68,25 +68,6 @@ class StudentsListFragment : Fragment() {
         }
     }
 
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.newStudentFragment -> {
-//                val action = StudentsListFragmentDirections
-//                    .actionStudentsListFragmentToNewStudentFragment()
-//                findNavController().navigate(action)
-//                true
-//            }
-//
-//            R.id.logout -> {
-//                Model.shared.signOut()
-//                findNavController().popBackStack(R.id.loginFragment, false)
-//                true
-//            }
-//
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
-
     override fun onResume() {
         super.onResume()
         getAllStudents()
