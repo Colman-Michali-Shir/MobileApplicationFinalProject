@@ -71,14 +71,15 @@ class LoginFragment : Fragment() {
                     LoginFragmentDirections.actionLoginFragmentToStudentsListFragment()
                 binding?.root?.let { Navigation.findNavController(it).navigate(action) }
             } else {
-                errorFields?.takeIf { it.isNotEmpty() }?.let {
-                    if (it.contains("password")) {
-                        binding?.passwordInputLayout?.error = message
+                errorFields?.forEach { field ->
+                    when (field) {
+                        "password" -> binding?.passwordInputLayout?.error = message
+                        "email" -> binding?.emailInputLayout?.error = message
                     }
-                    if (it.contains("email")) {
-                        binding?.emailInputLayout?.error = message
-                    }
-                } ?: run {
+                }
+
+                // Show toast if no specific error fields
+                if (errorFields.isNullOrEmpty()) {
                     Toast.makeText(
                         requireContext(),
                         message ?: "Login failed",
