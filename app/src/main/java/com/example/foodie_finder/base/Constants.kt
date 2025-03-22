@@ -12,5 +12,7 @@ object Constants {
 
     object COLLECTIONS {
         const val STUDENTS = "students"
+        const val USERS = "users"
+
     }
 }

@@ -76,9 +76,34 @@ class FirebaseModel {
             }
     }
 
+    fun updateUser(user: User, callback: (Boolean) -> Unit) {
+        database.collection(Constants.COLLECTIONS.USERS).document(user.id)
+            .update(user.json)
+            .addOnCompleteListener {
+                callback(true)
+            }.addOnFailureListener {
+                callback(false)
+            }
+    }
+
     fun isUserLoggedIn(): Boolean {
         return auth.currentUser != null
     }
+
+    fun getUser(callback: (User?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(null)
+
+        database.collection(Constants.COLLECTIONS.USERS).document(userId)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful && task.result.exists()) {
+                    callback(User.fromJSON(task.result.data ?: emptyMap()))
+                } else {
+                    callback(null)
+                }
+            }
+    }
+
 
     fun signIn(
         email: String,
@@ -118,7 +143,7 @@ class FirebaseModel {
                         lastName = lastName,
                         avatarUrl = null,
                     )
-                    database.collection("users").document(userId)
+                    database.collection(Constants.COLLECTIONS.USERS).document(userId)
                         .set(user.json)
                         .addOnSuccessListener {
                             callback(true, "User registered successfully", null)
@@ -126,6 +151,7 @@ class FirebaseModel {
                         .addOnFailureListener { e ->
                             callback(false, "Failed to save user data: ${e.message}", null)
                         }
+
                 } else {
                     handleFirebaseError(callback, task.exception?.message)
                 }

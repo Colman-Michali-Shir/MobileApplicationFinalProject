@@ -38,7 +38,6 @@
         <action
             android:id="@+id/action_studentsListFragment_to_studentDetailsFragment"
             app:destination="@id/postDetailsFragment" />
-            app:destination="@id/studentDetailsFragment" />
         <action
             android:id="@+id/action_studentsListFragment_to_newStudentFragment"
             app:destination="@id/newPostFragment" />
@@ -85,18 +84,18 @@
         android:id="@+id/searchFragment"
         android:name="com.example.foodie_finder.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search"/>
+        tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.foodie_finder.ProfileFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/savedPostsFragment"
         android:name="com.example.foodie_finder.SavedPostsFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_saved_posts"/>
+        tools:layout="@layout/fragment_saved_posts" />
 
 </navigation>

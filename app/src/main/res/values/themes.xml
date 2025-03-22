@@ -1,4 +1,5 @@
 <resources>
+
     <style name="Theme.FoodieFinder" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
@@ -50,6 +51,7 @@
         <item name="colorOnCustomColor1">@color/colorOnCustomColor1</item>
         <item name="colorCustomColor1Container">@color/colorCustomColor1Container</item>
         <item name="colorOnCustomColor1Container">@color/colorOnCustomColor1Container</item>
+
     </style>
 
 </resources>
