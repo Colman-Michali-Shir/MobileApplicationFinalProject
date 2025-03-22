@@ -2,6 +2,7 @@ package com.example.foodie_finder
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -13,16 +14,22 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.example.foodie_finder.databinding.ActivityMainBinding
+import com.example.foodie_finder.model.Model
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private var navController: NavController? = null
+    private var binding: ActivityMainBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding?.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -38,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment: NavHostFragment? =
             supportFragmentManager.findFragmentById(R.id.main_nav_host) as? NavHostFragment
+
         navController = navHostFragment?.navController
         navController?.let {
             NavigationUI.setupActionBarWithNavController(
@@ -53,22 +61,9 @@ class MainActivity : AppCompatActivity() {
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }}
 
-//        val db = Firebase.firestore
-//
-//        val user = hashMapOf(
-//            "first" to "Ada",
-//            "last" to "Lovelace",
-//            "born" to 1815,
-//        )
-//
-//        db.collection("users")
-//            .add(user)
-//            .addOnSuccessListener { documentReference ->
-//                Log.d("TAG", "DocumentSnapshot added with ID: ${documentReference.id}")
-//            }
-//            .addOnFailureListener { e ->
-//                Log.w("TAG", "Error adding document", e)
-//            }
+        if (!Model.shared.isUserLoggedIn()) {
+            navController?.navigate(R.id.loginFragment)
+        }
     }
 
 
@@ -81,11 +76,17 @@ class MainActivity : AppCompatActivity() {
 
         when (currentDestination?.id) {
             R.id.homeFragment -> {
-                menuInflater.inflate(R.menu.menu_new_student, menu)
+                menu?.clear()
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                menuInflater.inflate(R.menu.menu, menu)
             }
 
             R.id.postDetailsFragment -> {
                 menuInflater.inflate(R.menu.menu_edit_student, menu)
+            }
+
+            R.id.loginFragment -> {
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
             }
 
             else -> {
@@ -106,6 +107,14 @@ class MainActivity : AppCompatActivity() {
             R.id.newPostFragment -> {
                 val action =
                     PostDetailsFragmentDirections.actionGlobalNewPostFragment()
+                navController?.navigate(action)
+                true
+            }
+
+            R.id.logout -> {
+                Model.shared.signOut()
+                val action =
+                    HomeFragmentDirections.actionStudentsListFragmentToLoginFragment()
                 navController?.navigate(action)
                 true
             }

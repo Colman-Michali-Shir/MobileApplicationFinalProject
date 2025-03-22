@@ -1,15 +1,9 @@
 package com.example.foodie_finder.model
 
 import android.graphics.Bitmap
-import android.os.Looper
-import android.util.Log
-import androidx.core.os.HandlerCompat
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
-import com.example.foodie_finder.model.dao.AppLocalDb
-import com.example.foodie_finder.model.dao.AppLocalDbRepository
-import java.util.concurrent.Executors
 
 
 class Model private constructor() {
@@ -52,12 +46,19 @@ class Model private constructor() {
 
     fun getStudentById(id: String, callback: GetStudentByIdCallback) {
         firebaseModel.getStudentById(id, callback)
-
     }
 
 
     fun getAllStudents(callback: GetAllStudentsCallback) {
         firebaseModel.getAllStudents(callback)
+    }
+
+    fun signOut() {
+        firebaseModel.signOut()
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return firebaseModel.isUserLoggedIn()
     }
 
     private fun uploadImageToCloudinary(
@@ -72,5 +73,23 @@ class Model private constructor() {
             onSuccess = onSuccess,
             onError = onError
         )
+    }
+
+    fun signIn(
+        email: String,
+        password: String,
+        callback: (Boolean, String?, List<String>?) -> Unit
+    ) {
+        firebaseModel.signIn(email, password, callback)
+    }
+
+    fun signUp(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String,
+        callback: (Boolean, String?, List<String>?) -> Unit
+    ) {
+        firebaseModel.signUp(firstName, lastName, email, password, callback)
     }
 }
