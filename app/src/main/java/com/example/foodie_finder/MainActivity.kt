@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             R.id.homeFragment -> {
                 menu?.clear()
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                menuInflater.inflate(R.menu.menu, menu)
+                menuInflater.inflate(R.menu.home_menu, menu)
             }
 
             R.id.postDetailsFragment -> {
