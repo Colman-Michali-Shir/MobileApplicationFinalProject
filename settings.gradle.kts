@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mobile-Application-Course"
+rootProject.name = "Foddie-Finder"
 include(":app")
  

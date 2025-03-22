@@ -8,10 +8,10 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.cloudinary.android.policy.GlobalUploadPolicy
 import com.cloudinary.android.policy.UploadPolicy
+import com.example.foodie_finder.BuildConfig
 import com.example.foodie_finder.base.MyApplication
 import java.io.File
 import java.io.FileOutputStream
-import com.example.foodie_finder.BuildConfig
 
 class CloudinaryModel {
 
@@ -61,7 +61,7 @@ class CloudinaryModel {
                 override fun onSuccess(requestId: String, resultData: Map<*, *>) {
                     Log.d("TAG", "success")
                     val publicUrl = resultData["secure_url"] as? String ?: ""
-                    onSuccess(publicUrl) // Return the URL of the uploaded image
+                    onSuccess(publicUrl)
                 }
 
                 override fun onError(requestId: String?, error: ErrorInfo?) {

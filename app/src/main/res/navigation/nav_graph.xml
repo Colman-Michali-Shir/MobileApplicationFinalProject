@@ -6,6 +6,32 @@
     app:startDestination="@id/studentsListFragment">
 
     <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.foodie_finder.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_studentsListFragment"
+            app:destination="@id/studentsListFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.foodie_finder.RegisterFragment"
+        android:label="Register"
+        tools:layout="@layout/fragment_register">
+        <action
+            android:id="@+id/action_registerFragment_to_studentsListFragment"
+            app:destination="@id/studentsListFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/studentsListFragment"
         android:name="com.example.foodie_finder.StudentsListFragment"
         android:label="Students List"
@@ -13,7 +39,15 @@
         <action
             android:id="@+id/action_studentsListFragment_to_studentDetailsFragment"
             app:destination="@id/studentDetailsFragment" />
+        <action
+            android:id="@+id/action_studentsListFragment_to_newStudentFragment"
+            app:destination="@id/newStudentFragment" />
+
+        <action
+            android:id="@+id/action_studentsListFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/newStudentFragment"
         android:name="com.example.foodie_finder.NewStudentFragment"
@@ -22,6 +56,7 @@
     <action
         android:id="@+id/action_global_newStudentFragment"
         app:destination="@id/newStudentFragment" />
+
     <fragment
         android:id="@+id/studentDetailsFragment"
         android:name="com.example.foodie_finder.StudentDetailsFragment"
@@ -34,6 +69,7 @@
             android:id="@+id/action_studentDetailsFragment_to_editStudentFragment"
             app:destination="@id/editStudentFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/editStudentFragment"
         android:name="com.example.foodie_finder.EditStudentFragment"
@@ -43,4 +79,5 @@
             android:name="id"
             app:argType="string" />
     </fragment>
+
 </navigation>

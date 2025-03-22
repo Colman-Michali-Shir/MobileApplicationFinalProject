@@ -1,17 +1,17 @@
 package com.example.foodie_finder
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodie_finder.adapter.StudentsRecyclerAdapter
+import com.example.foodie_finder.databinding.FragmentStudentsListBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.model.Model
 import com.example.foodie_finder.model.Student
-import com.example.foodie_finder.adapter.StudentsRecyclerAdapter
-import com.example.foodie_finder.databinding.FragmentStudentsListBinding
 
 class StudentsListFragment : Fragment() {
     private var students: List<Student>? = null
@@ -22,6 +22,7 @@ class StudentsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = FragmentStudentsListBinding.inflate(inflater, container, false)
 //        private var viewModel: StudentViewModel? = null
 //
@@ -50,8 +51,12 @@ class StudentsListFragment : Fragment() {
         return binding?.root
     }
 
-    private fun getAllStudents() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
+    private fun getAllStudents() {
         binding?.progressBar?.visibility = View.VISIBLE
 
         Model.shared.getAllStudents {
