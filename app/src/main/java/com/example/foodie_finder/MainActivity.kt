@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             R.id.studentsListFragment -> {
                 menu?.clear()
                 supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                menuInflater.inflate(R.menu.menu, menu)
+                menuInflater.inflate(R.menu.home_menu, menu)
             }
 
             R.id.studentDetailsFragment -> {

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class User(
-    @PrimaryKey var id: String? = null,
+    @PrimaryKey var id: String,
     var email: String,
     var firstName: String?,
     var lastName: String?,
@@ -21,7 +21,8 @@ data class User(
 
         fun fromJSON(json: Map<String, Any>): User {
             return User(
-                id = json[ID_KEY] as? String,
+                id = json[ID_KEY] as? String
+                    ?: throw IllegalArgumentException("ID is required"),
                 email = json[EMAIL_KEY] as? String
                     ?: throw IllegalArgumentException("Email is required"),
                 firstName = json[FIRST_NAME_KEY] as? String,

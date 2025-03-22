@@ -112,10 +112,11 @@ class FirebaseModel {
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
                     val user = User(
+                        id = userId,
                         email = email,
                         firstName = firstName,
                         lastName = lastName,
-                        avatarUrl = null
+                        avatarUrl = null,
                     )
                     database.collection("users").document(userId)
                         .set(user.json)
