@@ -10,19 +10,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.model.Model
 import com.example.foodie_finder.model.Student
-import com.example.foodie_finder.adapter.StudentsRecyclerAdapter
-import com.example.foodie_finder.databinding.FragmentStudentsListBinding
+import com.example.foodie_finder.adapter.PostsRecyclerAdapter
+import com.example.foodie_finder.databinding.FragmentPostsListBinding
 
-class StudentsListFragment : Fragment() {
+class HomeFragment : Fragment() {
     private var students: List<Student>? = null
-    private var adapter: StudentsRecyclerAdapter? = null
-    private var binding: FragmentStudentsListBinding? = null
+    private var adapter: PostsRecyclerAdapter? = null
+    private var binding: FragmentPostsListBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentStudentsListBinding.inflate(inflater, container, false)
+        binding = FragmentPostsListBinding.inflate(inflater, container, false)
 //        private var viewModel: StudentViewModel? = null
 //
 //        override fun onAttach(context: Context) {
@@ -30,7 +30,7 @@ class StudentsListFragment : Fragment() {
 //            viewModel = ViewModelProvider(this)[StudentsListViewModel::class.java]
 //        }
         binding?.recyclerView?.setHasFixedSize(true)
-        adapter = StudentsRecyclerAdapter(students)
+        adapter = PostsRecyclerAdapter(students)
         val layoutManger = LinearLayoutManager(context)
         binding?.recyclerView?.layoutManager = layoutManger
 
@@ -38,7 +38,7 @@ class StudentsListFragment : Fragment() {
         adapter?.listener = object : OnItemClickListener {
             override fun onItemClick(id: String) {
                 val action =
-                    StudentsListFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
+                    HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
                         id
                     )
                 binding?.root?.let { Navigation.findNavController(it).navigate(action) }

@@ -1,13 +1,12 @@
 package com.example.foodie_finder
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
-import com.example.foodie_finder.databinding.FragmentEditStudentBinding
+import com.example.foodie_finder.databinding.FragmentEditPostBinding
 import com.example.foodie_finder.dialogs.alert.showSuccessOperationDialog
 import com.example.foodie_finder.model.Model
 import com.example.foodie_finder.model.Student
@@ -16,17 +15,17 @@ import com.example.foodie_finder.dialogs.pickers.showTimePickerDialog
 import com.example.foodie_finder.utils.DateTimeUtils
 import java.sql.Time
 
-class EditStudentFragment : Fragment() {
+class EditPostFragment : Fragment() {
     private var student: Student? = null
     private var id: String = ""
 
-    private var binding: FragmentEditStudentBinding? = null
+    private var binding: FragmentEditPostBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         id = arguments?.let {
-            EditStudentFragmentArgs.fromBundle(it).id
+            EditPostFragmentArgs.fromBundle(it).id
         } ?: ""
     }
 
@@ -34,7 +33,7 @@ class EditStudentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentEditStudentBinding.inflate(inflater, container, false)
+        binding = FragmentEditPostBinding.inflate(inflater, container, false)
 
         setUp()
         binding?.cancelButton?.setOnClickListener(::onCancelClicked)
@@ -113,7 +112,7 @@ class EditStudentFragment : Fragment() {
         student?.let {
             Model.shared.deleteStudent(it) {
                 Navigation.findNavController(view).popBackStack(
-                    R.id.studentsListFragment,
+                    R.id.homeFragment,
                     false
                 )
             }

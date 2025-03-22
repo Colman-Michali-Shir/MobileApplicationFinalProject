@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
-import com.example.foodie_finder.databinding.FragmentNewStudentBinding
+import com.example.foodie_finder.databinding.FragmentNewPostBinding
 import com.example.foodie_finder.dialogs.alert.showSuccessOperationDialog
 import com.example.foodie_finder.model.Model
 import com.example.foodie_finder.model.Student
@@ -23,8 +23,8 @@ import com.example.foodie_finder.utils.DateTimeUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import java.sql.Time
 
-class NewStudentFragment : Fragment() {
-    private var binding: FragmentNewStudentBinding? = null
+class NewPostFragment : Fragment() {
+    private var binding: FragmentNewPostBinding? = null
     private var didSetProfileImage = false
     private var cameraLauncher: ActivityResultLauncher<Void?>? = null
     private var galleryLauncher: ActivityResultLauncher<String>? = null
@@ -38,7 +38,7 @@ class NewStudentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentNewStudentBinding.inflate(inflater, container, false)
+        binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
         binding?.cancelButton?.setOnClickListener(::onCancelClicked)
         binding?.saveButton?.setOnClickListener(::onSaveClicked)

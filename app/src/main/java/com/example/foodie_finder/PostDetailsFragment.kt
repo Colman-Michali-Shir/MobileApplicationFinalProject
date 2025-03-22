@@ -7,24 +7,24 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.example.foodie_finder.databinding.FragmentStudentDetailsBinding
+import com.example.foodie_finder.databinding.FragmentPostDetailsBinding
 import com.example.foodie_finder.model.Model
 import com.example.foodie_finder.model.Student
 import com.example.foodie_finder.utils.DateTimeUtils
 
-class StudentDetailsFragment : Fragment() {
+class PostDetailsFragment : Fragment() {
 
     private var student: Student? = null
     private var currentId: String = ""
 
-    private var binding: FragmentStudentDetailsBinding? = null
+    private var binding: FragmentPostDetailsBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
         currentId = arguments?.let {
-            StudentDetailsFragmentArgs.fromBundle(it).id
+            PostDetailsFragmentArgs.fromBundle(it).id
         } ?: ""
     }
 
@@ -32,7 +32,7 @@ class StudentDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentStudentDetailsBinding.inflate(inflater, container, false)
+        binding = FragmentPostDetailsBinding.inflate(inflater, container, false)
 
         setUp()
 
@@ -41,9 +41,9 @@ class StudentDetailsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.editStudentFragment -> {
-                val action = StudentDetailsFragmentDirections
-                    .actionStudentDetailsFragmentToEditStudentFragment(currentId)
+            R.id.editPostFragment -> {
+                val action = PostDetailsFragmentDirections
+                    .actionPostDetailsFragmentToEditPostFragment(currentId)
                 findNavController().navigate(action)
                 true
             }

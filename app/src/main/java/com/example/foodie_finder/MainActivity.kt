@@ -2,9 +2,9 @@ package com.example.foodie_finder
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -13,8 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,7 +30,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val toolBar: Toolbar = findViewById(R.id.main_toolbar)
+        val toolbarTitle: TextView = findViewById(R.id.toolbar_title)
         setSupportActionBar(toolBar)
+
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        toolbarTitle.text = getString(R.string.app_name)
 
         val navHostFragment: NavHostFragment? =
             supportFragmentManager.findFragmentById(R.id.main_nav_host) as? NavHostFragment
@@ -42,6 +45,13 @@ class MainActivity : AppCompatActivity() {
                 navController = it,
             )
         }
+
+        val bottomNavigationView: BottomNavigationView = findViewById(R.id.main_bottom_nav)
+        navController?.let { NavigationUI.setupWithNavController(bottomNavigationView, it) }
+
+        navController?.let {it.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        }}
 
 //        val db = Firebase.firestore
 //
@@ -70,11 +80,11 @@ class MainActivity : AppCompatActivity() {
         val currentDestination = navController?.currentDestination
 
         when (currentDestination?.id) {
-            R.id.studentsListFragment -> {
+            R.id.homeFragment -> {
                 menuInflater.inflate(R.menu.menu_new_student, menu)
             }
 
-            R.id.studentDetailsFragment -> {
+            R.id.postDetailsFragment -> {
                 menuInflater.inflate(R.menu.menu_edit_student, menu)
             }
 
@@ -93,9 +103,9 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
-            R.id.newStudentFragment -> {
+            R.id.newPostFragment -> {
                 val action =
-                    StudentsListFragmentDirections.actionGlobalNewStudentFragment()
+                    PostDetailsFragmentDirections.actionGlobalNewPostFragment()
                 navController?.navigate(action)
                 true
             }
