@@ -9,7 +9,9 @@ data class User(
     var email: String,
     var firstName: String?,
     var lastName: String?,
-) {
+    var avatarUrl: String?,
+
+    ) {
     companion object {
         private const val ID_KEY = "id"
         private const val EMAIL_KEY = "email"
@@ -24,6 +26,7 @@ data class User(
                     ?: throw IllegalArgumentException("Email is required"),
                 firstName = json[FIRST_NAME_KEY] as? String,
                 lastName = json[LAST_NAME_KEY] as? String,
+                avatarUrl = json[AVATAR_URL_KEY] as? String
             )
         }
     }
@@ -35,6 +38,7 @@ data class User(
                 ID_KEY to id,
                 FIRST_NAME_KEY to firstName,
                 LAST_NAME_KEY to lastName,
+                AVATAR_URL_KEY to avatarUrl
             )
         }
 }

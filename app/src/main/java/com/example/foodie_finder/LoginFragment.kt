@@ -26,36 +26,10 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding?.loginButton?.setOnClickListener {
-            val email = binding?.emailEditText?.text.toString().trim()
-            val password = binding?.passwordEditText?.text.toString().trim()
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Email and password are required",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                return@setOnClickListener
-            }
-
-            Model.shared.signIn(email, password) { success, message ->
-                if (success) {
-                    Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show()
-                    val action =
-                        LoginFragmentDirections.actionLoginFragmentToStudentsListFragment()
-                    binding?.root?.let { Navigation.findNavController(it).navigate(action) }
-                } else {
-                    Toast.makeText(requireContext(), message ?: "Login failed", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
+            loginAction()
         }
 
         binding?.registerButton?.setOnClickListener {
-            // Navigate to RegisterFragment
-            Toast.makeText(requireContext(), "Register", Toast.LENGTH_SHORT).show()
-
             val action =
                 LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
             binding?.root?.let { Navigation.findNavController(it).navigate(action) }
@@ -65,5 +39,53 @@ class LoginFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    private fun loginAction() {
+        val email = binding?.emailEditText?.text.toString().trim()
+        val password = binding?.passwordEditText?.text.toString().trim()
+
+
+        binding?.emailInputLayout?.error = null
+        binding?.passwordInputLayout?.error = null
+
+        var isValid = true
+
+        if (email.isEmpty()) {
+            binding?.emailInputLayout?.error = "Email is required"
+            isValid = false
+        }
+
+        if (password.isEmpty()) {
+            binding?.passwordInputLayout?.error = "Password is required"
+            isValid = false
+        }
+
+        if (!isValid) return
+
+
+        Model.shared.signIn(email, password) { success, message, errorFields ->
+            if (success) {
+                Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_LONG).show()
+                val action =
+                    LoginFragmentDirections.actionLoginFragmentToStudentsListFragment()
+                binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+            } else {
+                errorFields?.takeIf { it.isNotEmpty() }?.let {
+                    if (it.contains("password")) {
+                        binding?.passwordInputLayout?.error = message
+                    }
+                    if (it.contains("email")) {
+                        binding?.emailInputLayout?.error = message
+                    }
+                } ?: run {
+                    Toast.makeText(
+                        requireContext(),
+                        message ?: "Login failed",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 }

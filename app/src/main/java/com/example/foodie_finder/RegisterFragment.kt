@@ -21,43 +21,11 @@ class RegisterFragment : Fragment() {
     ): View? {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
         binding?.loginButton?.setOnClickListener {
-            // Navigate to RegisterFragment
-            Toast.makeText(requireContext(), "Login", Toast.LENGTH_SHORT).show()
-
-            val action =
-                RegisterFragmentDirections.actionRegisterFragmentToLoginFragment()
-            binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+            binding?.root?.let { Navigation.findNavController(it).popBackStack() }
         }
+
         binding?.signUpButton?.setOnClickListener {
-            val email = binding?.emailEditText?.text.toString().trim()
-            val password = binding?.passwordEditText?.text.toString().trim()
-            val firstName = binding?.firstNameEditText?.text.toString().trim()
-            val lastName = binding?.lastNameEditText?.text.toString().trim()
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Email and password are required",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            Model.shared.signUp(firstName, lastName, email, password) { success, message ->
-                if (success) {
-                    Toast.makeText(requireContext(), "Register successful!", Toast.LENGTH_SHORT)
-                        .show()
-         
-                    binding?.root?.let { Navigation.findNavController(it).popBackStack() }
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        message ?: "Register failed",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
-            }
+            signUpAction()
         }
 
         return binding?.root
@@ -66,5 +34,63 @@ class RegisterFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    private fun signUpAction() {
+        val email = binding?.emailEditText?.text.toString().trim()
+        val password = binding?.passwordEditText?.text.toString().trim()
+        val passwordConfirm = binding?.confirmPasswordEditText?.text.toString().trim()
+        val firstName = binding?.firstNameEditText?.text.toString().trim()
+        val lastName = binding?.lastNameEditText?.text.toString().trim()
+
+        binding?.emailInputLayout?.error = null
+        binding?.passwordInputLayout?.error = null
+        binding?.confirmPasswordInputLayout?.error = null
+
+        var isValid = true
+
+        if (email.isEmpty()) {
+            binding?.emailInputLayout?.error = "Email is required"
+            isValid = false
+        }
+
+        if (password.isEmpty()) {
+            binding?.passwordInputLayout?.error = "Password is required"
+            isValid = false
+        }
+
+        if (passwordConfirm != password) {
+            binding?.confirmPasswordInputLayout?.error = "Passwords do not match"
+            binding?.passwordInputLayout?.error = "Passwords do not match"
+            isValid = false
+        }
+
+        if (!isValid) return
+
+        Model.shared.signUp(firstName, lastName, email, password) { success, message, errorFields ->
+            if (success) {
+                Toast.makeText(requireContext(), "Register successful!", Toast.LENGTH_LONG)
+                    .show()
+
+                val action =
+                    RegisterFragmentDirections.actionRegisterFragmentToStudentsListFragment()
+                binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+            } else {
+                errorFields?.takeIf { it.isNotEmpty() }?.let {
+                    if (it.contains("password")) {
+                        binding?.passwordInputLayout?.error = message
+                    }
+                    if (it.contains("email")) {
+                        binding?.emailInputLayout?.error = message
+                    }
+                } ?: run {
+                    Toast.makeText(
+                        requireContext(),
+                        message ?: "Register failed",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 }

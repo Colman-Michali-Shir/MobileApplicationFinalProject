@@ -76,16 +76,28 @@ class FirebaseModel {
             }
     }
 
-    fun signIn(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+    fun isUserLoggedIn(): Boolean {
+        return auth.currentUser != null
+    }
+
+    fun signIn(
+        email: String,
+        password: String,
+        callback: (Boolean, String?, List<String>?) -> Unit
+    ) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    callback(true, "Login successful: ${user?.email}")
+                    callback(true, "Login successful: ${user?.email}", null)
                 } else {
-                    callback(false, task.exception?.message)
+                    handleFirebaseError(callback, task.exception?.message)
                 }
             }
+    }
+
+    fun signOut() {
+        auth.signOut()
     }
 
     fun signUp(
@@ -93,24 +105,57 @@ class FirebaseModel {
         lastName: String,
         email: String,
         password: String,
-        callback: (Boolean, String?) -> Unit
+        callback: (Boolean, String?, List<String>?) -> Unit
     ) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
-                    val user = User(email = email, firstName = firstName, lastName = lastName)
+                    val user = User(
+                        email = email,
+                        firstName = firstName,
+                        lastName = lastName,
+                        avatarUrl = null
+                    )
                     database.collection("users").document(userId)
                         .set(user.json)
                         .addOnSuccessListener {
-                            callback(true, "User registered successfully")
+                            callback(true, "User registered successfully", null)
                         }
                         .addOnFailureListener { e ->
-                            callback(false, "Failed to save user data: ${e.message}")
+                            callback(false, "Failed to save user data: ${e.message}", null)
                         }
                 } else {
-                    callback(false, task.exception?.message)
+                    handleFirebaseError(callback, task.exception?.message)
                 }
             }
+    }
+
+    private fun handleFirebaseError(
+        callback: (Boolean, String?, List<String>?) -> Unit,
+        errorMessage: String?,
+    ) {
+        when {
+            errorMessage?.contains("email address is already in use") == true -> {
+                callback(false, "Email is already registered", listOf("email"))
+            }
+
+            errorMessage?.contains("The email address is badly formatted") == true -> {
+                callback(false, "Invalid email format", listOf("email"))
+
+            }
+
+            errorMessage?.contains("Password should be at least 6 characters") == true -> {
+                callback(false, "Password must be at least 6 characters", listOf("password"))
+            }
+
+            errorMessage?.contains("The supplied auth credential is incorrect") == true -> {
+                callback(false, "Email or password is incorrect", listOf("email", "password"))
+            }
+
+            else -> {
+                callback(false, errorMessage, null)
+            }
+        }
     }
 }

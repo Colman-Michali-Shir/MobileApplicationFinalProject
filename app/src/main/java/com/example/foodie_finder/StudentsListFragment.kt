@@ -2,12 +2,10 @@ package com.example.foodie_finder
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.adapter.StudentsRecyclerAdapter
 import com.example.foodie_finder.databinding.FragmentStudentsListBinding
@@ -70,27 +68,24 @@ class StudentsListFragment : Fragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.newStudentFragment -> {
-                val action = StudentsListFragmentDirections
-                    .actionStudentsListFragmentToNewStudentFragment()
-                findNavController().navigate(action)
-                true
-            }
-
-            R.id.logout -> {
-                logoutUser()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun logoutUser() {
-        findNavController().navigate(R.id.action_studentsListFragment_to_loginFragment)
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.newStudentFragment -> {
+//                val action = StudentsListFragmentDirections
+//                    .actionStudentsListFragmentToNewStudentFragment()
+//                findNavController().navigate(action)
+//                true
+//            }
+//
+//            R.id.logout -> {
+//                Model.shared.signOut()
+//                findNavController().popBackStack(R.id.loginFragment, false)
+//                true
+//            }
+//
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
     override fun onResume() {
         super.onResume()
