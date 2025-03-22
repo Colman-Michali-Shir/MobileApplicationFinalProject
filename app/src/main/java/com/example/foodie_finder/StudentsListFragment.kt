@@ -1,17 +1,19 @@
 package com.example.foodie_finder
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodie_finder.adapter.StudentsRecyclerAdapter
+import com.example.foodie_finder.databinding.FragmentStudentsListBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.model.Model
 import com.example.foodie_finder.model.Student
-import com.example.foodie_finder.adapter.StudentsRecyclerAdapter
-import com.example.foodie_finder.databinding.FragmentStudentsListBinding
 
 class StudentsListFragment : Fragment() {
     private var students: List<Student>? = null
@@ -22,6 +24,7 @@ class StudentsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = FragmentStudentsListBinding.inflate(inflater, container, false)
 //        private var viewModel: StudentViewModel? = null
 //
@@ -50,8 +53,12 @@ class StudentsListFragment : Fragment() {
         return binding?.root
     }
 
-    private fun getAllStudents() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
+    private fun getAllStudents() {
         binding?.progressBar?.visibility = View.VISIBLE
 
         Model.shared.getAllStudents {
@@ -61,6 +68,28 @@ class StudentsListFragment : Fragment() {
 
             binding?.progressBar?.visibility = View.GONE
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.newStudentFragment -> {
+                val action = StudentsListFragmentDirections
+                    .actionStudentsListFragmentToNewStudentFragment()
+                findNavController().navigate(action)
+                true
+            }
+
+            R.id.logout -> {
+                logoutUser()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun logoutUser() {
+        findNavController().navigate(R.id.action_studentsListFragment_to_loginFragment)
     }
 
     override fun onResume() {

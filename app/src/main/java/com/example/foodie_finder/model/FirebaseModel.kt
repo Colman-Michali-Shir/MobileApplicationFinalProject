@@ -1,10 +1,10 @@
 package com.example.foodie_finder.model
 
-import android.util.Log
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.memoryCacheSettings
@@ -13,6 +13,7 @@ import com.google.firebase.ktx.Firebase
 class FirebaseModel {
 
     private val database = Firebase.firestore
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     init {
         val setting = firestoreSettings {
@@ -27,7 +28,6 @@ class FirebaseModel {
             .addOnCompleteListener {
                 when (it.isSuccessful) {
                     true -> {
-                        Log.d("TAG", it.result.toString())
                         val students: MutableList<Student> = mutableListOf()
                         for (json in it.result) {
                             students.add(Student.fromJSON(json.data))
@@ -75,26 +75,42 @@ class FirebaseModel {
                 callback()
             }
     }
+
+    fun signIn(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    callback(true, "Login successful: ${user?.email}")
+                } else {
+                    callback(false, task.exception?.message)
+                }
+            }
+    }
+
+    fun signUp(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String,
+        callback: (Boolean, String?) -> Unit
+    ) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+                    val user = User(email = email, firstName = firstName, lastName = lastName)
+                    database.collection("users").document(userId)
+                        .set(user.json)
+                        .addOnSuccessListener {
+                            callback(true, "User registered successfully")
+                        }
+                        .addOnFailureListener { e ->
+                            callback(false, "Failed to save user data: ${e.message}")
+                        }
+                } else {
+                    callback(false, task.exception?.message)
+                }
+            }
+    }
 }
-
-/*
-val db = Firebase.firestore
-
-// Create a new user with a first and last name
-val user = hashMapOf(
-    "first" to "Ada",
-    "last" to "Lovelace",
-    "born" to 1815,
-)
-
-// Add a new document with a generated ID
-db.collection("users")
-.add(user)
-.addOnSuccessListener { documentReference ->
-    Log.d("TAG", "DocumentSnapshot added with ID: ${documentReference.id}")
-}
-.addOnFailureListener { e ->
-    Log.w("TAG", "Error adding document", e)
-}
-
- */

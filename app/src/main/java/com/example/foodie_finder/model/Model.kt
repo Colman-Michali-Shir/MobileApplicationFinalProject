@@ -52,7 +52,6 @@ class Model private constructor() {
 
     fun getStudentById(id: String, callback: GetStudentByIdCallback) {
         firebaseModel.getStudentById(id, callback)
-
     }
 
 
@@ -72,5 +71,19 @@ class Model private constructor() {
             onSuccess = onSuccess,
             onError = onError
         )
+    }
+
+    fun signIn(email: String, password: String, callback: (Boolean, String?) -> Unit) {
+        firebaseModel.signIn(email, password, callback)
+    }
+
+    fun signUp(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String,
+        callback: (Boolean, String?) -> Unit
+    ) {
+        firebaseModel.signUp(firstName, lastName, email, password, callback)
     }
 }

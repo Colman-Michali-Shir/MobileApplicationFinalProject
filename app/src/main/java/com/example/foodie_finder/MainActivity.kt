@@ -13,8 +13,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val currentDestination = navController?.currentDestination
+        Log.d("TAG", "1111111111 ${currentDestination?.id}, ${R.id.studentsListFragment}")
 
         when (currentDestination?.id) {
             R.id.studentsListFragment -> {
