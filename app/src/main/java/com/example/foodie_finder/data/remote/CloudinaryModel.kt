@@ -1,6 +1,5 @@
 package com.example.foodie_finder.data.remote
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.cloudinary.android.MediaManager
@@ -10,9 +9,7 @@ import com.cloudinary.android.policy.GlobalUploadPolicy
 import com.cloudinary.android.policy.UploadPolicy
 import com.example.foodie_finder.BuildConfig
 import com.example.foodie_finder.base.MyApplication
-import com.example.foodie_finder.utils.extentions.toFile
-import java.io.File
-import java.io.FileOutputStream
+import com.example.foodie_finder.utils.extensions.toFile
 
 class CloudinaryModel {
 

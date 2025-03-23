@@ -2,54 +2,95 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground">
-
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/student_row_image_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="4dp"
-        android:scaleType="fitCenter"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/userProfilePicture"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/woman" />
 
     <TextView
-        android:id="@+id/student_row_name_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/student_row_id_text_view"
-        app:layout_constraintEnd_toStartOf="@+id/student_row_check_box"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/student_row_image_view"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/student_row_id_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/student_row_check_box"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/student_row_image_view"
-        app:layout_constraintTop_toBottomOf="@+id/student_row_name_text_view" />
-
-    <CheckBox
-        android:id="@+id/student_row_check_box"
+        android:id="@+id/userTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="10dp"
+        android:text="username"
+        android:textColor="?attr/colorOnBackground"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/userProfilePicture"
+        app:layout_constraintStart_toEndOf="@+id/userProfilePicture"
+        app:layout_constraintTop_toTopOf="@+id/userProfilePicture" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:background="?attr/colorOnBackground"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userProfilePicture" />
+
+
+    <ImageView
+        android:id="@+id/photoUrlImageView"
+        android:layout_height="200dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:srcCompat="@drawable/woman" />
+
+    <TextView
+        android:id="@+id/postTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:text="title"
+        android:textColor="?attr/colorOnBackground"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/photoUrlImageView"
+        app:layout_constraintTop_toBottomOf="@+id/photoUrlImageView"
+         />
+
+    <!-- Content Text -->
+    <TextView
+        android:id="@+id/postContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="content"
+        android:textColor="?attr/colorOnBackground"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@+id/postTitle"
+        app:layout_constraintTop_toBottomOf="@+id/postTitle" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="5dp"
+        android:isIndicator="true"
+        android:progressTint="?attr/colorOnBackground"
+        android:secondaryProgressTint="?attr/colorSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postContent" />
+
+    <ImageButton
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/bookmark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/postContent"
+        app:layout_constraintTop_toBottomOf="@+id/postContent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

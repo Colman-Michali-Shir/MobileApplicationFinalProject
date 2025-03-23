@@ -1,4 +1,4 @@
-package com.example.foodie_finder.utils.extentions
+package com.example.foodie_finder.utils.extensions
 
 import android.content.Context
 import android.graphics.Bitmap

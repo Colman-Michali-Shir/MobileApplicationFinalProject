@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.foodie_finder.base.MyApplication
+import com.example.foodie_finder.data.local.dao.PostDao
 import com.example.foodie_finder.data.local.dao.StudentDao
 import com.example.foodie_finder.data.model.Converters
 
@@ -12,6 +13,7 @@ import com.example.foodie_finder.data.model.Converters
 @TypeConverters(Converters::class)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun studentDao(): StudentDao
+    abstract fun PostDao(): PostDao
 }
 
 object AppLocalDb {
