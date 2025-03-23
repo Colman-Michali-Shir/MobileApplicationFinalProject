@@ -1,4 +1,4 @@
-package com.example.foodie_finder
+package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,9 +7,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.example.foodie_finder.R
 import com.example.foodie_finder.databinding.FragmentPostDetailsBinding
-import com.example.foodie_finder.model.Model
-import com.example.foodie_finder.model.Student
+import com.example.foodie_finder.data.model.Model
+import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.utils.DateTimeUtils
 
 class PostDetailsFragment : Fragment() {
@@ -42,8 +43,10 @@ class PostDetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.editPostFragment -> {
-                val action = PostDetailsFragmentDirections
-                    .actionPostDetailsFragmentToEditPostFragment(currentId)
+                val action =
+                    PostDetailsFragmentDirections.actionPostDetailsFragmentToEditPostFragment(
+                        currentId
+                    )
                 findNavController().navigate(action)
                 true
             }

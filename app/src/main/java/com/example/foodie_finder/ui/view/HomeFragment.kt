@@ -1,4 +1,4 @@
-package com.example.foodie_finder
+package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.interfaces.OnItemClickListener
-import com.example.foodie_finder.model.Model
-import com.example.foodie_finder.model.Student
+import com.example.foodie_finder.data.model.Model
+import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.adapter.PostsRecyclerAdapter
 import com.example.foodie_finder.databinding.FragmentPostsListBinding
 

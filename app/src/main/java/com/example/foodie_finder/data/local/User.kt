@@ -1,4 +1,4 @@
-package com.example.foodie_finder.model
+package com.example.foodie_finder.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
