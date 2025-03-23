@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.foodie_finder.interfaces.OnItemClickListener
-import com.example.foodie_finder.data.model.Model
-import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.adapter.PostsRecyclerAdapter
+import com.example.foodie_finder.data.local.Student
+import com.example.foodie_finder.data.model.Model
 import com.example.foodie_finder.databinding.FragmentPostsListBinding
+import com.example.foodie_finder.interfaces.OnItemClickListener
 
 class HomeFragment : Fragment() {
     private var students: List<Student>? = null

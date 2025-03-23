@@ -14,8 +14,8 @@ class Model private constructor() {
     //    private val executor = Executors.newSingleThreadExecutor()
 //    private val mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
 //    private val database: AppLocalDbRepository = AppLocalDb.database
-    private val firebaseModel = FirebaseModel()
-    private val cloudinaryModel = CloudinaryModel()
+    private val firebaseModel = FirebaseModel.getInstance()
+    private val cloudinaryModel = CloudinaryModel.getInstance()
 
     companion object {
         val shared = Model()
@@ -40,7 +40,6 @@ class Model private constructor() {
 
             } ?: callback()
         }
-
     }
 
     fun updateStudent(student: Student, callback: EmptyCallback) {
@@ -51,17 +50,8 @@ class Model private constructor() {
         firebaseModel.getStudentById(id, callback)
     }
 
-
     fun getAllStudents(callback: GetAllStudentsCallback) {
         firebaseModel.getAllStudents(callback)
-    }
-
-    fun signOut() {
-        firebaseModel.signOut()
-    }
-
-    fun isUserLoggedIn(): Boolean {
-        return firebaseModel.isUserLoggedIn()
     }
 
     private fun uploadImageToCloudinary(
@@ -70,29 +60,11 @@ class Model private constructor() {
         onSuccess: (String?) -> Unit,
         onError: (String?) -> Unit
     ) {
-        cloudinaryModel.uploadBitmap(
-            bitmap = image,
+        cloudinaryModel.uploadImageToCloudinary(
+            image = image,
             name = name,
             onSuccess = onSuccess,
             onError = onError
         )
-    }
-
-    fun signIn(
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        firebaseModel.signIn(email, password, callback)
-    }
-
-    fun signUp(
-        firstName: String,
-        lastName: String,
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        firebaseModel.signUp(firstName, lastName, email, password, callback)
     }
 }
