@@ -1,6 +1,7 @@
-package com.example.foodie_finder.data.local
+package com.example.foodie_finder.data.model
 
 import android.graphics.Bitmap
+import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
 

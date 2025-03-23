@@ -1,7 +1,7 @@
 package com.example.foodie_finder.ui.viewModel
 
 import androidx.lifecycle.ViewModel
-import com.example.foodie_finder.data.local.UserModel
+import com.example.foodie_finder.data.model.UserModel
 
 class LoginViewModel : ViewModel() {
 
