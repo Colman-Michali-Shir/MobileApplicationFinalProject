@@ -11,20 +11,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.foodie_finder.databinding.ActivityMainBinding
-import com.example.foodie_finder.model.Model
 
 class MainActivity : AppCompatActivity() {
 
     private var navController: NavController? = null
     private var binding: ActivityMainBinding? = null
+    private var viewModel: MainActivityViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -71,10 +73,9 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        // TODO: After live data it will update in live
         binding?.mainBottomNav?.visibility = View.VISIBLE
 
-        if (!Model.shared.isUserLoggedIn()) {
+        if (viewModel?.isUserLoggedIn() == false) {
             binding?.mainBottomNav?.visibility = View.GONE
             navController?.navigate(R.id.loginFragment)
         }
@@ -120,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.logout -> {
-                Model.shared.signOut()
+                viewModel?.signOut()
                 val action =
                     HomeFragmentDirections.actionStudentsListFragmentToLoginFragment()
                 navController?.navigate(action)

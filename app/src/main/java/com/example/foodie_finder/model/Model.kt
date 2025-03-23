@@ -11,8 +11,8 @@ class Model private constructor() {
     //    private val executor = Executors.newSingleThreadExecutor()
 //    private val mainHandler = HandlerCompat.createAsync(Looper.getMainLooper())
 //    private val database: AppLocalDbRepository = AppLocalDb.database
-    private val firebaseModel = FirebaseModel()
-    private val cloudinaryModel = CloudinaryModel()
+    private val firebaseModel = FirebaseModel.getInstance()
+    private val cloudinaryModel = CloudinaryModel.getInstance()
 
     companion object {
         val shared = Model()
@@ -37,49 +37,18 @@ class Model private constructor() {
 
             } ?: callback()
         }
-
     }
 
     fun updateStudent(student: Student, callback: EmptyCallback) {
         firebaseModel.update(student, callback)
     }
 
-    fun updateUser(user: User, profileImage: Bitmap?, callback: (Boolean) -> Unit) {
-        firebaseModel.updateUser(user) {
-            profileImage?.let {
-                uploadImageToCloudinary(
-                    image = it,
-                    name = user.id,
-                    onSuccess = { url ->
-                        val userWithProfileImage = user.copy(avatarUrl = url)
-                        firebaseModel.updateUser(userWithProfileImage, callback)
-                    },
-                    onError = { callback(true) }
-                )
-
-            } ?: callback(false)
-        }
-    }
-
     fun getStudentById(id: String, callback: GetStudentByIdCallback) {
         firebaseModel.getStudentById(id, callback)
     }
 
-
     fun getAllStudents(callback: GetAllStudentsCallback) {
         firebaseModel.getAllStudents(callback)
-    }
-
-    fun signOut() {
-        firebaseModel.signOut()
-    }
-
-    fun isUserLoggedIn(): Boolean {
-        return firebaseModel.isUserLoggedIn()
-    }
-
-    fun getUser(callback: (User?) -> Unit) {
-        return firebaseModel.getUser(callback)
     }
 
     private fun uploadImageToCloudinary(
@@ -94,23 +63,5 @@ class Model private constructor() {
             onSuccess = onSuccess,
             onError = onError
         )
-    }
-
-    fun signIn(
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        firebaseModel.signIn(email, password, callback)
-    }
-
-    fun signUp(
-        firstName: String,
-        lastName: String,
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        firebaseModel.signUp(firstName, lastName, email, password, callback)
     }
 }

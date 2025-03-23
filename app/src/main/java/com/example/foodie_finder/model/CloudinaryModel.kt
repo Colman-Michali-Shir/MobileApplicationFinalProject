@@ -13,7 +13,7 @@ import com.example.foodie_finder.base.MyApplication
 import java.io.File
 import java.io.FileOutputStream
 
-class CloudinaryModel {
+class CloudinaryModel private constructor() {
 
     init {
         val config = mapOf(
@@ -28,6 +28,17 @@ class CloudinaryModel {
                 .maxConcurrentRequests(3)
                 .networkPolicy(UploadPolicy.NetworkType.UNMETERED)
                 .build()
+        }
+    }
+
+    companion object {
+        @Volatile
+        private var instance: CloudinaryModel? = null
+
+        fun getInstance(): CloudinaryModel {
+            return instance ?: synchronized(this) {
+                instance ?: CloudinaryModel().also { instance = it }
+            }
         }
     }
 
@@ -96,5 +107,19 @@ class CloudinaryModel {
             Log.e("CloudinaryModel", "Error saving bitmap to file", e)
         }
         return file
+    }
+
+    fun uploadImageToCloudinary(
+        image: Bitmap,
+        name: String?,
+        onSuccess: (String) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        this.uploadBitmap(
+            bitmap = image,
+            name = name,
+            onSuccess = onSuccess,
+            onError = onError
+        )
     }
 }

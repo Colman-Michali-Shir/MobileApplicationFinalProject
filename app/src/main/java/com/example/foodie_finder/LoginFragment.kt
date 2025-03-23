@@ -1,18 +1,25 @@
 package com.example.foodie_finder
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.foodie_finder.databinding.FragmentLoginBinding
-import com.example.foodie_finder.model.Model
 
 class LoginFragment : Fragment() {
 
     private var binding: FragmentLoginBinding? = null
+    private var viewModel: LoginViewModel? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +71,7 @@ class LoginFragment : Fragment() {
         if (!isValid) return
 
 
-        Model.shared.signIn(email, password) { success, message, errorFields ->
+        viewModel?.signIn(email, password) { success, message, errorFields ->
             if (success) {
                 Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_LONG).show()
                 val action =

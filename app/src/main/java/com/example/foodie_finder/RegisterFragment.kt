@@ -6,19 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.foodie_finder.databinding.FragmentRegisterBinding
-import com.example.foodie_finder.model.Model
 
 class RegisterFragment : Fragment() {
 
     private var binding: FragmentRegisterBinding? = null
+    private var viewModel: RegisterViewModel? = null
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
+
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
         binding?.loginButton?.setOnClickListener {
             binding?.root?.let { Navigation.findNavController(it).popBackStack() }
@@ -67,7 +70,7 @@ class RegisterFragment : Fragment() {
 
         if (!isValid) return
 
-        Model.shared.signUp(firstName, lastName, email, password) { success, message, errorFields ->
+        viewModel?.signUp(firstName, lastName, email, password) { success, message, errorFields ->
             if (success) {
                 Toast.makeText(requireContext(), "Register successful!", Toast.LENGTH_LONG)
                     .show()
