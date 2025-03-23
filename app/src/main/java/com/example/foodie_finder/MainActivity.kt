@@ -1,4 +1,4 @@
-package com.example.foodie_finder.ui.viewModel
+package com.example.foodie_finder
 
 import android.os.Bundle
 import android.view.Menu
@@ -14,10 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.example.foodie_finder.R
 import com.example.foodie_finder.databinding.ActivityMainBinding
 import com.example.foodie_finder.ui.view.HomeFragmentDirections
 import com.example.foodie_finder.ui.view.PostDetailsFragmentDirections
+import com.example.foodie_finder.ui.viewModel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
 
