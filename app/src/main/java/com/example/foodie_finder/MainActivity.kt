@@ -15,7 +15,9 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.foodie_finder.databinding.ActivityMainBinding
-import com.example.foodie_finder.model.Model
+import com.example.foodie_finder.data.model.Model
+import com.example.foodie_finder.ui.view.HomeFragmentDirections
+import com.example.foodie_finder.ui.view.PostDetailsFragmentDirections
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {

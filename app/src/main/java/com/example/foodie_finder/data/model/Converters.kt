@@ -1,4 +1,4 @@
-package com.example.foodie_finder.model
+package com.example.foodie_finder.data.model
 
 import androidx.room.TypeConverter
 import java.sql.Time

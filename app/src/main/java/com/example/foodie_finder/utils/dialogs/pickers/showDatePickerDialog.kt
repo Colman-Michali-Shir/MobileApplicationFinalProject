@@ -1,4 +1,4 @@
-package com.example.foodie_finder.dialogs.pickers
+package com.example.foodie_finder.utils.dialogs.pickers
 
 import android.app.DatePickerDialog
 import android.content.Context

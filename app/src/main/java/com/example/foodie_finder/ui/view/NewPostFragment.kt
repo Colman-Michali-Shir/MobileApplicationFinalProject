@@ -1,4 +1,4 @@
-package com.example.foodie_finder
+package com.example.foodie_finder.ui.view
 
 import android.app.AlertDialog
 import android.graphics.Bitmap
@@ -14,11 +14,11 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
 import com.example.foodie_finder.databinding.FragmentNewPostBinding
-import com.example.foodie_finder.dialogs.alert.showSuccessOperationDialog
-import com.example.foodie_finder.model.Model
-import com.example.foodie_finder.model.Student
-import com.example.foodie_finder.dialogs.pickers.showDatePickerDialog
-import com.example.foodie_finder.dialogs.pickers.showTimePickerDialog
+import com.example.foodie_finder.utils.dialogs.alert.showSuccessOperationDialog
+import com.example.foodie_finder.data.model.Model
+import com.example.foodie_finder.data.local.Student
+import com.example.foodie_finder.utils.dialogs.pickers.showDatePickerDialog
+import com.example.foodie_finder.utils.dialogs.pickers.showTimePickerDialog
 import com.example.foodie_finder.utils.DateTimeUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import java.sql.Time

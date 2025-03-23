@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.databinding.PostListRowBinding
-import com.example.foodie_finder.model.Student
+import com.example.foodie_finder.data.local.Student
 
 class PostsRecyclerAdapter(private var students: List<Student>?) :
     RecyclerView.Adapter<StudentViewHolder>() {

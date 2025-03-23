@@ -1,4 +1,4 @@
-package com.example.foodie_finder
+package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,33 +7,28 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import com.example.foodie_finder.databinding.FragmentLoginBinding
-import com.example.foodie_finder.model.Model
+import com.example.foodie_finder.databinding.FragmentRegisterBinding
+import com.example.foodie_finder.data.model.Model
 
-class LoginFragment : Fragment() {
+class RegisterFragment : Fragment() {
 
-    private var binding: FragmentLoginBinding? = null
+    private var binding: FragmentRegisterBinding? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLoginBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        binding = FragmentRegisterBinding.inflate(inflater, container, false)
         binding?.loginButton?.setOnClickListener {
-            loginAction()
+            binding?.root?.let { Navigation.findNavController(it).popBackStack() }
         }
 
-        binding?.registerButton?.setOnClickListener {
-            val action =
-                LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-            binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+        binding?.signUpButton?.setOnClickListener {
+            signUpAction()
         }
+
+        return binding?.root
     }
 
     override fun onDestroyView() {
@@ -41,13 +36,16 @@ class LoginFragment : Fragment() {
         binding = null
     }
 
-    private fun loginAction() {
+    private fun signUpAction() {
         val email = binding?.emailEditText?.text.toString().trim()
         val password = binding?.passwordEditText?.text.toString().trim()
-
+        val passwordConfirm = binding?.confirmPasswordEditText?.text.toString().trim()
+        val firstName = binding?.firstNameEditText?.text.toString().trim()
+        val lastName = binding?.lastNameEditText?.text.toString().trim()
 
         binding?.emailInputLayout?.error = null
         binding?.passwordInputLayout?.error = null
+        binding?.confirmPasswordInputLayout?.error = null
 
         var isValid = true
 
@@ -61,14 +59,21 @@ class LoginFragment : Fragment() {
             isValid = false
         }
 
+        if (passwordConfirm != password) {
+            binding?.confirmPasswordInputLayout?.error = "Passwords do not match"
+            binding?.passwordInputLayout?.error = "Passwords do not match"
+            isValid = false
+        }
+
         if (!isValid) return
 
-
-        Model.shared.signIn(email, password) { success, message, errorFields ->
+        Model.shared.signUp(firstName, lastName, email, password) { success, message, errorFields ->
             if (success) {
-                Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Register successful!", Toast.LENGTH_LONG)
+                    .show()
+
                 val action =
-                    LoginFragmentDirections.actionLoginFragmentToStudentsListFragment()
+                    RegisterFragmentDirections.actionRegisterFragmentToStudentsListFragment()
                 binding?.root?.let { Navigation.findNavController(it).navigate(action) }
             } else {
                 errorFields?.forEach { field ->
@@ -81,7 +86,7 @@ class LoginFragment : Fragment() {
                 if (errorFields.isNullOrEmpty()) {
                     Toast.makeText(
                         requireContext(),
-                        message ?: "Login failed",
+                        message ?: "Register failed",
                         Toast.LENGTH_LONG
                     ).show()
                 }

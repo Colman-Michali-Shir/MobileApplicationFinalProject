@@ -1,9 +1,11 @@
-package com.example.foodie_finder.model
+package com.example.foodie_finder.data.remote
 
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
+import com.example.foodie_finder.data.local.Student
+import com.example.foodie_finder.data.local.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore

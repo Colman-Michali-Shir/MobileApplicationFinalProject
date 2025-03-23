@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.R
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.databinding.PostListRowBinding
-import com.example.foodie_finder.model.Student
+import com.example.foodie_finder.data.local.Student
 import com.squareup.picasso.Picasso
 
 class StudentViewHolder(
