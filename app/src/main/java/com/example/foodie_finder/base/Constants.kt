@@ -1,6 +1,6 @@
 package com.example.foodie_finder.base
 
-import com.example.foodie_finder.model.Student
+import com.example.foodie_finder.data.local.Student
 
 
 typealias GetAllStudentsCallback = (List<Student>) -> Unit
