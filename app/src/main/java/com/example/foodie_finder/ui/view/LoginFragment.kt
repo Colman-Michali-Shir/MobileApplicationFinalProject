@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import com.example.foodie_finder.LoginFragmentDirections
 import com.example.foodie_finder.databinding.FragmentLoginBinding
 import com.example.foodie_finder.data.model.Model
 
