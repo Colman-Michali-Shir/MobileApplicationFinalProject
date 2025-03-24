@@ -7,6 +7,7 @@ import com.example.foodie_finder.data.local.AppLocalDbRepository
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
+import java.util.concurrent.Executors
 
 class PostModel private constructor(){
 
@@ -16,8 +17,10 @@ class PostModel private constructor(){
     }
 
     private val database: AppLocalDbRepository = AppLocalDb.database
-    private val firebaseModel = FirebaseModel()
-    private val cloudinaryModel = CloudinaryModel()
+    private val firebaseModel = FirebaseModel.getInstance()
+    private val cloudinaryModel = CloudinaryModel.getInstance()
+
+    private var executor = Executors.newSingleThreadExecutor()
 
     val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
@@ -29,5 +32,30 @@ class PostModel private constructor(){
     companion object {
         val shared = PostModel()
     }
+
+
+    fun getAllPosts(){
+        val lastUpdated: Long = Post.lastUpdated
+        firebaseModel.getAllPosts(lastUpdated) {posts ->
+            executor.execute {
+                var currentTime = lastUpdated
+
+                for (post in posts) {
+                    database.postDao().createPost(post)
+                    post.lastUpdateTime?.let {
+                        if (currentTime < it) {
+                            currentTime = it
+                        }
+                    }
+                }
+
+                Post.lastUpdated = currentTime
+            }
+        }
+    }
+
+//    fun refreshAllPosts(){
+//        loadingState.postValue(LoadingState.LOADING)
+//    }
 
 }

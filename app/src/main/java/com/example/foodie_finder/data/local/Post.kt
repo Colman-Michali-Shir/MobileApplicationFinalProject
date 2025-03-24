@@ -9,8 +9,8 @@ import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
-@Entity(tableName = "posts",
-    foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["postedBy"])])
+@Entity(tableName = "posts")
+//    foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["postedBy"])])
 data class Post(
     @PrimaryKey var id: String,
     val postedBy: String,
@@ -42,7 +42,7 @@ data class Post(
         private const val CONTENT = "content"
         private const val RATING = "rating"
         private const val IMAGE_URL = "imgUrl"
-        private const val LAST_UPDATE_TIME = "lastUpdateTime"
+        const val LAST_UPDATE_TIME = "lastUpdateTime"
         private const val CREATION_TIME = "creationTime"
 
         fun fromJSON(json: Map<String, Any>): Post {
@@ -50,7 +50,7 @@ data class Post(
             val postedBy = json[USER_ID] as? String ?: ""
             val title = json[TITLE] as? String ?: ""
             val content = json[CONTENT] as? String ?: ""
-            val rating = json[RATING] as? Int ?: 0
+            val rating = (json[RATING] as? Number)?.toInt() ?: 0
             val imgUrl = json[IMAGE_URL] as? String ?: ""
             val lastUpdateTime = json[LAST_UPDATE_TIME] as? Timestamp
             val creationTime = json[CREATION_TIME] as? Timestamp

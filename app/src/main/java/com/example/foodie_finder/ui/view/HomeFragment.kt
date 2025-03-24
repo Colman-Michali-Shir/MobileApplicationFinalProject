@@ -1,22 +1,20 @@
 package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.adapter.PostsAdapter
-import com.example.foodie_finder.interfaces.OnItemClickListener
-import com.example.foodie_finder.data.local.Student
-import com.example.foodie_finder.data.model.Model
+import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.databinding.FragmentPostsListBinding
+import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.ui.viewModel.PostsListViewModel
 
 class HomeFragment : Fragment() {
-    private var students: List<Student>? = null
     private var adapter: PostsAdapter? = null
     private var binding: FragmentPostsListBinding? = null
 
@@ -29,41 +27,54 @@ class HomeFragment : Fragment() {
         binding = FragmentPostsListBinding.inflate(inflater, container, false)
 
         binding?.postsList?.setHasFixedSize(true)
-        val layoutManger = LinearLayoutManager(context)
-        binding?.postsList?.layoutManager = layoutManger
+        binding?.postsList?.layoutManager = LinearLayoutManager(context)
 
         adapter = PostsAdapter(viewModel.posts.value)
 
-        binding?.postsList?.adapter = adapter
+        viewModel.posts.observe(viewLifecycleOwner) {posts ->
 
-        viewModel.posts.observe(viewLifecycleOwner) {
-            adapter?.posts = it
+            Log.d("TAG", "Observed posts: $posts") // Debug log
+
+            adapter?.update(posts)
             adapter?.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
         }
 
-//        adapter?.listener = object : OnItemClickListener {
-//            override fun onItemClick(id: String) {
-//                val action =
-//                    HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
-//                        id
-//                    )
-//                binding?.root?.let { Navigation.findNavController(it).navigate(action) }
-//            }
-//        }
+        adapter?.listener = object : OnItemClickListener {
+            override fun onItemClick(post: Post?) {
+                Log.d("TAG", "On click post $post")
+                post?.let{ clickedPost ->
+//                    val action =
+//                        HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
+//                            clickedPost.id
+//                        )
+//                    binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+                }
+
+            }
+        }
+
+        binding?.postsList?.adapter = adapter
 
 
-        binding?.progressBar?.visibility = View.GONE
+
 
         return binding?.root
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        getAllStudents()
-//    }
+    override fun onResume() {
+        super.onResume()
+        getAllPosts()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         binding = null
+    }
+
+    private fun getAllPosts(){
+        binding?.progressBar?.visibility = View.VISIBLE
+        viewModel.refreshAllPosts()
     }
 }

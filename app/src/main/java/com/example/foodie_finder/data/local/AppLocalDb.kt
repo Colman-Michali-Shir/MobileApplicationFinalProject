@@ -26,8 +26,8 @@ object AppLocalDb {
             context,
             AppLocalDbRepository::class.java,
             "dbFileName.db"
-        )
-            .fallbackToDestructiveMigration()
+        ).fallbackToDestructiveMigration()
             .build()
+
     }
 }

@@ -1,11 +1,15 @@
 package com.example.foodie_finder.data.remote
 
+import android.util.Log
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
+import com.example.foodie_finder.base.GetAllPostsCallback
 import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
+import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
+import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
@@ -35,6 +39,23 @@ class FirebaseModel private constructor() {
                 instance ?: FirebaseModel().also { instance = it }
             }
         }
+    }
+
+    fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback){
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .get()
+            .addOnSuccessListener { postsJson ->
+                val posts: MutableList<Post> = mutableListOf()
+                for(json in postsJson){
+                    posts.add(Post.fromJSON(json.data))
+                }
+                Log.d("TAG", posts.size.toString())
+                callback(posts)
+            }
+            .addOnFailureListener{
+                callback(emptyList())
+            }
     }
 
     fun getAllStudents(callback: GetAllStudentsCallback) {

@@ -45,12 +45,12 @@ class CloudinaryModel private constructor() {
 
     fun uploadImageToCloudinary(
         image: Bitmap,
-        name: String?,
-        onSuccess: (String) -> Unit,
-        onError: (String) -> Unit
+        name: String,
+        onSuccess: (String?) -> Unit,
+        onError: (String?) -> Unit
     ) {
         val context = MyApplication.Globals.context ?: return
-        val file = bitmap.toFile(context,name)
+        val file = image.toFile(context,name)
 
         MediaManager.get().upload(file.path)
             .option(
