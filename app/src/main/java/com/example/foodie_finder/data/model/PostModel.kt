@@ -1,6 +1,5 @@
 package com.example.foodie_finder.data.model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.foodie_finder.data.local.AppLocalDb
 import com.example.foodie_finder.data.local.AppLocalDbRepository
@@ -34,7 +33,8 @@ class PostModel private constructor(){
     }
 
 
-    fun getAllPosts(){
+    fun refreshAllPosts(){
+        loadingState.postValue(LoadingState.LOADING)
         val lastUpdated: Long = Post.lastUpdated
         firebaseModel.getAllPosts(lastUpdated) {posts ->
             executor.execute {
@@ -50,12 +50,10 @@ class PostModel private constructor(){
                 }
 
                 Post.lastUpdated = currentTime
+                loadingState.postValue(LoadingState.LOADED)
             }
         }
     }
 
-//    fun refreshAllPosts(){
-//        loadingState.postValue(LoadingState.LOADING)
-//    }
 
 }

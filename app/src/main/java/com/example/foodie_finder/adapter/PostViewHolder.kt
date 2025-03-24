@@ -16,7 +16,6 @@ class PostViewHolder(private val binding: PostListRowBinding,  listener: OnItemC
     init {
 
         itemView.setOnClickListener {
-            Log.d("TAG", "On click listener on $post")
             listener?.onItemClick(post)
         }
     }

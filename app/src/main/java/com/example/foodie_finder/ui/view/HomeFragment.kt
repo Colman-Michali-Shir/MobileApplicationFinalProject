@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.adapter.PostsAdapter
 import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.model.PostModel
 import com.example.foodie_finder.databinding.FragmentPostsListBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.ui.viewModel.PostsListViewModel
@@ -41,6 +42,15 @@ class HomeFragment : Fragment() {
             binding?.progressBar?.visibility = View.GONE
         }
 
+        binding?.swipeToRefresh?.setOnRefreshListener {
+            viewModel.refreshAllPosts()
+        }
+
+        PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
+            binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
+        }
+
         adapter?.listener = object : OnItemClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "On click post $post")
@@ -56,9 +66,6 @@ class HomeFragment : Fragment() {
         }
 
         binding?.postsList?.adapter = adapter
-
-
-
 
         return binding?.root
     }
