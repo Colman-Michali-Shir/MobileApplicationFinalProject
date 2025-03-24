@@ -10,8 +10,7 @@ data class User(
     var firstName: String?,
     var lastName: String?,
     var avatarUrl: String?,
-
-    ) {
+) {
     companion object {
         private const val ID_KEY = "id"
         private const val EMAIL_KEY = "email"

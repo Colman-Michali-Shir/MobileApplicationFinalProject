@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.adapter.PostsAdapter
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.data.local.Student
+import com.example.foodie_finder.data.model.Model
 import com.example.foodie_finder.databinding.FragmentPostsListBinding
 import com.example.foodie_finder.ui.viewModel.PostsListViewModel
 
@@ -33,6 +34,7 @@ class HomeFragment : Fragment() {
 
         adapter = PostsAdapter(viewModel.posts.value)
 
+        binding?.postsList?.adapter = adapter
 
         viewModel.posts.observe(viewLifecycleOwner) {
             adapter?.posts = it
@@ -49,29 +51,11 @@ class HomeFragment : Fragment() {
 //            }
 //        }
 
-        binding?.postsList?.adapter = adapter
+
+        binding?.progressBar?.visibility = View.GONE
 
         return binding?.root
     }
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
-//    }
-
-//    private fun getAllStudents() {
-//
-//        binding?.progressBar?.visibility = View.VISIBLE
-//
-//
-//        Model.shared.getAllStudents {
-//            this.students = it
-//            adapter?.set(it)
-//            adapter?.notifyDataSetChanged()
-//
-//            binding?.progressBar?.visibility = View.GONE
-//        }
-//    }
 
 //    override fun onResume() {
 //        super.onResume()

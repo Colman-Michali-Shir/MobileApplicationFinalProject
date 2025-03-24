@@ -1,5 +1,6 @@
 package com.example.foodie_finder.data.remote
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.cloudinary.android.MediaManager
@@ -10,8 +11,10 @@ import com.cloudinary.android.policy.UploadPolicy
 import com.example.foodie_finder.BuildConfig
 import com.example.foodie_finder.base.MyApplication
 import com.example.foodie_finder.utils.extensions.toFile
+import java.io.File
+import java.io.FileOutputStream
 
-class CloudinaryModel {
+class CloudinaryModel private constructor() {
 
     init {
         val config = mapOf(
@@ -29,9 +32,20 @@ class CloudinaryModel {
         }
     }
 
-    fun uploadBitmap(
-        bitmap: Bitmap,
-        name: String,
+    companion object {
+        @Volatile
+        private var instance: CloudinaryModel? = null
+
+        fun getInstance(): CloudinaryModel {
+            return instance ?: synchronized(this) {
+                instance ?: CloudinaryModel().also { instance = it }
+            }
+        }
+    }
+
+    fun uploadImageToCloudinary(
+        image: Bitmap,
+        name: String?,
         onSuccess: (String) -> Unit,
         onError: (String) -> Unit
     ) {

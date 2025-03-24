@@ -1,33 +1,34 @@
 package com.example.foodie_finder
 
-
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.foodie_finder.databinding.ActivityMainBinding
-import com.example.foodie_finder.data.model.Model
 import com.example.foodie_finder.ui.view.HomeFragmentDirections
 import com.example.foodie_finder.ui.view.PostDetailsFragmentDirections
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.foodie_finder.ui.viewModel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private var navController: NavController? = null
     private var binding: ActivityMainBinding? = null
+    private var viewModel: MainActivityViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.main_nav_host) as? NavHostFragment
 
         navController = navHostFragment?.navController
+
         navController?.let {
             NavigationUI.setupActionBarWithNavController(
                 activity = this,
@@ -56,14 +58,27 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        val bottomNavigationView: BottomNavigationView = findViewById(R.id.main_bottom_nav)
-        navController?.let { NavigationUI.setupWithNavController(bottomNavigationView, it) }
+        binding?.mainBottomNav?.let { mainBottomNav ->
+            navController?.let { navController ->
+                NavigationUI.setupWithNavController(
+                    mainBottomNav,
+                    navController
+                )
+            }
+        }
 
-        navController?.let {it.addOnDestinationChangedListener { _, destination, _ ->
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        }}
+        navController?.addOnDestinationChangedListener { _, destination, _ ->
+            supportActionBar?.setDisplayHomeAsUpEnabled(
+                destination.id != R.id.homeFragment
+                        && destination.id != R.id.loginFragment
+                        && destination.id != R.id.registerFragment
+            )
+        }
 
-        if (!Model.shared.isUserLoggedIn()) {
+        binding?.mainBottomNav?.visibility = View.VISIBLE
+
+        if (viewModel?.isUserLoggedIn() == false) {
+            binding?.mainBottomNav?.visibility = View.GONE
             navController?.navigate(R.id.loginFragment)
         }
     }
@@ -78,17 +93,11 @@ class MainActivity : AppCompatActivity() {
 
         when (currentDestination?.id) {
             R.id.homeFragment -> {
-                menu?.clear()
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
-                menuInflater.inflate(R.menu.home_menu, menu)
+                menuInflater.inflate(R.menu.logout_menu, menu)
             }
 
             R.id.postDetailsFragment -> {
                 menuInflater.inflate(R.menu.menu_edit_student, menu)
-            }
-
-            R.id.loginFragment -> {
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
             }
 
             else -> {
@@ -114,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.logout -> {
-                Model.shared.signOut()
+                viewModel?.signOut()
                 val action =
                     HomeFragmentDirections.actionStudentsListFragmentToLoginFragment()
                 navController?.navigate(action)
