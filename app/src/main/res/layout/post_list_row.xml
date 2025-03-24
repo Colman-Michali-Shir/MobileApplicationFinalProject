@@ -47,22 +47,20 @@
 
             </LinearLayout>
 
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
                 android:layout_marginTop="10dp"
-                android:background="?attr/colorOnBackground"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/userProfilePicture" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+
 
             <ImageView
                 android:id="@+id/photoUrlImageView"
                 android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
                 android:layout_height="194dp"
-
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/woman" />
 
