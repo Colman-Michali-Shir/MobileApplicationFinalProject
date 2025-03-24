@@ -14,6 +14,8 @@ import com.google.firebase.firestore.FieldValue
 data class Post(
     @PrimaryKey var id: String,
     val postedBy: String,
+    val username: String,
+    val userProfileImg: String? = "",
     val title: String,
     val content: String,
     val rating: Int,
@@ -38,6 +40,8 @@ data class Post(
 
         private const val ID_KEY = "id"
         private const val USER_ID = "postedBy"
+        private const val USERNAME = "username"
+        private const val USER_PROFILE_PICTURE = "userProfilePicture"
         private const val TITLE = "title"
         private const val CONTENT = "content"
         private const val RATING = "rating"
@@ -48,6 +52,8 @@ data class Post(
         fun fromJSON(json: Map<String, Any>): Post {
             val id = json[ID_KEY] as? String ?: ""
             val postedBy = json[USER_ID] as? String ?: ""
+            val username = json[USERNAME] as? String ?: ""
+            val userProfilePicture = json[USER_PROFILE_PICTURE] as? String ?: ""
             val title = json[TITLE] as? String ?: ""
             val content = json[CONTENT] as? String ?: ""
             val rating = (json[RATING] as? Number)?.toInt() ?: 0
@@ -60,6 +66,8 @@ data class Post(
             return Post(
                 id = id,
                 postedBy =postedBy,
+                username = username,
+                userProfileImg = userProfilePicture,
                 title = title,
                 content = content,
                 rating = rating,
@@ -74,6 +82,8 @@ data class Post(
         get() = hashMapOf(
             ID_KEY to id,
             USER_ID to postedBy,
+            USERNAME to username,
+            USER_PROFILE_PICTURE to userProfileImg,
             TITLE to title,
             CONTENT to content,
             RATING to rating,

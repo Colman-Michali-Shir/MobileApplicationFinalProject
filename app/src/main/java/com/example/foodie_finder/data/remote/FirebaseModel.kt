@@ -48,6 +48,7 @@ class FirebaseModel private constructor() {
             .addOnSuccessListener { postsJson ->
                 val posts: MutableList<Post> = mutableListOf()
                 for(json in postsJson){
+                   
                     posts.add(Post.fromJSON(json.data))
                 }
                 Log.d("TAG", posts.size.toString())

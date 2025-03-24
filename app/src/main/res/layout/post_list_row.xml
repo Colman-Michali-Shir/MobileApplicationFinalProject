@@ -15,7 +15,7 @@
         app:srcCompat="@drawable/woman" />
 
     <TextView
-        android:id="@+id/userTextView"
+        android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -40,11 +40,12 @@
 
     <ImageView
         android:id="@+id/photoUrlImageView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
+        android:scaleType="fitXY"
         app:srcCompat="@drawable/woman" />
 
     <TextView
