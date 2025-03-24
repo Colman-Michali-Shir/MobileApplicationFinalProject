@@ -92,6 +92,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:src="@drawable/bookmark"
+        app:tint="@android:color/black"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/postContent"
         app:layout_constraintTop_toBottomOf="@+id/postContent" />
