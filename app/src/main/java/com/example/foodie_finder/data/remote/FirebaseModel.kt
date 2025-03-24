@@ -10,7 +10,10 @@ import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
@@ -46,13 +49,34 @@ class FirebaseModel private constructor() {
             .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .get()
             .addOnSuccessListener { postsJson ->
-                val posts: MutableList<Post> = mutableListOf()
-                for(json in postsJson){
-                   
-                    posts.add(Post.fromJSON(json.data))
+                val postsList: MutableList<Post> = mutableListOf()
+                val tasks = mutableListOf<Task<DocumentSnapshot>>()
+
+                for(postDoc in postsJson){
+                    val post = Post.fromJSON(postDoc.data)
+                    val userRef = postDoc.getDocumentReference("postedBy")
+                    if(userRef != null) {
+                        val userTask = userRef.get().addOnSuccessListener { userDoc ->
+                            if (userDoc.exists()) {
+                                val username =
+                                    userDoc.getString("firstName") + userDoc.getString("lastName")
+                                val profilePic = userDoc.getString("avatarUrl") ?: ""
+                                post.username = username
+                                post.userProfileImg = profilePic
+                            }
+                        }
+                        tasks.add(userTask)
+                    }
+                    postsList.add(post)
                 }
-                Log.d("TAG", posts.size.toString())
-                callback(posts)
+
+                Tasks.whenAllSuccess<DocumentSnapshot>(tasks).addOnSuccessListener {
+                    callback(postsList) // Return the full list after all user data is fetched
+                }.addOnFailureListener {
+                    callback(emptyList()) // Handle failure case
+                }
+
+
             }
             .addOnFailureListener{
                 callback(emptyList())

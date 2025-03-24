@@ -14,8 +14,8 @@ import com.google.firebase.firestore.FieldValue
 data class Post(
     @PrimaryKey var id: String,
     val postedBy: String,
-    val username: String,
-    val userProfileImg: String? = "",
+    var username: String,
+    var userProfileImg: String? = "",
     val title: String,
     val content: String,
     val rating: Int,
@@ -25,7 +25,7 @@ data class Post(
 ){
     companion object {
 
-        private const val LOCAL_LAST_UPDATED = "localStudentLastUpdated"
+        private const val LOCAL_LAST_UPDATED = "localPostLastUpdated"
 
         var lastUpdated: Long
             get() = MyApplication.Globals.context?.getSharedPreferences("TAG", Context.MODE_PRIVATE)
