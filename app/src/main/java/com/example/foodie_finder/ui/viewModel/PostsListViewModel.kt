@@ -10,7 +10,4 @@ class PostsListViewModel : ViewModel() {
 
     var posts: LiveData<List<Post>> = PostModel.shared.allPosts
 
-    fun refreshAllPosts() {
-
-    }
 }

@@ -2,19 +2,21 @@ package com.example.foodie_finder.data.local
 
 import android.content.Context
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.foodie_finder.base.MyApplication
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
-@Entity
+@Entity(tableName = "posts",
+    foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["postedBy"])])
 data class Post(
     @PrimaryKey var id: String,
     val postedBy: String,
     val title: String,
     val content: String,
-    val rating: Number,
+    val rating: Int,
     val imgUrl: String? = "",
     val lastUpdateTime: Long? = null,
     val creationTime: Long
@@ -48,7 +50,7 @@ data class Post(
             val postedBy = json[USER_ID] as? String ?: ""
             val title = json[TITLE] as? String ?: ""
             val content = json[CONTENT] as? String ?: ""
-            val rating = json[RATING] as? Number ?: 0
+            val rating = json[RATING] as? Int ?: 0
             val imgUrl = json[IMAGE_URL] as? String ?: ""
             val lastUpdateTime = json[LAST_UPDATE_TIME] as? Timestamp
             val creationTime = json[CREATION_TIME] as? Timestamp

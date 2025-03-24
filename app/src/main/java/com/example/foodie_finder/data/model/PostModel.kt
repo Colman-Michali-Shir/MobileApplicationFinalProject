@@ -19,8 +19,12 @@ class PostModel private constructor(){
     private val firebaseModel = FirebaseModel()
     private val cloudinaryModel = CloudinaryModel()
 
-    val allPosts: LiveData<List<Post>> = database.PostDao().getAllPosts()
+    val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
+
+    init {
+        database.postDao().getAllPosts().observeForever{allPosts.postValue(it)}
+    }
 
     companion object {
         val shared = PostModel()

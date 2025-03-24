@@ -9,11 +9,11 @@ import com.example.foodie_finder.data.local.dao.PostDao
 import com.example.foodie_finder.data.local.dao.StudentDao
 import com.example.foodie_finder.data.model.Converters
 
-@Database(entities = [Student::class], version = 1)
+@Database(entities = [Student::class, Post::class, User::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppLocalDbRepository : RoomDatabase() {
     abstract fun studentDao(): StudentDao
-    abstract fun PostDao(): PostDao
+    abstract fun postDao(): PostDao
 }
 
 object AppLocalDb {

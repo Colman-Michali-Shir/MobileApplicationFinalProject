@@ -8,16 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodie_finder.adapter.PostsAdapter
 import com.example.foodie_finder.interfaces.OnItemClickListener
-import com.example.foodie_finder.data.model.Model
 import com.example.foodie_finder.data.local.Student
-import com.example.foodie_finder.adapter.UsersRecyclerAdapter
 import com.example.foodie_finder.databinding.FragmentPostsListBinding
 import com.example.foodie_finder.ui.viewModel.PostsListViewModel
 
 class HomeFragment : Fragment() {
     private var students: List<Student>? = null
-    private var adapter: UsersRecyclerAdapter? = null
+    private var adapter: PostsAdapter? = null
     private var binding: FragmentPostsListBinding? = null
 
     private val viewModel: PostsListViewModel by viewModels()
@@ -28,49 +27,56 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentPostsListBinding.inflate(inflater, container, false)
 
-        binding?.recyclerView?.setHasFixedSize(true)
+        binding?.postsList?.setHasFixedSize(true)
         val layoutManger = LinearLayoutManager(context)
-        binding?.recyclerView?.layoutManager = layoutManger
+        binding?.postsList?.layoutManager = layoutManger
 
-        adapter = UsersRecyclerAdapter(viewModel.posts.value)
+        adapter = PostsAdapter(viewModel.posts.value)
 
-        adapter?.listener = object : OnItemClickListener {
-            override fun onItemClick(id: String) {
-                val action =
-                    HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
-                        id
-                    )
-                binding?.root?.let { Navigation.findNavController(it).navigate(action) }
-            }
+
+        viewModel.posts.observe(viewLifecycleOwner) {
+            adapter?.posts = it
+            adapter?.notifyDataSetChanged()
         }
 
-        binding?.recyclerView?.adapter = adapter
+//        adapter?.listener = object : OnItemClickListener {
+//            override fun onItemClick(id: String) {
+//                val action =
+//                    HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
+//                        id
+//                    )
+//                binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+//            }
+//        }
+
+        binding?.postsList?.adapter = adapter
 
         return binding?.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setHasOptionsMenu(true)
+//    }
 
-    private fun getAllStudents() {
+//    private fun getAllStudents() {
+//
+//        binding?.progressBar?.visibility = View.VISIBLE
+//
+//
+//        Model.shared.getAllStudents {
+//            this.students = it
+//            adapter?.set(it)
+//            adapter?.notifyDataSetChanged()
+//
+//            binding?.progressBar?.visibility = View.GONE
+//        }
+//    }
 
-        binding?.progressBar?.visibility = View.VISIBLE
-
-        Model.shared.getAllStudents {
-            this.students = it
-            adapter?.set(it)
-            adapter?.notifyDataSetChanged()
-
-            binding?.progressBar?.visibility = View.GONE
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        getAllStudents()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        getAllStudents()
+//    }
 
     override fun onDestroy() {
         super.onDestroy()
