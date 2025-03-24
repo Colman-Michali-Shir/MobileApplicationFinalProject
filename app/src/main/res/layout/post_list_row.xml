@@ -4,98 +4,124 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/userProfilePicture"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/woman" />
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:checkable="true">
 
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="username"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@+id/userProfilePicture"
-        app:layout_constraintStart_toEndOf="@+id/userProfilePicture"
-        app:layout_constraintTop_toTopOf="@+id/userProfilePicture" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="10dp"
-        android:background="?attr/colorOnBackground"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userProfilePicture" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/userProfilePicture"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/woman" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="15dp"
+                    android:text="username"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnBackground" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="10dp"
+                android:background="?attr/colorOnBackground"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/userProfilePicture" />
+
+            <ImageView
+                android:id="@+id/photoUrlImageView"
+                android:layout_width="match_parent"
+                android:layout_height="194dp"
+
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/woman" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/postTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="title"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                <TextView
+                    android:id="@+id/postContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="content"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/bookmark"
+                    app:tint="@android:color/black" />
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:progressTint="?attr/colorOnBackground"
+                    android:secondaryProgressTint="?attr/colorSecondary" />
+
+            </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/photoUrlImageView"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/woman" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/postTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="15dp"
-        android:text="title"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="@+id/photoUrlImageView"
-        app:layout_constraintTop_toBottomOf="@+id/photoUrlImageView"
-         />
 
-    <!-- Content Text -->
-    <TextView
-        android:id="@+id/postContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="content"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@+id/postTitle"
-        app:layout_constraintTop_toBottomOf="@+id/postTitle" />
-
-    <RatingBar
-        android:id="@+id/ratingBar"
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:isIndicator="true"
-        android:progressTint="?attr/colorOnBackground"
-        android:secondaryProgressTint="?attr/colorSecondary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postContent" />
-
-    <ImageButton
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:src="@drawable/bookmark"
-        app:tint="@android:color/black"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/postContent"
-        app:layout_constraintTop_toBottomOf="@+id/postContent" />
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
