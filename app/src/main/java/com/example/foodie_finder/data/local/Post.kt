@@ -2,7 +2,6 @@ package com.example.foodie_finder.data.local
 
 import android.content.Context
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.foodie_finder.base.MyApplication
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
@@ -10,7 +9,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
 @Entity(tableName = "posts")
-//    foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["postedBy"])])
 data class Post(
     @PrimaryKey var id: String,
     val postedBy: String,
@@ -22,7 +20,7 @@ data class Post(
     val imgUrl: String? = "",
     val lastUpdateTime: Long? = null,
     val creationTime: Long
-){
+) {
     companion object {
 
         private const val LOCAL_LAST_UPDATED = "localPostLastUpdated"
@@ -30,7 +28,6 @@ data class Post(
         var lastUpdated: Long
             get() = MyApplication.Globals.context?.getSharedPreferences("TAG", Context.MODE_PRIVATE)
                 ?.getLong(LOCAL_LAST_UPDATED, 0) ?: 0
-
             set(value) {
                 MyApplication.Globals.context
                     ?.getSharedPreferences("TAG", Context.MODE_PRIVATE)?.apply {
@@ -61,11 +58,12 @@ data class Post(
             val lastUpdateTime = json[LAST_UPDATE_TIME] as? Timestamp
             val creationTime = json[CREATION_TIME] as? Timestamp
             val lastUpdatedLongTimestamp = lastUpdateTime?.toDate()?.time
-            val creationTimeLongTimestamp = creationTime?.toDate()?.time ?: Timestamp.now().toDate().time
+            val creationTimeLongTimestamp =
+                creationTime?.toDate()?.time ?: Timestamp.now().toDate().time
 
             return Post(
                 id = id,
-                postedBy =postedBy,
+                postedBy = postedBy,
                 username = username,
                 userProfileImg = userProfilePicture,
                 title = title,

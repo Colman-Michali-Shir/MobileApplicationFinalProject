@@ -1,6 +1,5 @@
 package com.example.foodie_finder.data.remote
 
-import android.util.Log
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
@@ -44,7 +43,7 @@ class FirebaseModel private constructor() {
         }
     }
 
-    fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback){
+    fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
             .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .get()
@@ -52,16 +51,16 @@ class FirebaseModel private constructor() {
                 val postsList: MutableList<Post> = mutableListOf()
                 val tasks = mutableListOf<Task<DocumentSnapshot>>()
 
-                for(postDoc in postsJson){
+                for (postDoc in postsJson) {
                     val post = Post.fromJSON(postDoc.data)
                     val userRef = postDoc.getDocumentReference("postedBy")
-                    if(userRef != null) {
+                    if (userRef != null) {
                         val userTask = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
-                                val username =
+                                val fullName =
                                     userDoc.getString("firstName") + userDoc.getString("lastName")
                                 val profilePic = userDoc.getString("avatarUrl") ?: ""
-                                post.username = username
+                                post.username = fullName
                                 post.userProfileImg = profilePic
                             }
                         }
@@ -78,7 +77,7 @@ class FirebaseModel private constructor() {
 
 
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 callback(emptyList())
             }
     }
