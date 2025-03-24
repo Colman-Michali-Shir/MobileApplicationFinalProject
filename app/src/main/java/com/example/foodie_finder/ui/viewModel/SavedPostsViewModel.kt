@@ -7,13 +7,13 @@ import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.model.PostModel
 
 
-class PostsListViewModel : ViewModel() {
+class SavedPostsViewModel : ViewModel() {
 
-    private val _posts = MutableLiveData<List<Post>>()
-    var posts: LiveData<List<Post>> = PostModel.shared.allPosts
+    private val _savedPosts = MutableLiveData<List<Post>>()
+    var savedPosts: LiveData<List<Post>> = PostModel.shared.savedPosts
 
-    fun refreshAllPosts() {
-        PostModel.shared.refreshAllPosts()
+    fun refreshSavedPost() {
+        PostModel.shared.getSavedPosts()
     }
 
     fun savePost(postId: String, callback: (Boolean) -> Unit) {

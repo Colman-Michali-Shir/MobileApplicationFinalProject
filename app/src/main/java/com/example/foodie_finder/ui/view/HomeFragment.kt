@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,9 +31,42 @@ class HomeFragment : Fragment() {
         binding?.postsList?.setHasFixedSize(true)
         binding?.postsList?.layoutManager = LinearLayoutManager(context)
 
-        adapter = PostsAdapter(viewModel.posts.value)
+        adapter = PostsAdapter(viewModel.posts.value, onSavePost = { postId ->
+            viewModel.savePost(postId) { success ->
+                if (success) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Post $postId saved successfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to save post $postId",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        },
+            onRemoveSavePost = { postId ->
+                viewModel.removeSavedPost(postId) { success ->
+                    if (success) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Post $postId removed successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to remove post $postId",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            })
 
-        viewModel.posts.observe(viewLifecycleOwner) {posts ->
+        viewModel.posts.observe(viewLifecycleOwner) { posts ->
 
             Log.d("TAG", "Observed posts: $posts") // Debug log
 
@@ -48,13 +82,14 @@ class HomeFragment : Fragment() {
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
             binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
-            binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
+            binding?.progressBar?.visibility =
+                if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
         adapter?.listener = object : OnItemClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "On click post $post")
-                post?.let{ clickedPost ->
+                post?.let { clickedPost ->
 //                    val action =
 //                        HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
 //                            clickedPost.id
@@ -80,7 +115,7 @@ class HomeFragment : Fragment() {
         binding = null
     }
 
-    private fun getAllPosts(){
+    private fun getAllPosts() {
         binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshAllPosts()
     }

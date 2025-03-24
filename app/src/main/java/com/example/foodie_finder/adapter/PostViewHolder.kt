@@ -1,26 +1,29 @@
 package com.example.foodie_finder.adapter
 
-import android.util.Log
-import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodie_finder.R
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.databinding.PostListRowBinding
-import com.squareup.picasso.Picasso
-import com.example.foodie_finder.R
 import com.example.foodie_finder.interfaces.OnItemClickListener
+import com.squareup.picasso.Picasso
 
-class PostViewHolder(private val binding: PostListRowBinding,  listener: OnItemClickListener?): RecyclerView.ViewHolder(binding.root) {
+class PostViewHolder(
+    private val binding: PostListRowBinding,
+    listener: OnItemClickListener?,
+    private val onSavePost: (String) -> Unit,
+    private val onRemoveSavePost: (String) -> Unit
+) :
+    RecyclerView.ViewHolder(binding.root) {
 
     private var post: Post? = null
 
     init {
-
         itemView.setOnClickListener {
             listener?.onItemClick(post)
         }
     }
 
-    fun bind(post: Post?){
+    fun bind(post: Post?) {
         this.post = post
 
         binding.username.text = post?.username
@@ -44,8 +47,22 @@ class PostViewHolder(private val binding: PostListRowBinding,  listener: OnItemC
                     .placeholder(R.drawable.woman)
                     .into(binding.photoUrlImageView)
             }
+
+
+            binding.saveButton.setOnClickListener {
+                val isSaved = binding.saveButton.tag as? Boolean ?: false
+
+                if (isSaved) {
+                    binding.saveButton.setImageResource(R.drawable.bookmark)
+                    onRemoveSavePost(post.id)
+                } else {
+                    binding.saveButton.setImageResource(R.drawable.baseline_bookmark_24)
+                    onSavePost(post.id)
+                }
+
+                binding.saveButton.tag = !isSaved  // Toggle the state
+            }
         }
+
     }
-
-
 }

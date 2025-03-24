@@ -1,6 +1,5 @@
 package com.example.foodie_finder.data.remote
 
-import android.util.Log
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
@@ -44,7 +43,7 @@ class FirebaseModel private constructor() {
         }
     }
 
-    fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback){
+    fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
             .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .get()
@@ -52,10 +51,10 @@ class FirebaseModel private constructor() {
                 val postsList: MutableList<Post> = mutableListOf()
                 val tasks = mutableListOf<Task<DocumentSnapshot>>()
 
-                for(postDoc in postsJson){
+                for (postDoc in postsJson) {
                     val post = Post.fromJSON(postDoc.data)
                     val userRef = postDoc.getDocumentReference("postedBy")
-                    if(userRef != null) {
+                    if (userRef != null) {
                         val userTask = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
                                 val username =
@@ -78,7 +77,7 @@ class FirebaseModel private constructor() {
 
 
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 callback(emptyList())
             }
     }
@@ -240,5 +239,67 @@ class FirebaseModel private constructor() {
                 callback(false, errorMessage ?: "Unknown error", null)
             }
         }
+    }
+
+    fun getSavedPosts(callback: (List<Post>) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(emptyList())
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .whereEqualTo("userId", userId) // Filter saved posts by user ID
+            .get()
+            .addOnSuccessListener { result ->
+                // TODO: do it as reference
+                val postIds =
+                    result.documents.mapNotNull { it.getString("postId") } // Extract post IDs
+
+                if (postIds.isEmpty()) {
+                    callback(emptyList()) // No saved posts
+                    return@addOnSuccessListener
+                }
+
+                // Fetch actual posts by IDs
+                database.collection(Constants.COLLECTIONS.POSTS)
+                    .whereIn("id", postIds) // Fetch posts with matching IDs
+                    .get()
+                    .addOnSuccessListener { postResult ->
+                        val posts =
+                            postResult.documents.mapNotNull { it.toObject(Post::class.java) }
+                        callback(posts) // Return the list of saved posts
+                    }
+                    .addOnFailureListener {
+                        callback(emptyList()) // Handle failure case
+                    }
+            }
+            .addOnFailureListener {
+                callback(emptyList()) // Handle failure case
+            }
+    }
+
+
+    fun savePost(postId: String, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false)
+
+        val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+
+        val savedPost = mapOf(
+            "userId" to userId,
+            "postId" to postId,
+            "savedAt" to System.currentTimeMillis().toFirebaseTimestamp
+        )
+
+        savedPostRef.set(savedPost)
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
+    }
+
+    fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false)
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+            .delete()
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
     }
 }

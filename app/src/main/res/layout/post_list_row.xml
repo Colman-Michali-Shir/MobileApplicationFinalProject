@@ -8,12 +8,12 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="8dp"
+        android:checkable="true"
         android:clickable="true"
         android:focusable="true"
-        android:checkable="true">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,8 +39,8 @@
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
                     android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
                     android:text="username"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:textColor="?attr/colorOnBackground" />
@@ -49,9 +49,9 @@
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
 
                 />
 
@@ -59,8 +59,8 @@
             <ImageView
                 android:id="@+id/photoUrlImageView"
                 android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
                 android:layout_height="194dp"
+                android:layout_marginTop="5dp"
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/woman" />
 
@@ -75,8 +75,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="title"
-                    android:textColor="?attr/colorOnBackground"
-                    android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textColor="?attr/colorOnBackground" />
 
                 <TextView
                     android:id="@+id/postContent"
@@ -84,8 +84,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="content"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?android:attr/textColorSecondary" />
 
             </LinearLayout>
 
@@ -98,12 +98,12 @@
 
                 <ImageButton
                     android:id="@+id/saveButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginEnd="8dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/bookmark"
-                    app:tint="@android:color/black" />
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/bookmark" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"
@@ -112,6 +112,7 @@
                     android:layout_height="wrap_content"
                     android:isIndicator="true"
                     android:progressTint="?attr/colorOnBackground"
+                    android:scaleType="fitCenter"
                     android:secondaryProgressTint="?attr/colorSecondary" />
 
             </LinearLayout>
