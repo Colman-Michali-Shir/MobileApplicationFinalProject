@@ -7,11 +7,9 @@ import com.example.foodie_finder.data.model.UserModel
 
 class ProfileViewModel : ViewModel() {
 
-    var user: User?
+    val user: User?
         get() = UserModel.shared.user
-        set(value) {
-            UserModel.shared.user = value
-        }
+
 
     fun updateUser(user: User, profileImage: Bitmap?, callback: (Boolean) -> Unit) {
         UserModel.shared.updateUser(user, profileImage, callback)

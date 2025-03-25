@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/post_input_form"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/postImageView"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="postImageView"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/placeholderimg" />
+
+
+    <ImageButton
+        android:id="@+id/uploadImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:contentDescription="uploadImageButton"
+        android:src="@drawable/add_photo"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/postImageView" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/restaurantNameLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Restaurant name"
+        android:padding="12dp"
+        app:endIconMode="clear_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/uploadImageButton"
+        app:layout_constraintWidth_percent="0.7">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/restaurantNameTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/reviewLayout"
+        style="?attr/textInputFilledDenseStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Write your review here"
+        android:padding="12dp"
+        app:boxBackgroundColor="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restaurantNameLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/reviewTextField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:isIndicator="false"
+        android:numStars="5"
+        android:rating="0"
+        android:stepSize="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reviewLayout" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

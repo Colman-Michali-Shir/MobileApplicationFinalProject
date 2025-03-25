@@ -1,20 +1,15 @@
 package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.foodie_finder.R
-import com.example.foodie_finder.databinding.FragmentEditPostBinding
-import com.example.foodie_finder.utils.dialogs.alert.showSuccessOperationDialog
-import com.example.foodie_finder.data.model.Model
 import com.example.foodie_finder.data.local.Student
-import com.example.foodie_finder.utils.dialogs.pickers.showDatePickerDialog
-import com.example.foodie_finder.utils.dialogs.pickers.showTimePickerDialog
-import com.example.foodie_finder.utils.DateTimeUtils
-import java.sql.Time
+import com.example.foodie_finder.data.model.Model
+import com.example.foodie_finder.databinding.FragmentEditPostBinding
 
 class EditPostFragment : Fragment() {
     private var student: Student? = null
@@ -36,74 +31,74 @@ class EditPostFragment : Fragment() {
     ): View? {
         binding = FragmentEditPostBinding.inflate(inflater, container, false)
 
-        setUp()
+//        setUp()
         binding?.cancelButton?.setOnClickListener(::onCancelClicked)
-        binding?.saveButton?.setOnClickListener(::onSaveClicked)
+//        binding?.saveButton?.setOnClickListener(::onSaveClicked)
         binding?.deleteButton?.setOnClickListener(::onDeleteClicked)
 
         return binding?.root
     }
 
-    private fun setUp() {
-        Model.shared.getStudentById(id) {
-            student = it
-            student?.let { student ->
-                binding?.studentInputForm?.apply {
-                    nameEditText.setText(student.name)
-                    idEditText.setText(student.id)
-                    phoneEditText.setText(student.phone ?: "")
-                    addressEditText.setText(student.address ?: "")
-                    checkBox.isChecked = student.isChecked
-
-                    birthDateEditText.setText(
-                        student.birthDate?.let(DateTimeUtils::formatDate) ?: ""
-                    )
-                    birthTimeEditText.setText(
-                        student.birthTime?.let(DateTimeUtils::formatTime) ?: ""
-                    )
-
-                    showDatePickerDialog(birthDateEditText, context)
-                    showTimePickerDialog(birthTimeEditText, context)
-                }
-            }
-
-        }
-    }
-
-    private fun onSaveClicked(view: View) {
-        val updatedName = binding?.studentInputForm?.nameEditText?.text.toString()
-        val updatedId = binding?.studentInputForm?.idEditText?.text.toString()
-        val updatedPhone = binding?.studentInputForm?.phoneEditText?.text.toString()
-        val updatedAddress = binding?.studentInputForm?.addressEditText?.text.toString()
-        val updatedIsChecked = binding?.studentInputForm?.checkBox?.isChecked ?: false
-        val updatedBirthDate = binding?.studentInputForm?.birthDateEditText?.text.toString()
-        val updatedBirthTime = binding?.studentInputForm?.birthTimeEditText?.text.toString()
-        
-        student?.apply {
-            // I don't want update id
-//            id = updatedId
-            name = updatedName
-            phone = updatedPhone
-            address = updatedAddress
-            isChecked = updatedIsChecked
-            birthDate = updatedBirthDate.takeIf { it.isNotBlank() }
-                ?.let { DateTimeUtils.parseDate(it) }
-            birthTime = updatedBirthTime.takeIf { it.isNotBlank() }?.let {
-                DateTimeUtils.parseTime(it)?.let { birthTime -> Time(birthTime.time) }
-            }
-        }
-
-
-        student?.let {
-            Model.shared.updateStudent(it) {
-                Navigation.findNavController(view).popBackStack()
-                context?.let { it ->
-                    showSuccessOperationDialog(it, "edit")
-                }
-            }
-        }
-
-    }
+//    private fun setUp() {
+//        Model.shared.getStudentById(id) {
+//            student = it
+//            student?.let { student ->
+//                binding?.studentInputForm?.apply {
+//                    nameEditText.setText(student.name)
+//                    idEditText.setText(student.id)
+//                    phoneEditText.setText(student.phone ?: "")
+//                    addressEditText.setText(student.address ?: "")
+//                    checkBox.isChecked = student.isChecked
+//
+//                    birthDateEditText.setText(
+//                        student.birthDate?.let(DateTimeUtils::formatDate) ?: ""
+//                    )
+//                    birthTimeEditText.setText(
+//                        student.birthTime?.let(DateTimeUtils::formatTime) ?: ""
+//                    )
+//
+//                    showDatePickerDialog(birthDateEditText, context)
+//                    showTimePickerDialog(birthTimeEditText, context)
+//                }
+//            }
+//
+//        }
+//    }
+//
+//    private fun onSaveClicked(view: View) {
+//        val updatedName = binding?.studentInputForm?.nameEditText?.text.toString()
+//        val updatedId = binding?.studentInputForm?.idEditText?.text.toString()
+//        val updatedPhone = binding?.studentInputForm?.phoneEditText?.text.toString()
+//        val updatedAddress = binding?.studentInputForm?.addressEditText?.text.toString()
+//        val updatedIsChecked = binding?.studentInputForm?.checkBox?.isChecked ?: false
+//        val updatedBirthDate = binding?.studentInputForm?.birthDateEditText?.text.toString()
+//        val updatedBirthTime = binding?.studentInputForm?.birthTimeEditText?.text.toString()
+//
+//        student?.apply {
+//            // I don't want update id
+////            id = updatedId
+//            name = updatedName
+//            phone = updatedPhone
+//            address = updatedAddress
+//            isChecked = updatedIsChecked
+//            birthDate = updatedBirthDate.takeIf { it.isNotBlank() }
+//                ?.let { DateTimeUtils.parseDate(it) }
+//            birthTime = updatedBirthTime.takeIf { it.isNotBlank() }?.let {
+//                DateTimeUtils.parseTime(it)?.let { birthTime -> Time(birthTime.time) }
+//            }
+//        }
+//
+//
+//        student?.let {
+//            Model.shared.updateStudent(it) {
+//                Navigation.findNavController(view).popBackStack()
+//                context?.let { it ->
+//                    showSuccessOperationDialog(it, "edit")
+//                }
+//            }
+//        }
+//
+//    }
 
     private fun onCancelClicked(view: View) {
         Navigation.findNavController(view).popBackStack()

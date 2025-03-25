@@ -8,6 +8,7 @@ import com.example.foodie_finder.base.GetStudentByIdCallback
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
+import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -135,7 +136,7 @@ class FirebaseModel private constructor() {
         return auth.currentUser != null
     }
 
-    fun getUser(callback: (User?) -> Unit) {
+    fun getConnectedUser(callback: (User?) -> Unit) {
         val userId = auth.currentUser?.uid ?: return callback(null)
 
         database.collection(Constants.COLLECTIONS.USERS).document(userId)
@@ -157,8 +158,15 @@ class FirebaseModel private constructor() {
     ) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                val user = auth.currentUser
-                callback(true, "Login successful: ${user?.email}", null)
+//                val user = auth.currentUser
+                UserModel.shared.loadUser { user ->
+                    if (user != null) {
+                        callback(true, "Login successful: ${user.email}", null)
+                    } else {
+                        callback(false, "Failed to load user data", null)
+                    }
+                }
+
             }
             .addOnFailureListener {
                 handleFirebaseError(callback, it.message)
@@ -199,6 +207,7 @@ class FirebaseModel private constructor() {
                 handleFirebaseError(callback, it.message)
             }
     }
+
 
     private fun handleFirebaseError(
         callback: (Boolean, String?, List<String>?) -> Unit,
