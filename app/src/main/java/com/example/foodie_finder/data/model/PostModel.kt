@@ -6,6 +6,7 @@ import com.example.foodie_finder.data.local.AppLocalDbRepository
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
+import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.Executors
 
 class PostModel private constructor() {
@@ -21,13 +22,19 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
-    val savedPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
+    val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>(emptyList())
+    val savedPosts: MutableLiveData<List<String>> = MutableLiveData<List<String>>(emptyList())
 
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
 
     init {
         database.postDao().getAllPosts().observeForever { allPosts.postValue(it) }
+        FirebaseAuth.getInstance().currentUser?.uid?.let {
+            database.savedPostDao().getSavedPostsByUser(it)
+                .observeForever { posts -> savedPosts.postValue(posts) }
+        }
+
+
         //TODO: change it to save post
     }
 
@@ -49,6 +56,9 @@ class PostModel private constructor() {
         }
     }
 
+//    fun isPostSaved(postId: String, callback: (Boolean) -> Unit) {
+//        firebaseModel.isPostSaved(postId, callback)
+//    }
 
     fun refreshAllPosts() {
         loadingState.postValue(LoadingState.LOADING)
@@ -71,6 +81,4 @@ class PostModel private constructor() {
             }
         }
     }
-
-
 }

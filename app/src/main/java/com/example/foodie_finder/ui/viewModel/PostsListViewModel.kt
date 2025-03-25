@@ -1,7 +1,6 @@
 package com.example.foodie_finder.ui.viewModel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.model.PostModel
@@ -9,11 +8,15 @@ import com.example.foodie_finder.data.model.PostModel
 
 class PostsListViewModel : ViewModel() {
 
-    private val _posts = MutableLiveData<List<Post>>()
     var posts: LiveData<List<Post>> = PostModel.shared.allPosts
+    var savedPosts: LiveData<List<String>> = PostModel.shared.savedPosts
 
     fun refreshAllPosts() {
         PostModel.shared.refreshAllPosts()
+    }
+
+    fun refreshSavedPosts() {
+        PostModel.shared.getSavedPosts()
     }
 
     fun savePost(postId: String, callback: (Boolean) -> Unit) {

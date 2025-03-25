@@ -3,9 +3,9 @@ package com.example.foodie_finder.data.remote
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
-import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
 import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.local.SavedPost
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
@@ -45,7 +45,10 @@ class FirebaseModel private constructor() {
 
     fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
-            .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .whereGreaterThanOrEqualTo(
+                Post.LAST_UPDATE_TIME,
+                sinceLastUpdated.toFirebaseTimestamp
+            )
             .get()
             .addOnSuccessListener { postsJson ->
                 val postsList: MutableList<Post> = mutableListOf()
@@ -53,12 +56,15 @@ class FirebaseModel private constructor() {
 
                 for (postDoc in postsJson) {
                     val post = Post.fromJSON(postDoc.data)
+
                     val userRef = postDoc.getDocumentReference("postedBy")
                     if (userRef != null) {
                         val userTask = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
                                 val username =
-                                    userDoc.getString("firstName") + userDoc.getString("lastName")
+                                    userDoc.getString("firstName") + " " + userDoc.getString(
+                                        "lastName"
+                                    )
                                 val profilePic = userDoc.getString("avatarUrl") ?: ""
                                 post.username = username
                                 post.userProfileImg = profilePic
@@ -70,26 +76,13 @@ class FirebaseModel private constructor() {
                 }
 
                 Tasks.whenAllSuccess<DocumentSnapshot>(tasks).addOnSuccessListener {
-                    callback(postsList) // Return the full list after all user data is fetched
+                    callback(postsList)
                 }.addOnFailureListener {
-                    callback(emptyList()) // Handle failure case
+                    callback(emptyList())
                 }
-
-
             }
             .addOnFailureListener {
                 callback(emptyList())
-            }
-    }
-
-    fun getAllStudents(callback: GetAllStudentsCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).get()
-            .addOnSuccessListener { result ->
-                val students = result.map { Student.fromJSON(it.data) }
-                callback(students)
-            }
-            .addOnFailureListener {
-                callback(emptyList()) // Return empty list on failure
             }
     }
 
@@ -241,40 +234,23 @@ class FirebaseModel private constructor() {
         }
     }
 
-    fun getSavedPosts(callback: (List<Post>) -> Unit) {
+    fun getSavedPosts(callback: (List<String>) -> Unit) {
         val userId = auth.currentUser?.uid ?: return callback(emptyList())
 
         database.collection(Constants.COLLECTIONS.SAVED_POSTS)
-            .whereEqualTo("userId", userId) // Filter saved posts by user ID
+            .whereEqualTo("userId", userId)
             .get()
-            .addOnSuccessListener { result ->
-                // TODO: do it as reference
-                val postIds =
-                    result.documents.mapNotNull { it.getString("postId") } // Extract post IDs
-
-                if (postIds.isEmpty()) {
-                    callback(emptyList()) // No saved posts
-                    return@addOnSuccessListener
+            .addOnSuccessListener { querySnapshot ->
+                val savedPostIds = querySnapshot.documents.mapNotNull { doc ->
+                    doc.getString("postId")
                 }
 
-                // Fetch actual posts by IDs
-                database.collection(Constants.COLLECTIONS.POSTS)
-                    .whereIn("id", postIds) // Fetch posts with matching IDs
-                    .get()
-                    .addOnSuccessListener { postResult ->
-                        val posts =
-                            postResult.documents.mapNotNull { it.toObject(Post::class.java) }
-                        callback(posts) // Return the list of saved posts
-                    }
-                    .addOnFailureListener {
-                        callback(emptyList()) // Handle failure case
-                    }
+                callback(savedPostIds)
             }
             .addOnFailureListener {
-                callback(emptyList()) // Handle failure case
+                callback(emptyList())
             }
     }
-
 
     fun savePost(postId: String, callback: (Boolean) -> Unit) {
         val userId = auth.currentUser?.uid ?: return callback(false)
@@ -282,13 +258,13 @@ class FirebaseModel private constructor() {
         val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .document("$userId-$postId")
 
-        val savedPost = mapOf(
-            "userId" to userId,
-            "postId" to postId,
-            "savedAt" to System.currentTimeMillis().toFirebaseTimestamp
+        val savedPost = SavedPost(
+            userId = userId,
+            postId = postId,
+            savedAt = System.currentTimeMillis()
         )
 
-        savedPostRef.set(savedPost)
+        savedPostRef.set(savedPost.json)
             .addOnSuccessListener { callback(true) }
             .addOnFailureListener { callback(false) }
     }

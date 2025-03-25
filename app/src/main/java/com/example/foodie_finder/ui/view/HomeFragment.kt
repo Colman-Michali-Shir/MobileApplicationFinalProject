@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,59 +30,36 @@ class HomeFragment : Fragment() {
         binding?.postsList?.setHasFixedSize(true)
         binding?.postsList?.layoutManager = LinearLayoutManager(context)
 
-        adapter = PostsAdapter(viewModel.posts.value, onSavePost = { postId ->
-            viewModel.savePost(postId) { success ->
-                if (success) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Post $postId saved successfully",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Failed to save post $postId",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        },
-            onRemoveSavePost = { postId ->
-                viewModel.removeSavedPost(postId) { success ->
-                    if (success) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Post $postId removed successfully",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Failed to remove post $postId",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            })
+        adapter = PostsAdapter(
+            viewModel.posts.value ?: emptyList(),
+            viewModel.savedPosts.value ?: emptyList(),
+            onSavePost = viewModel::savePost,
+            onRemoveSavePost = viewModel::removeSavedPost,
+        )
 
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
 
             Log.d("TAG", "Observed posts: $posts") // Debug log
 
-            adapter?.update(posts)
+            adapter?.updateAllPosts(posts)
             adapter?.notifyDataSetChanged()
+        }
 
-            binding?.progressBar?.visibility = View.GONE
+        viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
+
+            Log.d("TAG", "Observed posts: $posts") // Debug log
+
+            adapter?.updateSavedPosts(posts)
+            adapter?.notifyDataSetChanged()
         }
 
         binding?.swipeToRefresh?.setOnRefreshListener {
             viewModel.refreshAllPosts()
+            viewModel.refreshSavedPosts()
         }
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
             binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
-            binding?.progressBar?.visibility =
-                if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
         adapter?.listener = object : OnItemClickListener {
@@ -116,7 +92,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getAllPosts() {
-        binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshAllPosts()
+        viewModel.refreshSavedPosts()
     }
 }
