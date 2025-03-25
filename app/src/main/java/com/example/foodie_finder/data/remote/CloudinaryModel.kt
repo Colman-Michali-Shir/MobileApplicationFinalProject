@@ -44,7 +44,8 @@ class CloudinaryModel private constructor() {
         image: Bitmap,
         name: String,
         onSuccess: (String?) -> Unit,
-        onError: (String?) -> Unit
+        onError: (String?) -> Unit,
+        packageName: String? = "images"
     ) {
         val context = MyApplication.Globals.context ?: return
         val file = image.toFile(context, name)
@@ -52,7 +53,7 @@ class CloudinaryModel private constructor() {
         MediaManager.get().upload(file.path)
             .option(
                 "folder",
-                "images"
+                packageName
             ) // Optional: Specify a folder in your Cloudinary account
             .callback(object : UploadCallback {
                 override fun onStart(requestId: String) {
