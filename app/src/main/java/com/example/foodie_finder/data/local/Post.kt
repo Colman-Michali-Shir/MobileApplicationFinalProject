@@ -1,17 +1,20 @@
 package com.example.foodie_finder.data.local
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.foodie_finder.base.MyApplication
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "posts")
+@Parcelize
 data class Post(
     @PrimaryKey var id: String,
-    val postedBy: String,
+    var postedBy: String,
     var username: String,
     var userProfileImg: String? = "",
     val title: String,
@@ -20,7 +23,7 @@ data class Post(
     val imgUrl: String? = "",
     val lastUpdateTime: Long? = null,
     val creationTime: Long
-) {
+) : Parcelable {
     companion object {
 
         private const val LOCAL_LAST_UPDATED = "localPostLastUpdated"

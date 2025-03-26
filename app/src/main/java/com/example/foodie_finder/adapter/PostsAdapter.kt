@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.databinding.PostRowBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 
 class PostsAdapter(var posts: List<Post>?) : RecyclerView.Adapter<PostViewHolder>() {
 
     var listener: OnItemClickListener? = null
+    private val currentUserId = UserModel.shared.getConnectedUserUid()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = PostRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -20,10 +22,11 @@ class PostsAdapter(var posts: List<Post>?) : RecyclerView.Adapter<PostViewHolder
 
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.bind(posts?.get(position))
+        holder.bind(posts?.get(position), currentUserId)
     }
 
     fun update(posts: List<Post>) {
         this.posts = posts
     }
+
 }

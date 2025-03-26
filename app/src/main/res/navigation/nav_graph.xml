@@ -36,15 +36,15 @@
         android:name="com.example.foodie_finder.ui.view.HomeFragment"
         tools:layout="@layout/fragment_posts_list">
         <action
-            android:id="@+id/action_studentsListFragment_to_studentDetailsFragment"
-            app:destination="@id/postDetailsFragment" />
-        <action
             android:id="@+id/action_studentsListFragment_to_newStudentFragment"
             app:destination="@id/newPostFragment" />
 
         <action
             android:id="@+id/action_studentsListFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
     </fragment>
 
     <action
@@ -52,32 +52,20 @@
         app:destination="@id/newPostFragment" />
 
     <fragment
-        android:id="@+id/postDetailsFragment"
-        android:name="com.example.foodie_finder.ui.view.PostDetailsFragment"
-        android:label="Post Details"
-        tools:layout="@layout/fragment_post_details">
-        <argument
-            android:name="id"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_postDetailsFragment_to_editPostFragment"
-            app:destination="@id/editPostFragment" />
-    </fragment>
-
-    <fragment
         android:id="@+id/editPostFragment"
         android:name="com.example.foodie_finder.ui.view.EditPostFragment"
-        android:label="Edit Student"
+        android:label="Edit Post"
+        app:nullable="false"
         tools:layout="@layout/fragment_edit_post">
         <argument
-            android:name="id"
-            app:argType="string" />
+            android:name="post"
+            app:argType="com.example.foodie_finder.data.local.Post" />
     </fragment>
 
     <fragment
         android:id="@+id/newPostFragment"
         android:name="com.example.foodie_finder.ui.view.AddPostFragment"
-        android:label="Add Student"
+        android:label="Add Post"
         tools:layout="@layout/fragment_new_post" />
 
     <fragment

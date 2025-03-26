@@ -60,10 +60,12 @@ class FirebaseModel private constructor() {
                     if (userRef != null) {
                         val firebaseUserFetch = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
+                                val userId = userDoc.getString("id") ?: ""
                                 val fullName = userDoc.getString("email") ?: ""
                                 val profilePic = userDoc.getString("avatarUrl") ?: ""
                                 post.username = fullName
                                 post.userProfileImg = profilePic
+                                post.postedBy = userId
                             }
                             postsList.add(post)
                         }
@@ -120,6 +122,10 @@ class FirebaseModel private constructor() {
 
     fun isUserLoggedIn(): Boolean {
         return auth.currentUser != null
+    }
+
+    fun getConnectedUserUid(): String? {
+        return auth.currentUser?.uid
     }
 
     fun getConnectedUserRef(): DocumentReference? {

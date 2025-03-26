@@ -65,6 +65,10 @@ class UserModel private constructor() {
         return firebaseModel.getConnectedUserRef()
     }
 
+    fun getConnectedUserUid(): String? {
+        return firebaseModel.getConnectedUserUid()
+    }
+
     fun signIn(
         email: String,
         password: String,

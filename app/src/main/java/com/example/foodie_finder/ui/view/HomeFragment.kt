@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.adapter.PostsAdapter
 import com.example.foodie_finder.data.local.Post
@@ -32,7 +33,7 @@ class HomeFragment : Fragment() {
 
         adapter = PostsAdapter(viewModel.posts.value)
 
-        viewModel.posts.observe(viewLifecycleOwner) {posts ->
+        viewModel.posts.observe(viewLifecycleOwner) { posts ->
 
             Log.d("TAG", "Observed posts: $posts") // Debug log
 
@@ -48,20 +49,26 @@ class HomeFragment : Fragment() {
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
             binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
-            binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
+            binding?.progressBar?.visibility =
+                if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
         adapter?.listener = object : OnItemClickListener {
-            override fun onItemClick(post: Post?) {
+            override fun onEditPost(post: Post?) {
                 Log.d("TAG", "On click post $post")
-                post?.let{ clickedPost ->
-//                    val action =
-//                        HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
-//                            clickedPost.id
-//                        )
-//                    binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+                post?.let { clickedPost ->
+                    val action =
+                        HomeFragmentDirections.actionHomeFragmentToEditPostFragment(
+                            clickedPost
+                        )
+                    binding?.root?.findNavController()?.navigate(action)
                 }
 
+            }
+
+            override fun onItemClick(post: Post?) {
+                Log.d("TAG", "Post clicked: $post")
+                // You can navigate to post details if needed
             }
         }
 
@@ -80,7 +87,7 @@ class HomeFragment : Fragment() {
         binding = null
     }
 
-    private fun getAllPosts(){
+    private fun getAllPosts() {
         binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshAllPosts()
     }

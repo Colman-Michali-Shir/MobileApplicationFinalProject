@@ -17,7 +17,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.foodie_finder.databinding.ActivityMainBinding
 import com.example.foodie_finder.ui.view.HomeFragmentDirections
-import com.example.foodie_finder.ui.view.PostDetailsFragmentDirections
 import com.example.foodie_finder.ui.viewModel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -101,9 +100,6 @@ class MainActivity : AppCompatActivity() {
                 menuInflater.inflate(R.menu.logout_menu, menu)
             }
 
-            R.id.postDetailsFragment -> {
-                menuInflater.inflate(R.menu.menu_edit_student, menu)
-            }
 
             else -> {
                 menu?.clear()
@@ -120,12 +116,6 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
-            R.id.newPostFragment -> {
-                val action =
-                    PostDetailsFragmentDirections.actionGlobalNewPostFragment()
-                navController?.navigate(action)
-                true
-            }
 
             R.id.logout -> {
                 viewModel?.signOut()

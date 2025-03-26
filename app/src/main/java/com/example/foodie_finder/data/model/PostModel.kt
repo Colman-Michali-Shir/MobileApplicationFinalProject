@@ -9,6 +9,7 @@ import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
+import com.google.firebase.Timestamp
 import java.util.concurrent.Executors
 
 
@@ -85,6 +86,29 @@ class PostModel private constructor() {
             } else {
                 callback(Pair(false, "Can't create post, please try again"))
             }
+        }
+    }
+
+    fun updatePost(post: Post, image: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
+        val userRef = UserModel.shared.getConnectedUserRef() ?: return
+        val editedPost = FirebasePost(
+            id = post.id,
+            postedBy = userRef,
+            title = post.title,
+            content = post.content,
+            rating = post.rating,
+            imgUrl = post.imgUrl,
+            lastUpdateTime = Timestamp.now().toDate().time,
+            creationTime = post.creationTime
+        )
+
+        createPost(editedPost, image) { (isSuccessful, errorMessage) ->
+            callback(
+                Pair(
+                    isSuccessful,
+                    if (errorMessage == null) null else "Can't update post, please try again"
+                )
+            )
         }
     }
 

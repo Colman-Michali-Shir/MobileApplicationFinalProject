@@ -1,5 +1,6 @@
 package com.example.foodie_finder.adapter
 
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.R
 import com.example.foodie_finder.data.local.Post
@@ -7,7 +8,10 @@ import com.example.foodie_finder.databinding.PostRowBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.squareup.picasso.Picasso
 
-class PostViewHolder(private val binding: PostRowBinding, listener: OnItemClickListener?) :
+class PostViewHolder(
+    private val binding: PostRowBinding,
+    private val listener: OnItemClickListener?
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     private var post: Post? = null
@@ -19,7 +23,7 @@ class PostViewHolder(private val binding: PostRowBinding, listener: OnItemClickL
         }
     }
 
-    fun bind(post: Post?) {
+    fun bind(post: Post?, currentUserId: String?) {
         this.post = post
 
         binding.username.text = post?.username
@@ -43,6 +47,14 @@ class PostViewHolder(private val binding: PostRowBinding, listener: OnItemClickL
                     .placeholder(R.drawable.woman)
                     .into(binding.photoUrlImageView)
             }
+        }
+        if (post?.postedBy == currentUserId) {
+            binding.editButton.visibility = View.VISIBLE
+            binding.editButton.setOnClickListener {
+                listener?.onEditPost(post)
+            }
+        } else {
+            binding.editButton.visibility = View.GONE
         }
     }
 
