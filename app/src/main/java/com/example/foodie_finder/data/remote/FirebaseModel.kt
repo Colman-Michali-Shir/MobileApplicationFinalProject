@@ -57,15 +57,14 @@ class FirebaseModel private constructor() {
                     if (userRef != null) {
                         val firebaseUserFetch = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
-                                val fullName =
-                                    userDoc.getString("firstName") + userDoc.getString("lastName")
+                                val fullName = userDoc.getString("email") ?: ""
                                 val profilePic = userDoc.getString("avatarUrl") ?: ""
                                 post.username = fullName
                                 post.userProfileImg = profilePic
                             }
+                            postsList.add(post)
                         }
                         firebaseCallsTasks.add(firebaseUserFetch)
-                        postsList.add(post)
                     }
                 }
 

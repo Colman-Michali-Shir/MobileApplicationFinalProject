@@ -6,8 +6,8 @@ import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 
-fun Bitmap.toFile(context: Context, name: String): File {
-    val file = File(context.cacheDir, "image_$name.jpg")
+fun Bitmap.toFile(context: Context, name: String?): File {
+    val file = File(context.cacheDir, "${name ?: "temp_image_${System.currentTimeMillis()}"}.jpg")
     try {
         FileOutputStream(file).use { stream ->
             compress(Bitmap.CompressFormat.JPEG, 100, stream)
