@@ -3,7 +3,7 @@ package com.example.foodie_finder.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "users")
 data class User(
     @PrimaryKey var id: String,
     var email: String,

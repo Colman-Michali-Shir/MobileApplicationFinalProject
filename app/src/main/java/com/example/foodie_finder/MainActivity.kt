@@ -1,6 +1,7 @@
 package com.example.foodie_finder
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         binding?.mainBottomNav?.visibility = View.VISIBLE
 
         if (viewModel?.isUserLoggedIn() == false) {
+            Log.d("TAG", "userIsnt logged in")
             binding?.mainBottomNav?.visibility = View.GONE
             navController?.navigate(R.id.loginFragment)
         }

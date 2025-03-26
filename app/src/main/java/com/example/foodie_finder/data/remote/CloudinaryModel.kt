@@ -1,6 +1,5 @@
 package com.example.foodie_finder.data.remote
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.cloudinary.android.MediaManager
@@ -10,8 +9,7 @@ import com.cloudinary.android.policy.GlobalUploadPolicy
 import com.cloudinary.android.policy.UploadPolicy
 import com.example.foodie_finder.BuildConfig
 import com.example.foodie_finder.base.MyApplication
-import java.io.File
-import java.io.FileOutputStream
+import com.example.foodie_finder.utils.extensions.toFile
 
 class CloudinaryModel private constructor() {
 
@@ -45,11 +43,11 @@ class CloudinaryModel private constructor() {
     fun uploadImageToCloudinary(
         image: Bitmap,
         name: String?,
-        onSuccess: (String) -> Unit,
-        onError: (String) -> Unit
+        onSuccess: (String?) -> Unit,
+        onError: (String?) -> Unit
     ) {
         val context = MyApplication.Globals.context ?: return
-        val file = bitmapToFile(image, name, context)
+        val file = image.toFile(context, name)
 
         MediaManager.get().upload(file.path)
             .option(
@@ -91,23 +89,4 @@ class CloudinaryModel private constructor() {
             })
             .dispatch()
     }
-
-    private fun bitmapToFile(
-        bitmap: Bitmap,
-        name: String?,
-        context: Context
-    ): File {
-        val file =
-            File(context.cacheDir, "${name ?: "temp_image_${System.currentTimeMillis()}"}.jpg")
-        try {
-            FileOutputStream(file).use { outputStream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-            }
-        } catch (e: Exception) {
-            Log.e("CloudinaryModel", "Error saving bitmap to file", e)
-        }
-        return file
-    }
-
-
 }
