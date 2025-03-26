@@ -112,4 +112,20 @@ class PostModel private constructor() {
         }
     }
 
+    fun deletePost(postId: String, callback: Callback<Pair<Boolean, String?>>) {
+        firebaseModel.deletePost(postId) { isSuccessful ->
+            if (isSuccessful) {
+                executor.execute {
+                    database.postDao().deletePost(postId)
+                }
+            }
+            callback(
+                Pair(
+                    isSuccessful,
+                    if (isSuccessful) null else "Can't delete post, please try again"
+                )
+            )
+        }
+    }
+
 }

@@ -16,13 +16,6 @@ class PostViewHolder(
 
     private var post: Post? = null
 
-    init {
-
-        itemView.setOnClickListener {
-            listener?.onItemClick(post)
-        }
-    }
-
     fun bind(post: Post?, currentUserId: String?) {
         this.post = post
 

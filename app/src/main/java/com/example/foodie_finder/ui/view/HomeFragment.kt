@@ -66,10 +66,6 @@ class HomeFragment : Fragment() {
 
             }
 
-            override fun onItemClick(post: Post?) {
-                Log.d("TAG", "Post clicked: $post")
-                // You can navigate to post details if needed
-            }
         }
 
         binding?.postsList?.adapter = adapter

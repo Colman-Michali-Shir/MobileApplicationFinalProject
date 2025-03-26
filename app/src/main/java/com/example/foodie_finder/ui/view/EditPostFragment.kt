@@ -47,7 +47,7 @@ class EditPostFragment : Fragment() {
 
         binding?.cancelButton?.setOnClickListener(::onCancelClicked)
         binding?.saveButton?.setOnClickListener(::onSaveClicked)
-//        binding?.deleteButton?.setOnClickListener(::onDeleteClicked)
+        binding?.deleteButton?.setOnClickListener(::onDeleteClicked)
 
         binding?.postInputForm?.restaurantNameTextField?.setText(post?.title)
         binding?.postInputForm?.reviewTextField?.setText(post?.content)
@@ -156,7 +156,19 @@ class EditPostFragment : Fragment() {
     }
 
     private fun onDeleteClicked(view: View) {
+        post?.let {
+            binding?.progressBar?.visibility = View.VISIBLE
 
+            PostModel.shared.deletePost(it.id) { (isSuccessful, errorMessage) ->
+                if (isSuccessful) {
+                    showToast("Post deleted")
+                    view.findNavController().popBackStack()
+                } else {
+                    showToast(errorMessage ?: "There was an error uploading the post")
+                }
+                binding?.progressBar?.visibility = View.GONE
+            }
+        }
 
     }
 

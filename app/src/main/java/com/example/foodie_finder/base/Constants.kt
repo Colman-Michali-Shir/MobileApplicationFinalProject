@@ -6,6 +6,7 @@ import com.example.foodie_finder.data.local.Student
 typealias GetAllPostsCallback = (List<Post>) -> Unit
 typealias CreatePostCallback = (Boolean) -> Unit
 typealias GetStudentByIdCallback = (Student) -> Unit
+typealias DeletePostCallback = (Boolean) -> Unit
 typealias Callback<T> = (T) -> Unit
 typealias EmptyCallback = () -> Unit
 

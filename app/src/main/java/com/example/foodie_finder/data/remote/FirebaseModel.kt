@@ -2,6 +2,7 @@ package com.example.foodie_finder.data.remote
 
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.CreatePostCallback
+import com.example.foodie_finder.base.DeletePostCallback
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
@@ -88,6 +89,13 @@ class FirebaseModel private constructor() {
         database.collection(Constants.COLLECTIONS.POSTS)
             .document(post.id)
             .set(post.json)
+            .addOnCompleteListener { callback(it.isSuccessful) }
+    }
+
+    fun deletePost(postId: String, callback: DeletePostCallback) {
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .document(postId)
+            .delete()
             .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
