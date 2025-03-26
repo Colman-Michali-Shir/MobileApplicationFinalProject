@@ -9,7 +9,6 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 
 @Entity(tableName = "posts")
-//    foreignKeys = [ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["postedBy"])])
 data class Post(
     @PrimaryKey var id: String,
     val postedBy: String,
@@ -62,7 +61,6 @@ data class Post(
             val lastUpdatedLongTimestamp = lastUpdateTime?.toDate()?.time
             val creationTimeLongTimestamp =
                 creationTime?.toDate()?.time ?: Timestamp.now().toDate().time
-
 
             return Post(
                 id = id,

@@ -3,6 +3,7 @@ package com.example.foodie_finder.data.remote
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
+import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.SavedPost
@@ -52,34 +53,43 @@ class FirebaseModel private constructor() {
             .get()
             .addOnSuccessListener { postsJson ->
                 val postsList: MutableList<Post> = mutableListOf()
-                val tasks = mutableListOf<Task<DocumentSnapshot>>()
+                val firebaseCallsTasks = mutableListOf<Task<DocumentSnapshot>>()
 
                 for (postDoc in postsJson) {
                     val post = Post.fromJSON(postDoc.data)
 
                     val userRef = postDoc.getDocumentReference("postedBy")
                     if (userRef != null) {
-                        val userTask = userRef.get().addOnSuccessListener { userDoc ->
+                        val firebaseUserFetch = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
-                                val username =
-                                    userDoc.getString("firstName") + " " + userDoc.getString(
-                                        "lastName"
-                                    )
+                                val fullName = userDoc.getString("email") ?: ""
                                 val profilePic = userDoc.getString("avatarUrl") ?: ""
-                                post.username = username
+                                post.username = fullName
                                 post.userProfileImg = profilePic
                             }
+                            postsList.add(post)
                         }
-                        tasks.add(userTask)
+                        firebaseCallsTasks.add(firebaseUserFetch)
                     }
-                    postsList.add(post)
                 }
 
-                Tasks.whenAllSuccess<DocumentSnapshot>(tasks).addOnSuccessListener {
-                    callback(postsList)
+
+                Tasks.whenAllSuccess<DocumentSnapshot>(firebaseCallsTasks).addOnSuccessListener {
+                    callback(postsList) // Return the full list after all user data is fetched
                 }.addOnFailureListener {
                     callback(emptyList())
                 }
+            }
+            .addOnFailureListener {
+                callback(emptyList())
+            }
+    }
+
+    fun getAllStudents(callback: GetAllStudentsCallback) {
+        database.collection(Constants.COLLECTIONS.STUDENTS).get()
+            .addOnSuccessListener { result ->
+                val students = result.map { Student.fromJSON(it.data) }
+                callback(students)
             }
             .addOnFailureListener {
                 callback(emptyList())

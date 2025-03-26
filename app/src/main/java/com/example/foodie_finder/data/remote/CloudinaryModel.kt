@@ -42,7 +42,7 @@ class CloudinaryModel private constructor() {
 
     fun uploadImageToCloudinary(
         image: Bitmap,
-        name: String,
+        name: String?,
         onSuccess: (String?) -> Unit,
         onError: (String?) -> Unit,
         packageName: String? = "images"
@@ -90,21 +90,4 @@ class CloudinaryModel private constructor() {
             })
             .dispatch()
     }
-
-//    private fun bitmapToFile(
-//        bitmap: Bitmap,
-//        name: String?,
-//        context: Context
-//    ): File {
-//        val file =
-//            File(context.cacheDir, "${name ?: "temp_image_${System.currentTimeMillis()}"}.jpg")
-//        try {
-//            FileOutputStream(file).use { outputStream ->
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-//            }
-//        } catch (e: Exception) {
-//            Log.e("CloudinaryModel", "Error saving bitmap to file", e)
-//        }
-//        return file
-//    }
 }
