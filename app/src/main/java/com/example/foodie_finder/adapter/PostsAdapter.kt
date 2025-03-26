@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.data.local.Post
-import com.example.foodie_finder.databinding.PostListRowBinding
+import com.example.foodie_finder.databinding.PostRowBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 
 class PostsAdapter(
@@ -20,7 +20,7 @@ class PostsAdapter(
     private var filteredPosts: List<Post> = posts
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val binding = PostListRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = PostRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding, listener, onSavePost, onRemoveSavePost)
     }
 

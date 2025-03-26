@@ -4,12 +4,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.R
 import com.example.foodie_finder.data.local.Post
-import com.example.foodie_finder.databinding.PostListRowBinding
+import com.example.foodie_finder.databinding.PostRowBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.squareup.picasso.Picasso
 
 class PostViewHolder(
-    private val binding: PostListRowBinding,
+    private val binding: PostRowBinding,
     listener: OnItemClickListener?,
     private val onSavePost: (String, (Boolean) -> Unit) -> Unit,
     private val onRemoveSavePost: (String, (Boolean) -> Unit) -> Unit
