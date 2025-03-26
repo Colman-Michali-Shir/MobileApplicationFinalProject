@@ -1,10 +1,11 @@
 package com.example.foodie_finder.data.remote
 
 import com.example.foodie_finder.base.Constants
+import com.example.foodie_finder.base.CreatePostCallback
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
-import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
+import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
@@ -13,6 +14,7 @@ import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
@@ -81,15 +83,11 @@ class FirebaseModel private constructor() {
             }
     }
 
-    fun getAllStudents(callback: GetAllStudentsCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).get()
-            .addOnSuccessListener { result ->
-                val students = result.map { Student.fromJSON(it.data) }
-                callback(students)
-            }
-            .addOnFailureListener {
-                callback(emptyList()) // Return empty list on failure
-            }
+    fun createPost(post: FirebasePost, callback: CreatePostCallback) {
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .document(post.id)
+            .set(post.json)
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
     fun getStudentById(id: String, callback: GetStudentByIdCallback) {
@@ -107,21 +105,10 @@ class FirebaseModel private constructor() {
             }
     }
 
-    fun add(student: Student, callback: EmptyCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).document(student.id)
-            .set(student.json)
-            .addOnCompleteListener { callback() }
-    }
 
     fun delete(student: Student, callback: EmptyCallback) {
         database.collection(Constants.COLLECTIONS.STUDENTS).document(student.id)
             .delete()
-            .addOnCompleteListener { callback() }
-    }
-
-    fun update(student: Student, callback: EmptyCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).document(student.id)
-            .update(student.json)
             .addOnCompleteListener { callback() }
     }
 
@@ -134,6 +121,11 @@ class FirebaseModel private constructor() {
 
     fun isUserLoggedIn(): Boolean {
         return auth.currentUser != null
+    }
+
+    fun getConnectedUserRef(): DocumentReference? {
+        val userId = auth.currentUser?.uid ?: return null
+        return (database.collection(Constants.COLLECTIONS.USERS).document(userId))
     }
 
     fun getConnectedUser(callback: (User?) -> Unit) {

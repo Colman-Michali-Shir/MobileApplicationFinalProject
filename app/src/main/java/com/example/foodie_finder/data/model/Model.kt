@@ -1,8 +1,6 @@
 package com.example.foodie_finder.data.model
 
-import android.graphics.Bitmap
 import com.example.foodie_finder.base.EmptyCallback
-import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.remote.CloudinaryModel
@@ -30,21 +28,5 @@ class Model private constructor() {
         firebaseModel.getStudentById(id, callback)
     }
 
-    fun getAllStudents(callback: GetAllStudentsCallback) {
-        firebaseModel.getAllStudents(callback)
-    }
 
-    private fun uploadImageToCloudinary(
-        image: Bitmap,
-        name: String,
-        onSuccess: (String?) -> Unit,
-        onError: (String?) -> Unit
-    ) {
-        cloudinaryModel.uploadImageToCloudinary(
-            image = image,
-            name = name,
-            onSuccess = onSuccess,
-            onError = onError
-        )
-    }
 }

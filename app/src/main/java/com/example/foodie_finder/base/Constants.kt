@@ -4,9 +4,9 @@ import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.Student
 
 typealias GetAllPostsCallback = (List<Post>) -> Unit
-typealias GetAllStudentsCallback = (List<Student>) -> Unit
+typealias CreatePostCallback = (Boolean) -> Unit
 typealias GetStudentByIdCallback = (Student) -> Unit
-
+typealias Callback<T> = (T) -> Unit
 typealias EmptyCallback = () -> Unit
 
 object Constants {

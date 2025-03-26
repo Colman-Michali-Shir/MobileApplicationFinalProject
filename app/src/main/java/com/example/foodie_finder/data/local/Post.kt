@@ -35,16 +35,16 @@ data class Post(
                     }
             }
 
-        private const val ID_KEY = "id"
-        private const val USER_ID = "postedBy"
-        private const val USERNAME = "username"
-        private const val USER_PROFILE_PICTURE = "userProfilePicture"
-        private const val TITLE = "title"
-        private const val CONTENT = "content"
-        private const val RATING = "rating"
-        private const val IMAGE_URL = "imgUrl"
+        const val ID_KEY = "id"
+        const val USER_ID = "postedBy"
+        const val USERNAME = "username"
+        const val USER_PROFILE_PICTURE = "userProfilePicture"
+        const val TITLE = "title"
+        const val CONTENT = "content"
+        const val RATING = "rating"
+        const val IMAGE_URL = "imgUrl"
         const val LAST_UPDATE_TIME = "lastUpdateTime"
-        private const val CREATION_TIME = "creationTime"
+        const val CREATION_TIME = "creationTime"
 
         fun fromJSON(json: Map<String, Any>): Post {
             val id = json[ID_KEY] as? String ?: ""
