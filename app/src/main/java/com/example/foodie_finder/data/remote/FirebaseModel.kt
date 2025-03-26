@@ -52,34 +52,33 @@ class FirebaseModel private constructor() {
             .get()
             .addOnSuccessListener { postsJson ->
                 val postsList: MutableList<Post> = mutableListOf()
-                val tasks = mutableListOf<Task<DocumentSnapshot>>()
+                val firebaseCallsTasks = mutableListOf<Task<DocumentSnapshot>>()
 
                 for (postDoc in postsJson) {
                     val post = Post.fromJSON(postDoc.data)
 
                     val userRef = postDoc.getDocumentReference("postedBy")
                     if (userRef != null) {
-                        val userTask = userRef.get().addOnSuccessListener { userDoc ->
+                        val firebaseUserFetch = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
-                                val username =
-                                    userDoc.getString("firstName") + " " + userDoc.getString(
-                                        "lastName"
-                                    )
+                                val fullName = userDoc.getString("email") ?: ""
+
                                 val profilePic = userDoc.getString("avatarUrl") ?: ""
-                                post.username = username
+                                post.username = fullName
                                 post.userProfileImg = profilePic
                             }
+                            postsList.add(post)
                         }
-                        tasks.add(userTask)
+                        firebaseCallsTasks.add(firebaseUserFetch)
                     }
-                    postsList.add(post)
                 }
 
-                Tasks.whenAllSuccess<DocumentSnapshot>(tasks).addOnSuccessListener {
-                    callback(postsList)
+                Tasks.whenAllSuccess<DocumentSnapshot>(firebaseCallsTasks).addOnSuccessListener {
+                    callback(postsList) // Return the full list after all user data is fetched
                 }.addOnFailureListener {
                     callback(emptyList())
                 }
+
             }
             .addOnFailureListener {
                 callback(emptyList())
