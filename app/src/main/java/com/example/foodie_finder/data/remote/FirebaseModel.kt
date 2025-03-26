@@ -3,7 +3,6 @@ package com.example.foodie_finder.data.remote
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
-import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.SavedPost
@@ -79,17 +78,6 @@ class FirebaseModel private constructor() {
                 }.addOnFailureListener {
                     callback(emptyList())
                 }
-            }
-            .addOnFailureListener {
-                callback(emptyList())
-            }
-    }
-
-    fun getAllStudents(callback: GetAllStudentsCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).get()
-            .addOnSuccessListener { result ->
-                val students = result.map { Student.fromJSON(it.data) }
-                callback(students)
             }
             .addOnFailureListener {
                 callback(emptyList())
