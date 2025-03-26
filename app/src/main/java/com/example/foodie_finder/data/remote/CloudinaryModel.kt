@@ -42,7 +42,7 @@ class CloudinaryModel private constructor() {
 
     fun uploadImageToCloudinary(
         image: Bitmap,
-        name: String,
+        name: String?,
         onSuccess: (String?) -> Unit,
         onError: (String?) -> Unit
     ) {
