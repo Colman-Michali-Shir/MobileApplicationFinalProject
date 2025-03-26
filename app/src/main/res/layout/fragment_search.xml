@@ -7,17 +7,22 @@
     tools:context=".ui.view.SearchFragment">
 
     <EditText
-        android:id="@+id/search_edit_text"
+        android:id="@+id/searchEditText"
         style="@style/RoundedEditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
+        android:clickable="true"
         android:drawableStart="@drawable/baseline_search_24"
         android:drawableEnd="@drawable/baseline_close_24"
-        android:hint="Search restaurant or user"
+        android:focusable="true"
+        android:hint="Search restaurants"
+        android:textColor="#000000"
+        android:textColorHint="#999999"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
@@ -26,13 +31,13 @@
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_edit_text"
+        app:layout_constraintTop_toBottomOf="@+id/searchEditText"
         app:strokeColor="#C30F0F"
         app:strokeWidth="2dp" />
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_recycler_view"
+        android:id="@+id/listRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
