@@ -33,9 +33,6 @@ class PostModel private constructor() {
             database.savedPostDao().getSavedPostsByUser(it)
                 .observeForever { posts -> savedPosts.postValue(posts) }
         }
-
-
-        //TODO: change it to save post
     }
 
     companion object {
@@ -55,10 +52,6 @@ class PostModel private constructor() {
             savedPosts.postValue(posts)
         }
     }
-
-//    fun isPostSaved(postId: String, callback: (Boolean) -> Unit) {
-//        firebaseModel.isPostSaved(postId, callback)
-//    }
 
     fun refreshAllPosts() {
         loadingState.postValue(LoadingState.LOADING)
