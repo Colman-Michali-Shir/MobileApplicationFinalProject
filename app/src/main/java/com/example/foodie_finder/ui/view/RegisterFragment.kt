@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.example.foodie_finder.data.model.UserModel
+import com.example.foodie_finder.auth.AuthManager
 import com.example.foodie_finder.databinding.FragmentRegisterBinding
 
 class RegisterFragment : Fragment() {
@@ -69,7 +69,7 @@ class RegisterFragment : Fragment() {
 
         if (!isValid) return
 
-        UserModel.shared.signUp(
+        AuthManager.shared.signUp(
             firstName,
             lastName,
             email,

@@ -200,100 +200,11 @@ class FirebaseModel private constructor() {
             .addOnFailureListener { callback(null) }
     }
 
-    fun signIn(
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-//                val user = auth.currentUser
-                UserModel.shared.loadUser { user ->
-                    if (user != null) {
-                        callback(true, "Login successful: ${user.email}", null)
-                    } else {
-                        callback(false, "Failed to load user data", null)
-                    }
-                }
 
-            }
-            .addOnFailureListener {
-                handleFirebaseError(callback, it.message)
-            }
+    fun createUser(user: User, callback: (Boolean) -> Unit) {
+        database.collection(Constants.COLLECTIONS.USERS).document(user.id)
+            .set(user.json)
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
-    fun signOut() {
-        auth.signOut()
-    }
-
-    fun signUp(
-        firstName: String,
-        lastName: String,
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                val userId = auth.currentUser?.uid ?: return@addOnSuccessListener
-                val user = User(
-                    id = userId,
-                    email = email,
-                    firstName = firstName,
-                    lastName = lastName,
-                    avatarUrl = null,
-                )
-                database.collection(Constants.COLLECTIONS.USERS).document(userId)
-                    .set(user.json)
-                    .addOnSuccessListener {
-                        callback(true, "User registered successfully", null)
-                    }
-                    .addOnFailureListener { e ->
-                        callback(false, "Failed to save user data: ${e.message}", null)
-                    }
-            }
-            .addOnFailureListener {
-                handleFirebaseError(callback, it.message)
-            }
-    }
-
-
-    private fun handleFirebaseError(
-        callback: (Boolean, String?, List<String>?) -> Unit,
-        errorMessage: String?
-    ) {
-        when {
-            errorMessage?.contains(
-                "email address is already in use",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Email is already registered", listOf("email"))
-            }
-
-            errorMessage?.contains(
-                "The email address is badly formatted",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Invalid email format", listOf("email"))
-            }
-
-            errorMessage?.contains(
-                "Password should be at least 6 characters",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Password must be at least 6 characters", listOf("password"))
-            }
-
-            errorMessage?.contains(
-                "The supplied auth credential is incorrect",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Email or password is incorrect", listOf("email", "password"))
-            }
-
-            else -> {
-                callback(false, errorMessage ?: "Unknown error", null)
-            }
-        }
-    }
 }

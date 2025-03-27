@@ -10,28 +10,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.example.foodie_finder.auth.AuthManager
+import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.databinding.ActivityMainBinding
-import com.example.foodie_finder.ui.viewModel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private var navController: NavController? = null
     private var binding: ActivityMainBinding? = null
-    private var viewModel: MainActivityViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding?.root)
-        viewModel?.initUser()
+        UserModel.shared.loadUser()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -84,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (viewModel?.isUserLoggedIn() == false) {
+        if (!UserModel.shared.isUserLoggedIn()) {
             navController?.navigate(R.id.loginFragment)
         }
 
@@ -115,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
 
             R.id.logout -> {
-                viewModel?.signOut()
+                AuthManager.shared.signOut()
                 navController?.navigate(R.id.action_global_loginFragment)
                 true
             }

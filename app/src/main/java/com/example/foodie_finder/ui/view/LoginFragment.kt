@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.example.foodie_finder.data.model.UserModel
+import com.example.foodie_finder.auth.AuthManager
 import com.example.foodie_finder.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
@@ -65,7 +65,7 @@ class LoginFragment : Fragment() {
         if (!isValid) return
 
 
-        UserModel.shared.signIn(email, password) { success, message, errorFields ->
+        AuthManager.shared.signIn(email, password) { success, message, errorFields ->
             if (success) {
                 Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_LONG).show()
                 val action =

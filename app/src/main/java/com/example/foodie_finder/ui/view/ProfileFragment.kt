@@ -20,6 +20,7 @@ import com.example.foodie_finder.R
 import com.example.foodie_finder.adapter.PostsAdapter
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.model.PostModel
+import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.databinding.FragmentProfileBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.ui.viewModel.ProfileViewModel
@@ -90,11 +91,11 @@ class ProfileFragment : Fragment() {
     }
 
     private fun loadUserData() {
-        viewModel.user?.let {
+        viewModel.user.observe(viewLifecycleOwner) { user ->
             binding?.apply {
-                firstNameEditText.setText(it.firstName)
-                lastNameEditText.setText(it.lastName)
-                it.avatarUrl?.takeIf { avatarUrl ->
+                firstNameEditText.setText(user?.firstName)
+                lastNameEditText.setText(user?.lastName)
+                user?.avatarUrl?.takeIf { avatarUrl ->
                     avatarUrl.isNotBlank()
                 }?.let { url ->
                     Picasso.get()
@@ -103,8 +104,7 @@ class ProfileFragment : Fragment() {
                         .into(binding?.userImageView)
                 }
             }
-        } ?: showToast("User not found")
-
+        }
     }
 
     private fun setupImagePickers() {
@@ -126,7 +126,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun saveUserData() {
-        val currentUser = viewModel.user ?: return
+        val currentUser = UserModel.shared.connectedUser ?: return
 
         binding?.progressBar?.visibility = View.VISIBLE
 
@@ -169,7 +169,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        context?.let {
+            Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showImageSourceChooser() {
