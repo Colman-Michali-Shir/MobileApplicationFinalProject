@@ -26,11 +26,21 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
+    val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
+    val usersPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
 
     init {
-        database.postDao().getAllPosts().observeForever { allPosts.postValue(it) }
+        UserModel.shared.loggedInUser.observeForever { user ->
+            if (user == null) {
+                allPosts.postValue(emptyList())
+                usersPosts.postValue((emptyList()))
+            } else {
+                database.postDao().getAllPosts().observeForever { allPosts.postValue(it) }
+                database.postDao().getPostsByUser(user.id)
+                    .observeForever { usersPosts.postValue(it) }
+            }
+        }
     }
 
     companion object {
@@ -42,6 +52,27 @@ class PostModel private constructor() {
         loadingState.postValue(LoadingState.LOADING)
         val lastUpdated: Long = Post.lastUpdated
         firebaseModel.getAllPosts(lastUpdated) { posts ->
+            executor.execute {
+                var currentTime = lastUpdated
+                for (post in posts) {
+                    database.postDao().createPost(post)
+                    post.lastUpdateTime?.let {
+                        if (currentTime < it) {
+                            currentTime = it
+                        }
+                    }
+                }
+
+                Post.lastUpdated = currentTime
+                loadingState.postValue(LoadingState.LOADED)
+            }
+        }
+    }
+
+    fun refreshUsersPosts() {
+        loadingState.postValue(LoadingState.LOADING)
+        val lastUpdated: Long = Post.lastUpdated
+        firebaseModel.getPostsByUser(lastUpdated) { posts ->
             executor.execute {
                 var currentTime = lastUpdated
 

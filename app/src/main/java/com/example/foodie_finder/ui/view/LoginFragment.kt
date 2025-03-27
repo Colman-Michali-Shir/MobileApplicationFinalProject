@@ -1,26 +1,18 @@
 package com.example.foodie_finder.ui.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.databinding.FragmentLoginBinding
-import com.example.foodie_finder.ui.viewModel.LoginViewModel
 
 class LoginFragment : Fragment() {
 
     private var binding: FragmentLoginBinding? = null
-    private var viewModel: LoginViewModel? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +32,7 @@ class LoginFragment : Fragment() {
         binding?.registerButton?.setOnClickListener {
             val action =
                 LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-            binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+            binding?.root?.findNavController()?.navigate(action)
         }
     }
 
@@ -53,6 +45,7 @@ class LoginFragment : Fragment() {
         val email = binding?.emailEditText?.text.toString().trim()
         val password = binding?.passwordEditText?.text.toString().trim()
 
+        binding?.progressBar?.visibility = View.VISIBLE
 
         binding?.emailInputLayout?.error = null
         binding?.passwordInputLayout?.error = null
@@ -72,12 +65,12 @@ class LoginFragment : Fragment() {
         if (!isValid) return
 
 
-        viewModel?.signIn(email, password) { success, message, errorFields ->
+        UserModel.shared.signIn(email, password) { success, message, errorFields ->
             if (success) {
                 Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_LONG).show()
                 val action =
-                    LoginFragmentDirections.actionLoginFragmentToStudentsListFragment()
-                binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+                    LoginFragmentDirections.actionLoginFragmentToHomeFragment()
+                binding?.root?.findNavController()?.navigate(action)
             } else {
                 errorFields?.forEach { field ->
                     when (field) {
@@ -94,6 +87,8 @@ class LoginFragment : Fragment() {
                     ).show()
                 }
             }
+
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 }
