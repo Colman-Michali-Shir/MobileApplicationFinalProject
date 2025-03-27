@@ -67,6 +67,7 @@ class EditPostFragment : Fragment() {
                 if (bitmap != null) {
                     binding?.postInputForm?.postImageView?.setImageBitmap(bitmap)
                     didSetPostImage = true
+                    updateSaveButtonState()
                 }
             }
 
@@ -75,6 +76,7 @@ class EditPostFragment : Fragment() {
                 uri?.let {
                     binding?.postInputForm?.postImageView?.setImageURI(it)
                     didSetPostImage = true
+                    updateSaveButtonState()
                 }
             }
 
@@ -85,7 +87,6 @@ class EditPostFragment : Fragment() {
         binding?.postInputForm?.restaurantNameTextField?.addTextChangedListener(createTextWatcher { validateAddPostForm() })
         binding?.postInputForm?.reviewTextField?.addTextChangedListener(createTextWatcher { validateAddPostForm() })
         binding?.postInputForm?.ratingBar?.setOnRatingBarChangeListener { _, _, _ -> validateAddPostForm() }
-
 
         return binding?.root
     }
@@ -118,6 +119,14 @@ class EditPostFragment : Fragment() {
             ),
             Triple(binding?.postInputForm?.reviewTextField, ::isNotEmpty, "Review cannot be empty")
         )
+    }
+
+    private fun updateSaveButtonState() {
+        val isFormValid =
+            binding?.postInputForm?.restaurantNameTextField?.text?.isNotEmpty() == true
+                    && binding?.postInputForm?.reviewTextField?.text?.isNotEmpty() ?: false
+
+        binding?.saveButton?.isEnabled = isFormValid || didSetPostImage
     }
 
     private fun onSaveClicked(view: View) {
