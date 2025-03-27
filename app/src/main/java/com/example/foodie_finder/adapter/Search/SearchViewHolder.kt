@@ -1,4 +1,4 @@
-package com.example.foodie_finder.adapter
+package com.example.foodie_finder.adapter.Search
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.data.model.GooglePlaces.Restaurant

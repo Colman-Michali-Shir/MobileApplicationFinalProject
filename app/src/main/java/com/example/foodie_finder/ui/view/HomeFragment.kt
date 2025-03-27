@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.foodie_finder.adapter.PostsAdapter
+import com.example.foodie_finder.adapter.Post.PostsAdapter
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.model.PostModel
 import com.example.foodie_finder.databinding.FragmentPostsListBinding

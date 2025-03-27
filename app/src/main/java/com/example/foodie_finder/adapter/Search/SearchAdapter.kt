@@ -1,4 +1,4 @@
-package com.example.foodie_finder.adapter
+package com.example.foodie_finder.adapter.Search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

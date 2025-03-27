@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_restaurant_menu_24"></ImageView>
+        app:srcCompat="@drawable/baseline_restaurant_menu_24" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
