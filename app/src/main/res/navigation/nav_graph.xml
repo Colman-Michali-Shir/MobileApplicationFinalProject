@@ -36,10 +36,6 @@
         android:name="com.example.foodie_finder.ui.view.HomeFragment"
         tools:layout="@layout/fragment_posts_list">
         <action
-            android:id="@+id/action_studentsListFragment_to_newStudentFragment"
-            app:destination="@id/newPostFragment" />
-
-        <action
             android:id="@+id/action_studentsListFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
         <action
@@ -78,7 +74,11 @@
         android:id="@+id/profileFragment"
         android:name="com.example.foodie_finder.ui.view.ProfileFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/savedPostsFragment"

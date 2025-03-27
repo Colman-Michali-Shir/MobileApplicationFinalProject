@@ -1,7 +1,6 @@
 package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +33,6 @@ class HomeFragment : Fragment() {
         adapter = PostsAdapter(viewModel.posts.value)
 
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
-
-            Log.d("TAG", "Observed posts: $posts") // Debug log
-
             adapter?.update(posts)
             adapter?.notifyDataSetChanged()
 
@@ -55,7 +51,6 @@ class HomeFragment : Fragment() {
 
         adapter?.listener = object : OnItemClickListener {
             override fun onEditPost(post: Post?) {
-                Log.d("TAG", "On click post $post")
                 post?.let { clickedPost ->
                     val action =
                         HomeFragmentDirections.actionHomeFragmentToEditPostFragment(
@@ -63,9 +58,7 @@ class HomeFragment : Fragment() {
                         )
                     binding?.root?.findNavController()?.navigate(action)
                 }
-
             }
-
         }
 
         binding?.postsList?.adapter = adapter
