@@ -40,11 +40,26 @@ class PostModel private constructor() {
     }
 
     fun savePost(postId: String, callback: (Boolean) -> Unit) {
-        firebaseModel.savePost(postId, callback)
+        firebaseModel.savePost(postId) { success, savedPost ->
+            if (success && savedPost != null) {
+                database.savedPostDao().savePost(savedPost)
+            }
+            callback(success)
+        }
     }
 
     fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
-        firebaseModel.removeSavedPost(postId, callback)
+        firebaseModel.removeSavedPost(postId) { success ->
+            if (success) {
+                val userId =
+                    FirebaseAuth.getInstance().currentUser?.uid ?: return@removeSavedPost callback(
+                        false
+                    )
+                database.savedPostDao()
+                    .removeSavedPost(userId, postId)
+            }
+            callback(success)
+        }
     }
 
     fun getSavedPosts() {

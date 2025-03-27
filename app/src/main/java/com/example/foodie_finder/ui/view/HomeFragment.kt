@@ -38,19 +38,16 @@ class HomeFragment : Fragment() {
         )
 
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
-
-            Log.d("TAG", "Observed posts: $posts") // Debug log
-
             adapter?.updateAllPosts(posts)
             adapter?.notifyDataSetChanged()
+            binding?.progressBar?.visibility = View.GONE
         }
 
+
         viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
-
-            Log.d("TAG", "Observed posts: $posts") // Debug log
-
             adapter?.updateSavedPosts(posts)
             adapter?.notifyDataSetChanged()
+            binding?.progressBar?.visibility = View.GONE
         }
 
         binding?.swipeToRefresh?.setOnRefreshListener {
@@ -59,6 +56,8 @@ class HomeFragment : Fragment() {
         }
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            binding?.progressBar?.visibility =
+                if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
             binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
         }
 
@@ -92,6 +91,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getAllPosts() {
+        binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshAllPosts()
         viewModel.refreshSavedPosts()
     }

@@ -11,6 +11,7 @@ import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -250,8 +251,8 @@ class FirebaseModel private constructor() {
             }
     }
 
-    fun savePost(postId: String, callback: (Boolean) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return callback(false)
+    fun savePost(postId: String, callback: (Boolean, SavedPost?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false, null)
 
         val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .document("$userId-$postId")
@@ -259,12 +260,12 @@ class FirebaseModel private constructor() {
         val savedPost = SavedPost(
             userId = userId,
             postId = postId,
-            savedAt = System.currentTimeMillis()
+            savedAt = Timestamp.now().toDate().time
         )
 
         savedPostRef.set(savedPost.json)
-            .addOnSuccessListener { callback(true) }
-            .addOnFailureListener { callback(false) }
+            .addOnSuccessListener { callback(true, savedPost) }
+            .addOnFailureListener { callback(false, null) }
     }
 
     fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {

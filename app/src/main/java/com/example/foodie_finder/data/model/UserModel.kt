@@ -18,20 +18,21 @@ class UserModel private constructor() {
     }
 
     fun updateUser(user: User, profileImage: Bitmap?, callback: (Boolean) -> Unit) {
-        profileImage?.let {
-            cloudinaryModel.uploadImageToCloudinary(
-                image = it,
-                name = user.id,
-                onSuccess = { url ->
-                    val userWithProfileImage = user.copy(avatarUrl = url)
-                    firebaseModel.updateUser(userWithProfileImage, callback)
-                },
-                onError = { callback(true) },
-                "profileImages"
-            )
+        firebaseModel.updateUser(user) {
+            profileImage?.let {
+                cloudinaryModel.uploadImageToCloudinary(
+                    image = it,
+                    name = user.id,
+                    onSuccess = { url ->
+                        val userWithProfileImage = user.copy(avatarUrl = url)
+                        firebaseModel.updateUser(userWithProfileImage, callback)
+                    },
+                    onError = { callback(true) },
+                    "profileImages"
+                )
 
-        } ?: callback(false)
-
+            } ?: callback(false)
+        }
     }
 
     fun isUserLoggedIn(): Boolean {
