@@ -12,7 +12,7 @@ class SearchViewModel : ViewModel() {
         RestaurantModel.shared.clearRestaurants()
     }
 
-    fun fetchMovies(query: String) {
-        RestaurantModel.shared.getPopularMovies(query)
+    fun fetchRestaurants(query: String, callback: (Boolean) -> Unit) {
+        RestaurantModel.shared.getRestaurants(query, callback)
     }
 }

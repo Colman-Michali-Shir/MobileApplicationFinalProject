@@ -19,7 +19,7 @@ class RestaurantModel private constructor() {
         restaurants.value = emptyList()
     }
 
-    fun getPopularMovies(query: String) {
+    fun getRestaurants(query: String, callback: (Boolean) -> Unit) {
         loadingState.postValue(LoadingState.LOADING)
 
         executor.execute {
@@ -35,6 +35,7 @@ class RestaurantModel private constructor() {
                 } else {
                     this.restaurants.postValue(emptyList())
                 }
+                callback(response.isSuccessful)
             } catch (e: Exception) {
                 this.restaurants.postValue(emptyList())
             } finally {

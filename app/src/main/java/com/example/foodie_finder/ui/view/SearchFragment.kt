@@ -31,18 +31,10 @@ class SearchFragment : Fragment() {
 
         binding?.listRecyclerView?.adapter = adapter
 
-
         viewModel.restaurants.observe(viewLifecycleOwner) { restaurants ->
-            if (restaurants.isNullOrEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Failed to fetch restaurants!",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-                adapter?.updateSearchRestaurants(restaurants)
-                adapter?.notifyDataSetChanged()
-            }
+            adapter?.updateSearchRestaurants(restaurants)
+            adapter?.notifyDataSetChanged()
+            binding?.progressBar?.visibility = View.GONE
         }
 
         binding?.searchButton?.setOnClickListener {
@@ -51,7 +43,15 @@ class SearchFragment : Fragment() {
             val searchText = binding?.searchEditText?.text.toString()
 
             if (searchText.isNotEmpty()) {
-                viewModel.fetchMovies(searchText)
+                viewModel.fetchRestaurants(searchText) { isSuccessful ->
+                    if (!isSuccessful) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to fetch restaurants!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -66,9 +66,14 @@ class SearchFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding?.searchEditText?.text?.clear()
+    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+
+    override fun onDestroy() {
+        super.onDestroy()
         viewModel.clearRestaurants()
         binding = null
     }

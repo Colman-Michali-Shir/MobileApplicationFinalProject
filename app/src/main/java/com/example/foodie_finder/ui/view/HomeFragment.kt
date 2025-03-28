@@ -40,7 +40,6 @@ class HomeFragment : Fragment() {
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
             adapter?.updateAllPosts(posts)
             adapter?.notifyDataSetChanged()
-            binding?.progressBar?.visibility = View.GONE
         }
 
 
@@ -48,18 +47,25 @@ class HomeFragment : Fragment() {
             adapter?.updateSavedPosts(posts)
             adapter?.notifyDataSetChanged()
 
-            binding?.progressBar?.visibility = View.GONE
+        }
+
+        PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            val isLoading = state == PostModel.LoadingState.LOADING
+            // Show progressBar only when first loading, but not on swipe refresh
+            if (binding?.swipeToRefresh?.isRefreshing == true) {
+                binding?.progressBar?.visibility = View.GONE
+            } else {
+                binding?.progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
+            }
+
+            // Show swipe refresh only if it's a manual refresh
+            binding?.swipeToRefresh?.isRefreshing =
+                isLoading && binding?.swipeToRefresh?.isRefreshing == true
         }
 
         binding?.swipeToRefresh?.setOnRefreshListener {
             viewModel.refreshAllPosts()
             viewModel.refreshSavedPosts()
-        }
-
-        PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
-            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
-            binding?.progressBar?.visibility =
-                if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
         adapter?.listener = object : OnItemClickListener {
@@ -79,6 +85,11 @@ class HomeFragment : Fragment() {
         return binding?.root
     }
 
+    private fun getAllPosts() {
+        viewModel.refreshAllPosts()
+        viewModel.refreshSavedPosts()
+    }
+
     override fun onResume() {
         super.onResume()
         getAllPosts()
@@ -87,11 +98,5 @@ class HomeFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         binding = null
-    }
-
-    private fun getAllPosts() {
-        binding?.progressBar?.visibility = View.VISIBLE
-        viewModel.refreshAllPosts()
-        viewModel.refreshSavedPosts()
     }
 }
