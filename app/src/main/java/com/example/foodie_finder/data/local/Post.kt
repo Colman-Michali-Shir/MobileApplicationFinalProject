@@ -19,7 +19,7 @@ data class Post(
     val rating: Int,
     val imgUrl: String? = "",
     val lastUpdateTime: Long? = null,
-    val creationTime: Long
+    val creationTime: Long,
 ) {
     companion object {
 
@@ -46,6 +46,7 @@ data class Post(
         const val LAST_UPDATE_TIME = "lastUpdateTime"
         const val CREATION_TIME = "creationTime"
 
+
         fun fromJSON(json: Map<String, Any>): Post {
             val id = json[ID_KEY] as? String ?: ""
             val postedBy = json[USER_ID] as? String ?: ""
@@ -71,7 +72,7 @@ data class Post(
                 rating = rating,
                 imgUrl = imgUrl,
                 lastUpdateTime = lastUpdatedLongTimestamp,
-                creationTime = creationTimeLongTimestamp
+                creationTime = creationTimeLongTimestamp,
             )
         }
     }
@@ -87,6 +88,6 @@ data class Post(
             RATING to rating,
             IMAGE_URL to imgUrl,
             LAST_UPDATE_TIME to FieldValue.serverTimestamp(),
-            CREATION_TIME to creationTime.toFirebaseTimestamp
+            CREATION_TIME to creationTime.toFirebaseTimestamp,
         )
 }

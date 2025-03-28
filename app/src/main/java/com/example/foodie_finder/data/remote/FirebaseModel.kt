@@ -7,12 +7,14 @@ import com.example.foodie_finder.base.GetAllPostsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
 import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.local.SavedPost
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -48,7 +50,10 @@ class FirebaseModel private constructor() {
 
     fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
-            .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .whereGreaterThanOrEqualTo(
+                Post.LAST_UPDATE_TIME,
+                sinceLastUpdated.toFirebaseTimestamp
+            )
             .get()
             .addOnSuccessListener { postsJson ->
                 val postsList: MutableList<Post> = mutableListOf()
@@ -149,15 +154,8 @@ class FirebaseModel private constructor() {
     ) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-//                val user = auth.currentUser
-                UserModel.shared.loadUser { user ->
-                    if (user != null) {
-                        callback(true, "Login successful: ${user.email}", null)
-                    } else {
-                        callback(false, "Failed to load user data", null)
-                    }
-                }
-
+                val user = auth.currentUser
+                callback(true, "Login successful: ${user?.email}", null)
             }
             .addOnFailureListener {
                 handleFirebaseError(callback, it.message)
@@ -199,7 +197,6 @@ class FirebaseModel private constructor() {
             }
     }
 
-
     private fun handleFirebaseError(
         callback: (Boolean, String?, List<String>?) -> Unit,
         errorMessage: String?
@@ -237,5 +234,50 @@ class FirebaseModel private constructor() {
                 callback(false, errorMessage ?: "Unknown error", null)
             }
         }
+    }
+
+    fun getSavedPosts(callback: (List<String>) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(emptyList())
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val savedPostIds = querySnapshot.documents.mapNotNull { doc ->
+                    doc.getString("postId")
+                }
+
+                callback(savedPostIds)
+            }
+            .addOnFailureListener {
+                callback(emptyList())
+            }
+    }
+
+    fun savePost(postId: String, callback: (Boolean, SavedPost?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false, null)
+
+        val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+
+        val savedPost = SavedPost(
+            userId = userId,
+            postId = postId,
+            savedAt = Timestamp.now().toDate().time
+        )
+
+        savedPostRef.set(savedPost.json)
+            .addOnSuccessListener { callback(true, savedPost) }
+            .addOnFailureListener { callback(false, null) }
+    }
+
+    fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false)
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+            .delete()
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
     }
 }

@@ -30,31 +30,41 @@ class HomeFragment : Fragment() {
         binding?.postsList?.setHasFixedSize(true)
         binding?.postsList?.layoutManager = LinearLayoutManager(context)
 
-        adapter = PostsAdapter(viewModel.posts.value)
+        adapter = PostsAdapter(
+            viewModel.posts.value ?: emptyList(),
+            viewModel.savedPosts.value ?: emptyList(),
+            onSavePost = viewModel::savePost,
+            onRemoveSavePost = viewModel::removeSavedPost,
+        )
 
-        viewModel.posts.observe(viewLifecycleOwner) {posts ->
-
-            Log.d("TAG", "Observed posts: $posts") // Debug log
-
-            adapter?.update(posts)
+        viewModel.posts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateAllPosts(posts)
             adapter?.notifyDataSetChanged()
+            binding?.progressBar?.visibility = View.GONE
+        }
 
+
+        viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateSavedPosts(posts)
+            adapter?.notifyDataSetChanged()
             binding?.progressBar?.visibility = View.GONE
         }
 
         binding?.swipeToRefresh?.setOnRefreshListener {
             viewModel.refreshAllPosts()
+            viewModel.refreshSavedPosts()
         }
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            binding?.progressBar?.visibility =
+                if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
             binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
-            binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
         adapter?.listener = object : OnItemClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "On click post $post")
-                post?.let{ clickedPost ->
+                post?.let { clickedPost ->
 //                    val action =
 //                        HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
 //                            clickedPost.id
@@ -80,8 +90,9 @@ class HomeFragment : Fragment() {
         binding = null
     }
 
-    private fun getAllPosts(){
+    private fun getAllPosts() {
         binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshAllPosts()
+        viewModel.refreshSavedPosts()
     }
 }
