@@ -14,60 +14,39 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.foodie_finder.R
-import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.model.PostModel
-import com.example.foodie_finder.databinding.FragmentEditPostBinding
+import com.example.foodie_finder.data.model.UserModel
+import com.example.foodie_finder.databinding.FragmentNewPostBinding
 import com.example.foodie_finder.utils.extensions.createTextWatcher
 import com.example.foodie_finder.utils.extensions.isNotEmpty
 import com.example.foodie_finder.utils.extensions.validateForm
-import com.squareup.picasso.Picasso
+import com.google.firebase.Timestamp
+import java.util.UUID
 
-class EditPostFragment : Fragment() {
-    private var binding: FragmentEditPostBinding? = null
-
-    private var post: Post? = null
+class AddPostFragment : Fragment() {
+    private var binding: FragmentNewPostBinding? = null
 
     private var didSetPostImage = false
     private var cameraLauncher: ActivityResultLauncher<Void?>? = null
     private var galleryLauncher: ActivityResultLauncher<String>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        post = arguments?.let {
-            EditPostFragmentArgs.fromBundle(it).post
-        }
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentEditPostBinding.inflate(inflater, container, false)
+        binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
         binding?.cancelButton?.setOnClickListener(::onCancelClicked)
-        binding?.saveButton?.setOnClickListener(::onSaveClicked)
-        binding?.deleteButton?.setOnClickListener(::onDeleteClicked)
+        binding?.postButton?.setOnClickListener(::onPostClicked)
 
-        binding?.postInputForm?.restaurantNameTextField?.setText(post?.title)
-        binding?.postInputForm?.reviewTextField?.setText(post?.content)
-        binding?.postInputForm?.ratingBar?.rating = post?.rating?.toFloat() ?: 0f
-
-        post?.imgUrl?.let {
-            if (it.isNotBlank()) {
-                Picasso.get()
-                    .load(it)
-                    .placeholder(R.drawable.placeholderimg)
-                    .into(binding?.postInputForm?.postImageView)
-            }
-        }
 
         cameraLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
                 if (bitmap != null) {
                     binding?.postInputForm?.postImageView?.setImageBitmap(bitmap)
                     didSetPostImage = true
-                    updateSaveButtonState()
                 }
             }
 
@@ -76,7 +55,6 @@ class EditPostFragment : Fragment() {
                 uri?.let {
                     binding?.postInputForm?.postImageView?.setImageURI(it)
                     didSetPostImage = true
-                    updateSaveButtonState()
                 }
             }
 
@@ -88,7 +66,9 @@ class EditPostFragment : Fragment() {
         binding?.postInputForm?.reviewTextField?.addTextChangedListener(createTextWatcher { validateAddPostForm() })
         binding?.postInputForm?.ratingBar?.setOnRatingBarChangeListener { _, _, _ -> validateAddPostForm() }
 
+
         return binding?.root
+
     }
 
     private fun showToast(message: String) {
@@ -110,7 +90,7 @@ class EditPostFragment : Fragment() {
 
     private fun validateAddPostForm() {
         validateForm(
-            binding?.saveButton,
+            binding?.postButton,
             null,
             Triple(
                 binding?.postInputForm?.restaurantNameTextField,
@@ -121,20 +101,12 @@ class EditPostFragment : Fragment() {
         )
     }
 
-    private fun updateSaveButtonState() {
-        val isFormValid =
-            binding?.postInputForm?.restaurantNameTextField?.text?.isNotEmpty() == true
-                    && binding?.postInputForm?.reviewTextField?.text?.isNotEmpty() ?: false
+    private fun onPostClicked(view: View) {
+        val userRef = UserModel.shared.getConnectedUserRef() ?: return
 
-        binding?.saveButton?.isEnabled = isFormValid || didSetPostImage
-    }
-
-    private fun onSaveClicked(view: View) {
-        val editedPost = post?.copy(
-            title = binding?.postInputForm?.restaurantNameTextField?.text.toString().trim(),
-            content = binding?.postInputForm?.reviewTextField?.text.toString().trim(),
-            rating = binding?.postInputForm?.ratingBar?.rating?.toInt() ?: 0
-        )
+        val title = binding?.postInputForm?.restaurantNameTextField?.text.toString().trim()
+        val content = binding?.postInputForm?.reviewTextField?.text.toString().trim()
+        val rating = binding?.postInputForm?.ratingBar?.rating?.toInt() ?: 0
 
         var bitmap: Bitmap? = null
 
@@ -144,41 +116,45 @@ class EditPostFragment : Fragment() {
             bitmap = (binding?.postInputForm?.postImageView?.drawable as BitmapDrawable).bitmap
         }
 
+        val post = FirebasePost(
+            id = UUID.randomUUID().toString(),
+            postedBy = userRef,
+            title = title,
+            content = content,
+            rating = rating,
+            lastUpdateTime = Timestamp.now().toDate().time,
+            creationTime = Timestamp.now().toDate().time
+        )
+
         binding?.progressBar?.visibility = View.VISIBLE
 
-        editedPost?.let {
-            PostModel.shared.updatePost(it, bitmap) { (isSuccessful, errorMessage) ->
-                if (isSuccessful) {
-                    showToast("Post uploaded")
-                    view.findNavController().popBackStack()
-                } else {
-                    showToast(errorMessage ?: "There was an error uploading the post")
-                }
-                binding?.progressBar?.visibility = View.GONE
+        PostModel.shared.createPost(post, bitmap) { (isSuccessful, errorMessage) ->
+            if (isSuccessful) {
+                showToast("Post uploaded")
+                view.findNavController().popBackStack()
+                resetForm()
+            } else {
+                showToast(errorMessage ?: "There was an error uploading the post")
             }
+            binding?.progressBar?.visibility = View.GONE
         }
+    }
+
+    private fun resetForm() {
+        binding?.postInputForm?.restaurantNameTextField?.text?.clear()
+        binding?.postInputForm?.reviewTextField?.text?.clear()
+        binding?.postInputForm?.ratingBar?.rating = 0f
+        resetImageView()
+    }
+
+    private fun resetImageView() {
+        binding?.postInputForm?.postImageView?.setImageResource(R.drawable.placeholderimg)
+        didSetPostImage = false
     }
 
 
     private fun onCancelClicked(view: View) {
         view.findNavController().popBackStack()
-    }
-
-    private fun onDeleteClicked(view: View) {
-        post?.let {
-            binding?.progressBar?.visibility = View.VISIBLE
-
-            PostModel.shared.deletePost(it.id) { (isSuccessful, errorMessage) ->
-                if (isSuccessful) {
-                    showToast("Post deleted")
-                    view.findNavController().popBackStack()
-                } else {
-                    showToast(errorMessage ?: "There was an error uploading the post")
-                }
-                binding?.progressBar?.visibility = View.GONE
-            }
-        }
-
     }
 
     override fun onDestroy() {

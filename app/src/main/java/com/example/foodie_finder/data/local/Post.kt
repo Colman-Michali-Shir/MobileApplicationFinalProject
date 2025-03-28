@@ -1,17 +1,20 @@
 package com.example.foodie_finder.data.local
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.foodie_finder.base.MyApplication
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "posts")
+@Parcelize
 data class Post(
     @PrimaryKey var id: String,
-    val postedBy: String,
+    var postedBy: String,
     var username: String,
     var userProfileImg: String? = "",
     val title: String,
@@ -19,8 +22,8 @@ data class Post(
     val rating: Int,
     val imgUrl: String? = "",
     val lastUpdateTime: Long? = null,
-    val creationTime: Long,
-) {
+    val creationTime: Long
+) : Parcelable {
     companion object {
 
         private const val LOCAL_LAST_UPDATED = "localPostLastUpdated"
@@ -35,17 +38,16 @@ data class Post(
                     }
             }
 
-        private const val ID_KEY = "id"
-        private const val USER_ID = "postedBy"
-        private const val USERNAME = "username"
-        private const val USER_PROFILE_PICTURE = "userProfilePicture"
-        private const val TITLE = "title"
-        private const val CONTENT = "content"
-        private const val RATING = "rating"
-        private const val IMAGE_URL = "imgUrl"
+        const val ID_KEY = "id"
+        const val USER_ID = "postedBy"
+        const val USERNAME = "username"
+        const val USER_PROFILE_PICTURE = "userProfilePicture"
+        const val TITLE = "title"
+        const val CONTENT = "content"
+        const val RATING = "rating"
+        const val IMAGE_URL = "imgUrl"
         const val LAST_UPDATE_TIME = "lastUpdateTime"
-        private const val CREATION_TIME = "creationTime"
-
+        const val CREATION_TIME = "creationTime"
 
         fun fromJSON(json: Map<String, Any>): Post {
             val id = json[ID_KEY] as? String ?: ""
@@ -72,7 +74,7 @@ data class Post(
                 rating = rating,
                 imgUrl = imgUrl,
                 lastUpdateTime = lastUpdatedLongTimestamp,
-                creationTime = creationTimeLongTimestamp,
+                creationTime = creationTimeLongTimestamp
             )
         }
     }
@@ -88,6 +90,6 @@ data class Post(
             RATING to rating,
             IMAGE_URL to imgUrl,
             LAST_UPDATE_TIME to FieldValue.serverTimestamp(),
-            CREATION_TIME to creationTime.toFirebaseTimestamp,
+            CREATION_TIME to creationTime.toFirebaseTimestamp
         )
 }

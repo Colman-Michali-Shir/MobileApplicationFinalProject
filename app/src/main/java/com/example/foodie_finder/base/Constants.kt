@@ -1,12 +1,12 @@
 package com.example.foodie_finder.base
 
 import com.example.foodie_finder.data.local.Post
-import com.example.foodie_finder.data.local.Student
 
 typealias GetAllPostsCallback = (List<Post>) -> Unit
-typealias GetAllStudentsCallback = (List<Student>) -> Unit
-typealias GetStudentByIdCallback = (Student) -> Unit
-
+typealias CreatePostCallback = (Boolean) -> Unit
+typealias UserRefPostCallback = (Post) -> Unit
+typealias DeletePostCallback = (Boolean) -> Unit
+typealias Callback<T> = (T) -> Unit
 typealias EmptyCallback = () -> Unit
 
 object Constants {
