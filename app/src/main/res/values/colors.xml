@@ -153,4 +153,5 @@
     <color name="colorCustomColor1Container_highContrast">#533F76</color>
     <color name="colorOnCustomColor1Container_highContrast">#FFFFFF</color>
     <color name="white">#FFFFFF</color>
+    <color name="yellow">#EBE06B</color>
 </resources>

@@ -31,13 +31,22 @@ class HomeFragment : Fragment() {
         binding?.postsList?.setHasFixedSize(true)
         binding?.postsList?.layoutManager = LinearLayoutManager(context)
 
-        adapter = PostsAdapter(viewModel.posts.value)
+        adapter = PostsAdapter(
+            viewModel.posts.value ?: emptyList(),
+            viewModel.savedPosts.value ?: emptyList(),
+            onSavePost = viewModel::savePost,
+            onRemoveSavePost = viewModel::removeSavedPost,
+        )
 
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateAllPosts(posts)
+            adapter?.notifyDataSetChanged()
+            binding?.progressBar?.visibility = View.GONE
+        }
 
-            Log.d("TAG", "Observed posts: $posts") // Debug log
 
-            adapter?.update(posts)
+        viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateSavedPosts(posts)
             adapter?.notifyDataSetChanged()
 
             binding?.progressBar?.visibility = View.GONE
@@ -45,12 +54,13 @@ class HomeFragment : Fragment() {
 
         binding?.swipeToRefresh?.setOnRefreshListener {
             viewModel.refreshAllPosts()
+            viewModel.refreshSavedPosts()
         }
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
-            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
             binding?.progressBar?.visibility =
                 if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
+            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
         }
 
         adapter?.listener = object : OnItemClickListener {
@@ -65,7 +75,6 @@ class HomeFragment : Fragment() {
                 }
 
             }
-
         }
 
         binding?.postsList?.adapter = adapter
@@ -86,5 +95,6 @@ class HomeFragment : Fragment() {
     private fun getAllPosts() {
         binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshAllPosts()
+        viewModel.refreshSavedPosts()
     }
 }

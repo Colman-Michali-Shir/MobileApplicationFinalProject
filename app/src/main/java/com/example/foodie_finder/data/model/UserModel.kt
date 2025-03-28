@@ -46,7 +46,8 @@ class UserModel private constructor() {
                         firebaseModel.updateUser(userWithProfileImage, callback)
                         this.user = userWithProfileImage
                     },
-                    onError = { callback(true) }
+                    onError = { callback(true) },
+                    "profileImages"
                 )
 
             } ?: callback(false)
