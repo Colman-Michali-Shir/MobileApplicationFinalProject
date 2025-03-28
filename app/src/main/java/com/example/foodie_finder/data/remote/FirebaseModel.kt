@@ -1,7 +1,6 @@
 package com.example.foodie_finder.data.remote
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.example.foodie_finder.auth.AuthManager
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.CreatePostCallback
 import com.example.foodie_finder.base.DeletePostCallback
@@ -9,14 +8,15 @@ import com.example.foodie_finder.base.GetAllPostsCallback
 import com.example.foodie_finder.base.UserRefPostCallback
 import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.local.SavedPost
 import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,18 +30,10 @@ class FirebaseModel private constructor() {
     private val database: FirebaseFirestore by lazy { Firebase.firestore }
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
-    private val _loggedInUser = MutableLiveData<FirebaseUser>()
-    val loggedInUser: LiveData<FirebaseUser> get() = _loggedInUser
-
     init {
         val setting = firestoreSettings {
             setLocalCacheSettings(memoryCacheSettings { })
         }
-
-        auth.addAuthStateListener { auth ->
-            _loggedInUser.postValue(auth.currentUser)
-        }
-
         database.firestoreSettings = setting
     }
 
@@ -159,21 +151,21 @@ class FirebaseModel private constructor() {
             .addOnFailureListener { callback(false) }
     }
 
-    fun isUserLoggedIn(): Boolean {
-        return auth.currentUser != null
-    }
-
-    fun getConnectedUserUid(): String? {
-        return auth.currentUser?.uid
-    }
+//    fun isUserLoggedIn(): Boolean {
+//        return auth.currentUser != null
+//    }
+//
+//    fun getConnectedUserUid(): String? {
+//        return auth.currentUser?.uid
+//    }
 
     fun getConnectedUserRef(): DocumentReference? {
-        val userId = auth.currentUser?.uid ?: return null
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return null
         return (database.collection(Constants.COLLECTIONS.USERS).document(userId))
     }
 
     fun getConnectedUser(callback: (User?) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return callback(null)
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(null)
 
         database.collection(Constants.COLLECTIONS.USERS).document(userId)
             .get()
@@ -205,6 +197,51 @@ class FirebaseModel private constructor() {
         database.collection(Constants.COLLECTIONS.USERS).document(user.id)
             .set(user.json)
             .addOnCompleteListener { callback(it.isSuccessful) }
+    }
+
+    fun getSavedPosts(callback: (List<String>) -> Unit) {
+        val userId = UserModel.shared.connectedUser?.id ?: return callback(emptyList())
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val savedPostIds = querySnapshot.documents.mapNotNull { doc ->
+                    doc.getString("postId")
+                }
+
+                callback(savedPostIds)
+            }
+            .addOnFailureListener {
+                callback(emptyList())
+            }
+    }
+
+    fun savePost(postId: String, callback: (Boolean, SavedPost?) -> Unit) {
+        val userId = UserModel.shared.connectedUser?.id ?: return callback(false, null)
+
+        val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+
+        val savedPost = SavedPost(
+            userId = userId,
+            postId = postId,
+            savedAt = Timestamp.now().toDate().time
+        )
+
+        savedPostRef.set(savedPost.json)
+            .addOnSuccessListener { callback(true, savedPost) }
+            .addOnFailureListener { callback(false, null) }
+    }
+
+    fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
+        val userId = UserModel.shared.connectedUser?.id ?: return callback(false)
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+            .delete()
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
     }
 
 }

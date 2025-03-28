@@ -3,15 +3,10 @@ package com.example.foodie_finder.auth
 import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.data.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class AuthManager private constructor() {
 
-    private val database: FirebaseFirestore by lazy { Firebase.firestore }
-    private val auth = FirebaseAuth.getInstance()
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     companion object {
         val shared = AuthManager()
@@ -57,7 +52,6 @@ class AuthManager private constructor() {
             }
     }
 
-    // Sign out the user
     fun signOut() {
         auth.signOut()
         UserModel.shared.connectedUser = null
@@ -69,9 +63,14 @@ class AuthManager private constructor() {
         }
     }
 
-    fun getCurrentUser(): FirebaseUser? {
-        return auth.currentUser
+    fun isUserLoggedIn(): Boolean {
+        return auth.currentUser != null
     }
+
+    fun getCurrentUserUid(): String? {
+        return auth.uid
+    }
+
 
     private fun handleFirebaseError(
         callback: (Boolean, String?, List<String>?) -> Unit,

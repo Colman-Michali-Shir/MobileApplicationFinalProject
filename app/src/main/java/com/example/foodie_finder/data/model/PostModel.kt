@@ -1,6 +1,7 @@
 package com.example.foodie_finder.data.model
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.foodie_finder.base.Callback
 import com.example.foodie_finder.data.local.AppLocalDb
@@ -10,6 +11,7 @@ import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.Executors
 
 
@@ -26,19 +28,26 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
+    val savedPosts: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
+
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
     val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
     val usersPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
 
     init {
+        Log.d("TAG", "INIT")
         UserModel.shared.loggedInUser.observeForever { user ->
+            Log.d("TAG", "user" + user)
             if (user == null) {
                 allPosts.postValue(emptyList())
-                usersPosts.postValue((emptyList()))
+                usersPosts.postValue(emptyList())
+                savedPosts.postValue(emptyList())
             } else {
                 database.postDao().getAllPosts().observeForever { allPosts.postValue(it) }
                 database.postDao().getPostsByUser(user.id)
                     .observeForever { usersPosts.postValue(it) }
+                database.savedPostDao().getSavedPostsByUser(user.id)
+                    .observeForever { posts -> savedPosts.postValue(posts) }
             }
         }
     }
@@ -47,6 +56,38 @@ class PostModel private constructor() {
         val shared = PostModel()
     }
 
+    fun savePost(postId: String, callback: (Boolean) -> Unit) {
+        firebaseModel.savePost(postId) { success, savedPost ->
+            if (success && savedPost != null) {
+                executor.execute {
+                    database.savedPostDao().savePost(savedPost)
+                }
+            }
+            callback(success)
+        }
+    }
+
+    fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
+        firebaseModel.removeSavedPost(postId) { success ->
+            if (success) {
+                val userId =
+                    FirebaseAuth.getInstance().currentUser?.uid ?: return@removeSavedPost callback(
+                        false
+                    )
+                executor.execute {
+                    database.savedPostDao()
+                        .removeSavedPost(userId, postId)
+                }
+            }
+            callback(success)
+        }
+    }
+
+    fun getSavedPosts() {
+        firebaseModel.getSavedPosts { posts ->
+            savedPosts.postValue(posts)
+        }
+    }
 
     fun refreshAllPosts() {
         loadingState.postValue(LoadingState.LOADING)

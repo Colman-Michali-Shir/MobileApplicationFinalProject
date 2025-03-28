@@ -54,10 +54,22 @@ class ProfileFragment : Fragment() {
             saveUserData()
         }
 
-        adapter = PostsAdapter(viewModel.userPosts.value)
+        adapter = PostsAdapter(
+            viewModel.userPosts.value ?: emptyList(),
+            viewModel.savedPosts.value ?: emptyList(),
+            onSavePost = viewModel::savePost,
+            onRemoveSavePost = viewModel::removeSavedPost,
+        )
 
         viewModel.userPosts.observe(viewLifecycleOwner) { posts ->
-            adapter?.update(posts)
+            adapter?.updateAllPosts(posts)
+            adapter?.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
+        }
+
+        viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateSavedPosts(posts)
             adapter?.notifyDataSetChanged()
 
             binding?.progressBar?.visibility = View.GONE
@@ -195,6 +207,7 @@ class ProfileFragment : Fragment() {
     private fun getUserPosts() {
         binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshUsersPosts()
+        viewModel.refreshSavedPosts()
     }
 
     override fun onDestroy() {

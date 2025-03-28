@@ -6,17 +6,17 @@ import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.model.PostModel
 
 
-class PostsListViewModel : ViewModel() {
+class SavedPostsViewModel : ViewModel() {
 
     var posts: LiveData<List<Post>> = PostModel.shared.allPosts
     var savedPosts: LiveData<List<String>> = PostModel.shared.savedPosts
 
-    fun refreshAllPosts() {
-        PostModel.shared.refreshAllPosts()
-    }
-
     fun refreshSavedPosts() {
         PostModel.shared.getSavedPosts()
+    }
+
+    fun refreshAllPosts() {
+        PostModel.shared.refreshAllPosts()
     }
 
     fun savePost(postId: String, callback: (Boolean) -> Unit) {

@@ -14,7 +14,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.foodie_finder.auth.AuthManager
-import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -29,7 +28,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding?.root)
-        UserModel.shared.loadUser()
+//        UserModel.shared.loadUser()
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -82,7 +82,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (!UserModel.shared.isUserLoggedIn()) {
+        val connectedUserId = AuthManager.shared.getCurrentUserUid()
+
+        if (connectedUserId != null) {
+            AuthManager.shared.connectUser(connectedUserId)
+        }
+
+        if (!AuthManager.shared.isUserLoggedIn()) {
             navController?.navigate(R.id.loginFragment)
         }
 

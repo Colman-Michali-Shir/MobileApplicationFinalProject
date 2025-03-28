@@ -30,10 +30,22 @@ class HomeFragment : Fragment() {
         binding?.postsList?.setHasFixedSize(true)
         binding?.postsList?.layoutManager = LinearLayoutManager(context)
 
-        adapter = PostsAdapter(viewModel.posts.value)
+        adapter = PostsAdapter(
+            viewModel.posts.value ?: emptyList(),
+            viewModel.savedPosts.value ?: emptyList(),
+            onSavePost = viewModel::savePost,
+            onRemoveSavePost = viewModel::removeSavedPost,
+        )
 
         viewModel.posts.observe(viewLifecycleOwner) { posts ->
-            adapter?.update(posts)
+            adapter?.updateAllPosts(posts)
+            adapter?.notifyDataSetChanged()
+            binding?.progressBar?.visibility = View.GONE
+        }
+
+
+        viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateSavedPosts(posts)
             adapter?.notifyDataSetChanged()
 
             binding?.progressBar?.visibility = View.GONE
@@ -41,6 +53,7 @@ class HomeFragment : Fragment() {
 
         binding?.swipeToRefresh?.setOnRefreshListener {
             viewModel.refreshAllPosts()
+            viewModel.refreshSavedPosts()
         }
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
@@ -79,5 +92,6 @@ class HomeFragment : Fragment() {
     private fun getAllPosts() {
         binding?.progressBar?.visibility = View.VISIBLE
         viewModel.refreshAllPosts()
+        viewModel.refreshSavedPosts()
     }
 }

@@ -12,6 +12,7 @@ class ProfileViewModel : ViewModel() {
 
     var user: LiveData<User?> = UserModel.shared.loggedInUser
     var userPosts: LiveData<List<Post>> = PostModel.shared.usersPosts
+    var savedPosts: LiveData<List<String>> = PostModel.shared.savedPosts
 
     fun updateUser(user: User, profileImage: Bitmap?, callback: (Boolean) -> Unit) {
         UserModel.shared.updateUser(user, profileImage, callback)
@@ -19,5 +20,17 @@ class ProfileViewModel : ViewModel() {
 
     fun refreshUsersPosts() {
         PostModel.shared.refreshUsersPosts()
+    }
+
+    fun refreshSavedPosts() {
+        PostModel.shared.getSavedPosts()
+    }
+
+    fun savePost(postId: String, callback: (Boolean) -> Unit) {
+        PostModel.shared.savePost(postId, callback)
+    }
+
+    fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
+        PostModel.shared.removeSavedPost(postId, callback)
     }
 }
