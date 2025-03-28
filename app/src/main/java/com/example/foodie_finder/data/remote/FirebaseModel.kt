@@ -1,22 +1,20 @@
 package com.example.foodie_finder.data.remote
 
+import com.example.foodie_finder.auth.AuthManager
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.CreatePostCallback
 import com.example.foodie_finder.base.DeletePostCallback
-import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
-import com.example.foodie_finder.base.GetStudentByIdCallback
+import com.example.foodie_finder.base.UserRefPostCallback
 import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.SavedPost
-import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
-import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,13 +26,11 @@ import com.google.firebase.ktx.Firebase
 class FirebaseModel private constructor() {
 
     private val database: FirebaseFirestore by lazy { Firebase.firestore }
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     init {
         val setting = firestoreSettings {
             setLocalCacheSettings(memoryCacheSettings { })
         }
-
         database.firestoreSettings = setting
     }
 
@@ -51,10 +47,7 @@ class FirebaseModel private constructor() {
 
     fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
-            .whereGreaterThanOrEqualTo(
-                Post.LAST_UPDATE_TIME,
-                sinceLastUpdated.toFirebaseTimestamp
-            )
+            .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .get()
             .addOnSuccessListener { postsJson ->
                 val postsList: MutableList<Post> = mutableListOf()
@@ -64,18 +57,12 @@ class FirebaseModel private constructor() {
                     val post = Post.fromJSON(postDoc.data)
                     val userRef = postDoc.getDocumentReference("postedBy")
                     if (userRef != null) {
-                        val firebaseUserFetch = userRef.get().addOnSuccessListener { userDoc ->
-                            if (userDoc.exists()) {
-                                val userId = userDoc.getString("id") ?: ""
-                                val fullName = userDoc.getString("email") ?: ""
-                                val profilePic = userDoc.getString("avatarUrl") ?: ""
-                                post.username = fullName
-                                post.userProfileImg = profilePic
-                                post.postedBy = userId
-                            }
-                            postsList.add(post)
+                        val firebaseUserFetch = TaskCompletionSource<DocumentSnapshot>()
+                        addUserInfoToPost(userRef, post) { fullPost ->
+                            postsList.add(fullPost)
+                            firebaseUserFetch.setResult(null) // Mark task as completed
                         }
-                        firebaseCallsTasks.add(firebaseUserFetch)
+                        firebaseCallsTasks.add(firebaseUserFetch.task)
                     }
                 }
 
@@ -88,6 +75,56 @@ class FirebaseModel private constructor() {
             .addOnFailureListener {
                 callback(emptyList())
             }
+    }
+
+    fun getPostsByUser(sinceLastUpdated: Long, callback: GetAllPostsCallback) {
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .get()
+            .addOnSuccessListener { postsJson ->
+                val postsList: MutableList<Post> = mutableListOf()
+                val firebaseCallsTasks = mutableListOf<Task<DocumentSnapshot>>()
+
+                for (postDoc in postsJson) {
+                    val post = Post.fromJSON(postDoc.data)
+                    val userRef = postDoc.getDocumentReference("postedBy")
+
+                    if (userRef != null && getConnectedUserRef() == userRef) {
+                        val firebaseUserFetch = TaskCompletionSource<DocumentSnapshot>()
+                        addUserInfoToPost(userRef, post) { fullPost ->
+                            postsList.add(fullPost)
+                            firebaseUserFetch.setResult(null) // Mark task as completed
+                        }
+                        firebaseCallsTasks.add(firebaseUserFetch.task)
+                    }
+                }
+
+                // Wait until all user data fetches are completed
+                Tasks.whenAllSuccess<DocumentSnapshot>(firebaseCallsTasks).addOnSuccessListener {
+                    callback(postsList)
+                }.addOnFailureListener {
+                    callback(emptyList()) // Handle failure case
+                }
+            }.addOnFailureListener { callback(listOf()) }
+    }
+
+    private fun addUserInfoToPost(
+        userRef: DocumentReference,
+        post: Post,
+        callback: UserRefPostCallback
+    ) {
+        userRef.get().addOnSuccessListener { userDoc ->
+            if (userDoc.exists()) {
+                val userId = userDoc.getString("id") ?: ""
+                val fullName = userDoc.getString("email") ?: ""
+                val profilePic = userDoc.getString("avatarUrl") ?: ""
+                post.username = fullName
+                post.userProfileImg = profilePic
+                post.postedBy = userId
+
+                callback(post)
+            }
+        }
     }
 
     fun createPost(post: FirebasePost, callback: CreatePostCallback) {
@@ -104,28 +141,6 @@ class FirebaseModel private constructor() {
             .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
-    fun getStudentById(id: String, callback: GetStudentByIdCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).document(id)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    callback(Student.fromJSON(document.data ?: emptyMap()))
-                } else {
-                    throw NoSuchElementException("Student with ID $id not found")
-                }
-            }
-            .addOnFailureListener {
-                throw NoSuchElementException("Student with ID $id not found")
-            }
-    }
-
-
-    fun delete(student: Student, callback: EmptyCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).document(student.id)
-            .delete()
-            .addOnCompleteListener { callback() }
-    }
-
     fun updateUser(user: User, callback: (Boolean) -> Unit) {
         database.collection(Constants.COLLECTIONS.USERS).document(user.id)
             .update(user.json)
@@ -133,21 +148,14 @@ class FirebaseModel private constructor() {
             .addOnFailureListener { callback(false) }
     }
 
-    fun isUserLoggedIn(): Boolean {
-        return auth.currentUser != null
-    }
-
-    fun getConnectedUserUid(): String? {
-        return auth.currentUser?.uid
-    }
 
     fun getConnectedUserRef(): DocumentReference? {
-        val userId = auth.currentUser?.uid ?: return null
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return null
         return (database.collection(Constants.COLLECTIONS.USERS).document(userId))
     }
 
     fun getConnectedUser(callback: (User?) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return callback(null)
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(null)
 
         database.collection(Constants.COLLECTIONS.USERS).document(userId)
             .get()
@@ -161,97 +169,28 @@ class FirebaseModel private constructor() {
             .addOnFailureListener { callback(null) }
     }
 
-    fun signIn(
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                val user = auth.currentUser
-                callback(true, "Login successful: ${user?.email}", null)
-            }
-            .addOnFailureListener {
-                handleFirebaseError(callback, it.message)
-            }
-    }
-
-    fun signOut() {
-        auth.signOut()
-    }
-
-    fun signUp(
-        firstName: String,
-        lastName: String,
-        email: String,
-        password: String,
-        callback: (Boolean, String?, List<String>?) -> Unit
-    ) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnSuccessListener {
-                val userId = auth.currentUser?.uid ?: return@addOnSuccessListener
-                val user = User(
-                    id = userId,
-                    email = email,
-                    firstName = firstName,
-                    lastName = lastName,
-                    avatarUrl = null,
+    fun getUserById(userId: String, callback: (User?) -> Unit) {
+        database.collection(Constants.COLLECTIONS.USERS).document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                callback(
+                    if (document.exists()) User.fromJSON(
+                        document.data ?: emptyMap()
+                    ) else null
                 )
-                database.collection(Constants.COLLECTIONS.USERS).document(userId)
-                    .set(user.json)
-                    .addOnSuccessListener {
-                        callback(true, "User registered successfully", null)
-                    }
-                    .addOnFailureListener { e ->
-                        callback(false, "Failed to save user data: ${e.message}", null)
-                    }
             }
-            .addOnFailureListener {
-                handleFirebaseError(callback, it.message)
-            }
+            .addOnFailureListener { callback(null) }
     }
 
-    private fun handleFirebaseError(
-        callback: (Boolean, String?, List<String>?) -> Unit,
-        errorMessage: String?
-    ) {
-        when {
-            errorMessage?.contains(
-                "email address is already in use",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Email is already registered", listOf("email"))
-            }
 
-            errorMessage?.contains(
-                "The email address is badly formatted",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Invalid email format", listOf("email"))
-            }
-
-            errorMessage?.contains(
-                "Password should be at least 6 characters",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Password must be at least 6 characters", listOf("password"))
-            }
-
-            errorMessage?.contains(
-                "The supplied auth credential is incorrect",
-                ignoreCase = true
-            ) == true -> {
-                callback(false, "Email or password is incorrect", listOf("email", "password"))
-            }
-
-            else -> {
-                callback(false, errorMessage ?: "Unknown error", null)
-            }
-        }
+    fun createUser(user: User, callback: (Boolean) -> Unit) {
+        database.collection(Constants.COLLECTIONS.USERS).document(user.id)
+            .set(user.json)
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
     fun getSavedPosts(callback: (List<String>) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return callback(emptyList())
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(emptyList())
 
         database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .whereEqualTo("userId", userId)
@@ -269,7 +208,7 @@ class FirebaseModel private constructor() {
     }
 
     fun savePost(postId: String, callback: (Boolean, SavedPost?) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return callback(false, null)
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(false, null)
 
         val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .document("$userId-$postId")
@@ -286,7 +225,7 @@ class FirebaseModel private constructor() {
     }
 
     fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return callback(false)
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(false)
 
         database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .document("$userId-$postId")
@@ -294,4 +233,5 @@ class FirebaseModel private constructor() {
             .addOnSuccessListener { callback(true) }
             .addOnFailureListener { callback(false) }
     }
+
 }

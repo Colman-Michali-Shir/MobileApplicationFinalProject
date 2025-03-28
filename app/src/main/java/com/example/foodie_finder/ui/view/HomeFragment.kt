@@ -1,7 +1,6 @@
 package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,14 +57,13 @@ class HomeFragment : Fragment() {
         }
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
             binding?.progressBar?.visibility =
                 if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
-            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
         }
 
         adapter?.listener = object : OnItemClickListener {
             override fun onEditPost(post: Post?) {
-                Log.d("TAG", "On click post $post")
                 post?.let { clickedPost ->
                     val action =
                         HomeFragmentDirections.actionHomeFragmentToEditPostFragment(
@@ -73,7 +71,6 @@ class HomeFragment : Fragment() {
                         )
                     binding?.root?.findNavController()?.navigate(action)
                 }
-
             }
         }
 

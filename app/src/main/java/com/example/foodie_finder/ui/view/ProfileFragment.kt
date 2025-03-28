@@ -1,7 +1,6 @@
 package com.example.foodie_finder.ui.view
 
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -14,26 +13,27 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.R
+import com.example.foodie_finder.adapter.PostsAdapter
+import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.model.PostModel
+import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.databinding.FragmentProfileBinding
+import com.example.foodie_finder.interfaces.OnItemClickListener
 import com.example.foodie_finder.ui.viewModel.ProfileViewModel
 import com.squareup.picasso.Picasso
 
-
 class ProfileFragment : Fragment() {
     private var binding: FragmentProfileBinding? = null
+    private var adapter: PostsAdapter? = null
+    private val viewModel: ProfileViewModel by viewModels()
+
     private var cameraLauncher: ActivityResultLauncher<Void?>? = null
     private var galleryLauncher: ActivityResultLauncher<String>? = null
-
-    //    private var user: User? = null
     private var isImageUpdated = false
-    private var viewModel: ProfileViewModel? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        viewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +44,9 @@ class ProfileFragment : Fragment() {
         loadUserData()
         setupImagePickers()
 
+        binding?.userPostList?.setHasFixedSize(true)
+        binding?.userPostList?.layoutManager = LinearLayoutManager(context)
+
         binding?.addPhotoImageButton?.setOnClickListener {
             showImageSourceChooser()
         }
@@ -51,26 +54,68 @@ class ProfileFragment : Fragment() {
             saveUserData()
         }
 
+        adapter = PostsAdapter(
+            viewModel.userPosts.value ?: emptyList(),
+            viewModel.savedPosts.value ?: emptyList(),
+            onSavePost = viewModel::savePost,
+            onRemoveSavePost = viewModel::removeSavedPost,
+        )
+
+        viewModel.userPosts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateAllPosts(posts)
+            adapter?.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
+        }
+
+        viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
+            adapter?.updateSavedPosts(posts)
+            adapter?.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
+        }
+
+        binding?.swipeToRefresh?.setOnRefreshListener {
+            viewModel.refreshUsersPosts()
+        }
+
+        PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
+            binding?.progressBar?.visibility =
+                if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
+        }
+
+        adapter?.listener = object : OnItemClickListener {
+            override fun onEditPost(post: Post?) {
+                post?.let { clickedPost ->
+                    val action =
+                        ProfileFragmentDirections.actionProfileFragmentToEditPostFragment(
+                            clickedPost
+                        )
+                    binding?.root?.findNavController()?.navigate(action)
+                }
+            }
+        }
+
+        binding?.userPostList?.adapter = adapter
+
         return binding?.root
     }
 
     private fun loadUserData() {
-        viewModel?.getUser { user ->
-            user?.let {
-
-                binding?.apply {
-                    firstNameEditText.setText(it.firstName)
-                    lastNameEditText.setText(it.lastName)
-                    it.avatarUrl?.takeIf { avatarUrl ->
-                        avatarUrl.isNotBlank()
-                    }?.let { url ->
-                        Picasso.get()
-                            .load(url)
-                            .placeholder(R.drawable.baseline_person_24)
-                            .into(binding?.userImageView)
-                    }
+        viewModel.user.observe(viewLifecycleOwner) { user ->
+            binding?.apply {
+                firstNameEditText.setText(user?.firstName)
+                lastNameEditText.setText(user?.lastName)
+                user?.avatarUrl?.takeIf { avatarUrl ->
+                    avatarUrl.isNotBlank()
+                }?.let { url ->
+                    Picasso.get()
+                        .load(url)
+                        .placeholder(R.drawable.baseline_person_24)
+                        .into(binding?.userImageView)
                 }
-            } ?: showToast("User not found")
+            }
         }
     }
 
@@ -93,7 +138,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun saveUserData() {
-        val currentUser = viewModel?.user ?: return
+        val currentUser = UserModel.shared.connectedUser ?: return
 
         binding?.progressBar?.visibility = View.VISIBLE
 
@@ -111,10 +156,9 @@ class ProfileFragment : Fragment() {
         }
 
 
-        viewModel?.updateUser(updatedUser, newBitmap) { success ->
+        viewModel.updateUser(updatedUser, newBitmap) { success ->
             if (success) {
                 showToast("User is updated")
-//                viewModel?.user = updatedUser
                 isImageUpdated = false
             } else {
                 showToast("Failed to update user")
@@ -137,7 +181,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        context?.let {
+            Toast.makeText(it, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showImageSourceChooser() {
@@ -151,6 +197,17 @@ class ProfileFragment : Fragment() {
                     1 -> galleryLauncher?.launch("image/*")
                 }
             }.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getUserPosts()
+    }
+
+    private fun getUserPosts() {
+        binding?.progressBar?.visibility = View.VISIBLE
+        viewModel.refreshUsersPosts()
+        viewModel.refreshSavedPosts()
     }
 
     override fun onDestroy() {

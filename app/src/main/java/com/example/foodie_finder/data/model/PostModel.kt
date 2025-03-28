@@ -1,6 +1,7 @@
 package com.example.foodie_finder.data.model
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.foodie_finder.base.Callback
 import com.example.foodie_finder.data.local.AppLocalDb
@@ -12,6 +13,7 @@ import com.example.foodie_finder.data.remote.FirebaseModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.Executors
+
 
 class PostModel private constructor() {
 
@@ -26,16 +28,27 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>(emptyList())
-    val savedPosts: MutableLiveData<List<String>> = MutableLiveData<List<String>>(emptyList())
+    val savedPosts: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
 
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
+    val allPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
+    val usersPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
 
     init {
-        database.postDao().getAllPosts().observeForever { allPosts.postValue(it) }
-        FirebaseAuth.getInstance().currentUser?.uid?.let {
-            database.savedPostDao().getSavedPostsByUser(it)
-                .observeForever { posts -> savedPosts.postValue(posts) }
+        Log.d("TAG", "INIT")
+        UserModel.shared.loggedInUser.observeForever { user ->
+            Log.d("TAG", "user" + user)
+            if (user == null) {
+                allPosts.postValue(emptyList())
+                usersPosts.postValue(emptyList())
+                savedPosts.postValue(emptyList())
+            } else {
+                database.postDao().getAllPosts().observeForever { allPosts.postValue(it) }
+                database.postDao().getPostsByUser(user.id)
+                    .observeForever { usersPosts.postValue(it) }
+                database.savedPostDao().getSavedPostsByUser(user.id)
+                    .observeForever { posts -> savedPosts.postValue(posts) }
+            }
         }
     }
 
@@ -80,6 +93,27 @@ class PostModel private constructor() {
         loadingState.postValue(LoadingState.LOADING)
         val lastUpdated: Long = Post.lastUpdated
         firebaseModel.getAllPosts(lastUpdated) { posts ->
+            executor.execute {
+                var currentTime = lastUpdated
+                for (post in posts) {
+                    database.postDao().createPost(post)
+                    post.lastUpdateTime?.let {
+                        if (currentTime < it) {
+                            currentTime = it
+                        }
+                    }
+                }
+
+                Post.lastUpdated = currentTime
+                loadingState.postValue(LoadingState.LOADED)
+            }
+        }
+    }
+
+    fun refreshUsersPosts() {
+        loadingState.postValue(LoadingState.LOADING)
+        val lastUpdated: Long = Post.lastUpdated
+        firebaseModel.getPostsByUser(lastUpdated) { posts ->
             executor.execute {
                 var currentTime = lastUpdated
 

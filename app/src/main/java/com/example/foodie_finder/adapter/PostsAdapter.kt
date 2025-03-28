@@ -3,8 +3,8 @@ package com.example.foodie_finder.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.foodie_finder.auth.AuthManager
 import com.example.foodie_finder.data.local.Post
-import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.databinding.PostRowBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 
@@ -18,7 +18,7 @@ class PostsAdapter(
 ) : RecyclerView.Adapter<PostViewHolder>() {
 
     var listener: OnItemClickListener? = null
-    private val currentUserId = UserModel.shared.getConnectedUserUid()
+    private val currentUserId = AuthManager.shared.getCurrentUserUid()
     private var filteredPosts: List<Post> = posts
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -30,7 +30,7 @@ class PostsAdapter(
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = filteredPosts[position]
-        holder.bind(post, savedPosts.contains(post.id),currentUserId)
+        holder.bind(post, savedPosts.contains(post.id), currentUserId)
     }
 
     private fun filterPosts() {

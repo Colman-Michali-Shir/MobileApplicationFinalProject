@@ -1,12 +1,12 @@
 package com.example.foodie_finder.ui.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.adapter.PostsAdapter
 import com.example.foodie_finder.data.local.Post
@@ -63,13 +63,12 @@ class SavedPostsFragment : Fragment() {
 
         adapter?.listener = object : OnItemClickListener {
             override fun onEditPost(post: Post?) {
-                Log.d("TAG", "On click post $post")
                 post?.let { clickedPost ->
-//                    val action =
-//                        HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
-//                            clickedPost.id
-//                        )
-//                    binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+                    val action =
+                        SavedPostsFragmentDirections.actionSavedPostsFragmentToEditPostFragment(
+                            clickedPost
+                        )
+                    binding?.root?.findNavController()?.navigate(action)
                 }
 
             }
