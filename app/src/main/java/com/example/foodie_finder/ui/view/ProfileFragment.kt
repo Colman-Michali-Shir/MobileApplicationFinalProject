@@ -57,7 +57,7 @@ class ProfileFragment : Fragment() {
     private fun loadUserData() {
         viewModel?.getUser { user ->
             user?.let {
-                viewModel?.user = user
+
                 binding?.apply {
                     firstNameEditText.setText(it.firstName)
                     lastNameEditText.setText(it.lastName)
@@ -114,7 +114,7 @@ class ProfileFragment : Fragment() {
         viewModel?.updateUser(updatedUser, newBitmap) { success ->
             if (success) {
                 showToast("User is updated")
-                viewModel?.user = updatedUser
+//                viewModel?.user = updatedUser
                 isImageUpdated = false
             } else {
                 showToast("Failed to update user")

@@ -1,8 +1,11 @@
 package com.example.foodie_finder.data.model
 
+import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
+import com.example.foodie_finder.base.Callback
 import com.example.foodie_finder.data.local.AppLocalDb
 import com.example.foodie_finder.data.local.AppLocalDbRepository
+import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
@@ -89,4 +92,34 @@ class PostModel private constructor() {
             }
         }
     }
+
+    fun createPost(post: FirebasePost, image: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
+
+        firebaseModel.createPost(post) { isSuccessful ->
+            if (isSuccessful) {
+                image?.let {
+                    cloudinaryModel.uploadImageToCloudinary(
+                        image = it,
+                        name = post.id,
+                        onSuccess = { url ->
+                            val newPost = post.copy(imgUrl = url)
+                            firebaseModel.createPost(newPost) { isSuccessful ->
+                                callback(
+                                    Pair(
+                                        isSuccessful,
+                                        if (isSuccessful) null else "Can't create post, please try again"
+                                    )
+                                )
+                            }
+                        },
+                        onError = { callback(Pair(true, null)) }
+                    )
+                } ?: callback(Pair(true, null))
+
+            } else {
+                callback(Pair(false, "Can't create post, please try again"))
+            }
+        }
+    }
+
 }

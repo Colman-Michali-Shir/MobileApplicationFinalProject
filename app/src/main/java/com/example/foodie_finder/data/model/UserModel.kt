@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 
 
 class UserModel private constructor() {
@@ -12,13 +14,29 @@ class UserModel private constructor() {
     private val cloudinaryModel = CloudinaryModel.getInstance()
 
     var user: User? = null
+        private set
 
     companion object {
         val shared = UserModel()
     }
 
+    fun loadUser(callback: (User?) -> Unit) {
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser != null) {
+            firebaseModel.getConnectedUser { fetchedUser ->
+                user = fetchedUser
+                callback(fetchedUser)
+            }
+        } else {
+            user = null
+            callback(null)
+        }
+    }
+
+
     fun updateUser(user: User, profileImage: Bitmap?, callback: (Boolean) -> Unit) {
         firebaseModel.updateUser(user) {
+            this.user = user
             profileImage?.let {
                 cloudinaryModel.uploadImageToCloudinary(
                     image = it,
@@ -26,6 +44,7 @@ class UserModel private constructor() {
                     onSuccess = { url ->
                         val userWithProfileImage = user.copy(avatarUrl = url)
                         firebaseModel.updateUser(userWithProfileImage, callback)
+                        this.user = userWithProfileImage
                     },
                     onError = { callback(true) },
                     "profileImages"
@@ -40,7 +59,11 @@ class UserModel private constructor() {
     }
 
     fun getUser(callback: (User?) -> Unit) {
-        return firebaseModel.getUser(callback)
+        return firebaseModel.getConnectedUser(callback)
+    }
+
+    fun getConnectedUserRef(): DocumentReference? {
+        return firebaseModel.getConnectedUserRef()
     }
 
     fun signIn(
