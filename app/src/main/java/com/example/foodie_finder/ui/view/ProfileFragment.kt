@@ -17,7 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.R
-import com.example.foodie_finder.adapter.PostsAdapter
+import com.example.foodie_finder.adapter.Post.PostsAdapter
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.model.PostModel
 import com.example.foodie_finder.data.model.UserModel

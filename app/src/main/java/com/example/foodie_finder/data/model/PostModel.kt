@@ -1,7 +1,6 @@
 package com.example.foodie_finder.data.model
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.foodie_finder.base.Callback
 import com.example.foodie_finder.data.local.AppLocalDb
@@ -35,9 +34,7 @@ class PostModel private constructor() {
     val usersPosts: MutableLiveData<List<Post>> = MutableLiveData<List<Post>>()
 
     init {
-        Log.d("TAG", "INIT")
         UserModel.shared.loggedInUser.observeForever { user ->
-            Log.d("TAG", "user" + user)
             if (user == null) {
                 allPosts.postValue(emptyList())
                 usersPosts.postValue(emptyList())

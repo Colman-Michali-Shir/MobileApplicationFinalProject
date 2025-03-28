@@ -12,10 +12,8 @@ typealias EmptyCallback = () -> Unit
 object Constants {
 
     object COLLECTIONS {
-        const val STUDENTS = "students"
         const val USERS = "users"
         const val POSTS = "posts"
         const val SAVED_POSTS = "saved_posts"
-
     }
 }

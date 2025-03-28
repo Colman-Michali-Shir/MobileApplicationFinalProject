@@ -1,4 +1,4 @@
-package com.example.foodie_finder.adapter
+package com.example.foodie_finder.adapter.Post
 
 import android.view.View
 import android.widget.Toast

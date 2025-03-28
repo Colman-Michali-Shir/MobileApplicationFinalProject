@@ -35,6 +35,16 @@ android {
             "CLOUDINARY_API_SECRET",
             "\"${project.properties["CLOUDINARY_API_SECRET"] ?: ""}\""
         )
+        buildConfigField(
+            "String",
+            "GOOGLE_API_KEY",
+            "\"${project.properties["GOOGLE_API_KEY"] ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "GOOGLE_BASE_URL",
+            "\"${project.properties["GOOGLE_BASE_URL"] ?: ""}\""
+        )
 
     }
 
@@ -86,4 +96,10 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
 
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.retrofit)
+    implementation(libs.gson)
 }
