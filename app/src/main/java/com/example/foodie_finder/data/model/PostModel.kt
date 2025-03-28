@@ -9,6 +9,7 @@ import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.remote.CloudinaryModel
 import com.example.foodie_finder.data.remote.FirebaseModel
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.Executors
 
@@ -45,7 +46,9 @@ class PostModel private constructor() {
     fun savePost(postId: String, callback: (Boolean) -> Unit) {
         firebaseModel.savePost(postId) { success, savedPost ->
             if (success && savedPost != null) {
-                database.savedPostDao().savePost(savedPost)
+                executor.execute {
+                    database.savedPostDao().savePost(savedPost)
+                }
             }
             callback(success)
         }
@@ -58,8 +61,10 @@ class PostModel private constructor() {
                     FirebaseAuth.getInstance().currentUser?.uid ?: return@removeSavedPost callback(
                         false
                     )
-                database.savedPostDao()
-                    .removeSavedPost(userId, postId)
+                executor.execute {
+                    database.savedPostDao()
+                        .removeSavedPost(userId, postId)
+                }
             }
             callback(success)
         }
@@ -119,6 +124,45 @@ class PostModel private constructor() {
             } else {
                 callback(Pair(false, "Can't create post, please try again"))
             }
+        }
+    }
+
+    fun updatePost(post: Post, image: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
+        val userRef = UserModel.shared.getConnectedUserRef() ?: return
+        val editedPost = FirebasePost(
+            id = post.id,
+            postedBy = userRef,
+            title = post.title,
+            content = post.content,
+            rating = post.rating,
+            imgUrl = post.imgUrl,
+            lastUpdateTime = Timestamp.now().toDate().time,
+            creationTime = post.creationTime
+        )
+
+        createPost(editedPost, image) { (isSuccessful, errorMessage) ->
+            callback(
+                Pair(
+                    isSuccessful,
+                    if (errorMessage == null) null else "Can't update post, please try again"
+                )
+            )
+        }
+    }
+
+    fun deletePost(postId: String, callback: Callback<Pair<Boolean, String?>>) {
+        firebaseModel.deletePost(postId) { isSuccessful ->
+            if (isSuccessful) {
+                executor.execute {
+                    database.postDao().deletePost(postId)
+                }
+            }
+            callback(
+                Pair(
+                    isSuccessful,
+                    if (isSuccessful) null else "Can't delete post, please try again"
+                )
+            )
         }
     }
 

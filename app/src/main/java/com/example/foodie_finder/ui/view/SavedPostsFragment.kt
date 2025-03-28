@@ -62,7 +62,7 @@ class SavedPostsFragment : Fragment() {
         }
 
         adapter?.listener = object : OnItemClickListener {
-            override fun onItemClick(post: Post?) {
+            override fun onEditPost(post: Post?) {
                 Log.d("TAG", "On click post $post")
                 post?.let { clickedPost ->
 //                    val action =

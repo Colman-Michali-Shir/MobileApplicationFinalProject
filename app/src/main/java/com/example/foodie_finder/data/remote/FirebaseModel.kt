@@ -2,6 +2,7 @@ package com.example.foodie_finder.data.remote
 
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.CreatePostCallback
+import com.example.foodie_finder.base.DeletePostCallback
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
@@ -65,10 +66,12 @@ class FirebaseModel private constructor() {
                     if (userRef != null) {
                         val firebaseUserFetch = userRef.get().addOnSuccessListener { userDoc ->
                             if (userDoc.exists()) {
+                                val userId = userDoc.getString("id") ?: ""
                                 val fullName = userDoc.getString("email") ?: ""
                                 val profilePic = userDoc.getString("avatarUrl") ?: ""
                                 post.username = fullName
                                 post.userProfileImg = profilePic
+                                post.postedBy = userId
                             }
                             postsList.add(post)
                         }
@@ -91,6 +94,13 @@ class FirebaseModel private constructor() {
         database.collection(Constants.COLLECTIONS.POSTS)
             .document(post.id)
             .set(post.json)
+            .addOnCompleteListener { callback(it.isSuccessful) }
+    }
+
+    fun deletePost(postId: String, callback: DeletePostCallback) {
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .document(postId)
+            .delete()
             .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
@@ -125,6 +135,10 @@ class FirebaseModel private constructor() {
 
     fun isUserLoggedIn(): Boolean {
         return auth.currentUser != null
+    }
+
+    fun getConnectedUserUid(): String? {
+        return auth.currentUser?.uid
     }
 
     fun getConnectedUserRef(): DocumentReference? {

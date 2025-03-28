@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie_finder.adapter.PostsAdapter
 import com.example.foodie_finder.data.local.Post
@@ -47,6 +48,7 @@ class HomeFragment : Fragment() {
         viewModel.savedPosts.observe(viewLifecycleOwner) { posts ->
             adapter?.updateSavedPosts(posts)
             adapter?.notifyDataSetChanged()
+
             binding?.progressBar?.visibility = View.GONE
         }
 
@@ -62,14 +64,14 @@ class HomeFragment : Fragment() {
         }
 
         adapter?.listener = object : OnItemClickListener {
-            override fun onItemClick(post: Post?) {
+            override fun onEditPost(post: Post?) {
                 Log.d("TAG", "On click post $post")
                 post?.let { clickedPost ->
-//                    val action =
-//                        HomeFragmentDirections.actionStudentsListFragmentToStudentDetailsFragment(
-//                            clickedPost.id
-//                        )
-//                    binding?.root?.let { Navigation.findNavController(it).navigate(action) }
+                    val action =
+                        HomeFragmentDirections.actionHomeFragmentToEditPostFragment(
+                            clickedPost
+                        )
+                    binding?.root?.findNavController()?.navigate(action)
                 }
 
             }

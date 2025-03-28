@@ -1,5 +1,6 @@
 package com.example.foodie_finder.adapter
 
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.R
@@ -10,7 +11,7 @@ import com.squareup.picasso.Picasso
 
 class PostViewHolder(
     private val binding: PostRowBinding,
-    listener: OnItemClickListener?,
+    private val listener: OnItemClickListener?,
     private val onSavePost: (String, (Boolean) -> Unit) -> Unit,
     private val onRemoveSavePost: (String, (Boolean) -> Unit) -> Unit
 ) :
@@ -18,13 +19,7 @@ class PostViewHolder(
 
     private var post: Post? = null
 
-    init {
-        itemView.setOnClickListener {
-            listener?.onItemClick(post)
-        }
-    }
-
-    fun bind(post: Post?, isSavedByUser: Boolean) {
+    fun bind(post: Post?, isSavedByUser: Boolean, currentUserId: String?) {
         this.post = post
 
         binding.username.text = post?.username
@@ -53,11 +48,20 @@ class PostViewHolder(
                     .placeholder(R.drawable.woman)
                     .into(binding.photoUrlImageView)
             }
+        }
 
+        if (post?.postedBy == currentUserId) {
+            binding.editButton.visibility = View.VISIBLE
+            binding.editButton.setOnClickListener {
+                listener?.onEditPost(post)
+            }
+        } else {
+            binding.editButton.visibility = View.GONE
+        }
 
-            binding.saveButton.setOnClickListener {
-                val isSaved = binding.saveButton.tag as? Boolean ?: false
-
+        binding.saveButton.setOnClickListener {
+            val isSaved = binding.saveButton.tag as? Boolean ?: false
+            post?.let { post ->
                 if (isSaved) {
                     binding.saveButton.setImageResource(R.drawable.bookmark)
                     onRemoveSavePost(post.id) { success ->
@@ -81,10 +85,11 @@ class PostViewHolder(
                         }
                     }
                 }
-
-                binding.saveButton.tag = !isSaved  // Toggle the state
             }
-        }
 
+            binding.saveButton.tag = !isSaved  // Toggle the state
+        }
     }
+
+
 }
