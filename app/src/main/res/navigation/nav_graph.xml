@@ -81,7 +81,11 @@
         android:id="@+id/savedPostsFragment"
         android:name="com.example.foodie_finder.ui.view.SavedPostsFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_saved_posts" />
+        tools:layout="@layout/fragment_saved_posts">
+        <action
+            android:id="@+id/action_savedPostsFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
+    </fragment>
 
     <action
         android:id="@+id/action_global_loginFragment"

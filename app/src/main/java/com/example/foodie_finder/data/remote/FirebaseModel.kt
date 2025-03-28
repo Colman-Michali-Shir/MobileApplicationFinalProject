@@ -10,13 +10,11 @@ import com.example.foodie_finder.data.local.FirebasePost
 import com.example.foodie_finder.data.local.Post
 import com.example.foodie_finder.data.local.SavedPost
 import com.example.foodie_finder.data.local.User
-import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,7 +26,6 @@ import com.google.firebase.ktx.Firebase
 class FirebaseModel private constructor() {
 
     private val database: FirebaseFirestore by lazy { Firebase.firestore }
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     init {
         val setting = firestoreSettings {
@@ -92,7 +89,7 @@ class FirebaseModel private constructor() {
                     val post = Post.fromJSON(postDoc.data)
                     val userRef = postDoc.getDocumentReference("postedBy")
 
-                    if (userRef != null && UserModel.shared.getConnectedUserRef() == userRef) {
+                    if (userRef != null && getConnectedUserRef() == userRef) {
                         val firebaseUserFetch = TaskCompletionSource<DocumentSnapshot>()
                         addUserInfoToPost(userRef, post) { fullPost ->
                             postsList.add(fullPost)
@@ -151,13 +148,6 @@ class FirebaseModel private constructor() {
             .addOnFailureListener { callback(false) }
     }
 
-//    fun isUserLoggedIn(): Boolean {
-//        return auth.currentUser != null
-//    }
-//
-//    fun getConnectedUserUid(): String? {
-//        return auth.currentUser?.uid
-//    }
 
     fun getConnectedUserRef(): DocumentReference? {
         val userId = AuthManager.shared.getCurrentUserUid() ?: return null
@@ -200,7 +190,7 @@ class FirebaseModel private constructor() {
     }
 
     fun getSavedPosts(callback: (List<String>) -> Unit) {
-        val userId = UserModel.shared.connectedUser?.id ?: return callback(emptyList())
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(emptyList())
 
         database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .whereEqualTo("userId", userId)
@@ -218,7 +208,7 @@ class FirebaseModel private constructor() {
     }
 
     fun savePost(postId: String, callback: (Boolean, SavedPost?) -> Unit) {
-        val userId = UserModel.shared.connectedUser?.id ?: return callback(false, null)
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(false, null)
 
         val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .document("$userId-$postId")
@@ -235,7 +225,7 @@ class FirebaseModel private constructor() {
     }
 
     fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
-        val userId = UserModel.shared.connectedUser?.id ?: return callback(false)
+        val userId = AuthManager.shared.getCurrentUserUid() ?: return callback(false)
 
         database.collection(Constants.COLLECTIONS.SAVED_POSTS)
             .document("$userId-$postId")

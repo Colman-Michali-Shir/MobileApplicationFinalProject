@@ -1,7 +1,6 @@
 package com.example.foodie_finder.data.model
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.foodie_finder.data.local.User
@@ -31,7 +30,6 @@ class UserModel private constructor() {
 
     fun loadUser() {
         val firebaseUser = FirebaseAuth.getInstance().currentUser
-        Log.d("TAG", "firebaseUser" + firebaseUser)
         if (firebaseUser != null) {
             firebaseModel.getConnectedUser { fetchedUser ->
                 connectedUser = fetchedUser
