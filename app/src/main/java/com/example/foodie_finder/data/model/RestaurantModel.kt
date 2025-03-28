@@ -15,6 +15,10 @@ class RestaurantModel private constructor() {
         val shared = RestaurantModel()
     }
 
+    fun clearRestaurants() {
+        restaurants.value = emptyList()
+    }
+
     fun getPopularMovies(query: String) {
         loadingState.postValue(LoadingState.LOADING)
 

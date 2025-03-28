@@ -66,8 +66,10 @@ class SearchFragment : Fragment() {
         return binding?.root
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.clearRestaurants()
         binding = null
     }
 }
