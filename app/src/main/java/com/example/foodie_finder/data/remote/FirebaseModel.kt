@@ -3,14 +3,15 @@ package com.example.foodie_finder.data.remote
 import com.example.foodie_finder.base.Constants
 import com.example.foodie_finder.base.EmptyCallback
 import com.example.foodie_finder.base.GetAllPostsCallback
-import com.example.foodie_finder.base.GetAllStudentsCallback
 import com.example.foodie_finder.base.GetStudentByIdCallback
 import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.local.SavedPost
 import com.example.foodie_finder.data.local.Student
 import com.example.foodie_finder.data.local.User
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,7 +46,10 @@ class FirebaseModel private constructor() {
 
     fun getAllPosts(sinceLastUpdated: Long, callback: GetAllPostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
-            .whereGreaterThanOrEqualTo(Post.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .whereGreaterThanOrEqualTo(
+                Post.LAST_UPDATE_TIME,
+                sinceLastUpdated.toFirebaseTimestamp
+            )
             .get()
             .addOnSuccessListener { postsJson ->
                 val postsList: MutableList<Post> = mutableListOf()
@@ -53,6 +57,7 @@ class FirebaseModel private constructor() {
 
                 for (postDoc in postsJson) {
                     val post = Post.fromJSON(postDoc.data)
+
                     val userRef = postDoc.getDocumentReference("postedBy")
                     if (userRef != null) {
                         val firebaseUserFetch = userRef.get().addOnSuccessListener { userDoc ->
@@ -68,25 +73,15 @@ class FirebaseModel private constructor() {
                     }
                 }
 
+
                 Tasks.whenAllSuccess<DocumentSnapshot>(firebaseCallsTasks).addOnSuccessListener {
                     callback(postsList) // Return the full list after all user data is fetched
                 }.addOnFailureListener {
-                    callback(emptyList()) // Handle failure case
+                    callback(emptyList())
                 }
             }
             .addOnFailureListener {
                 callback(emptyList())
-            }
-    }
-
-    fun getAllStudents(callback: GetAllStudentsCallback) {
-        database.collection(Constants.COLLECTIONS.STUDENTS).get()
-            .addOnSuccessListener { result ->
-                val students = result.map { Student.fromJSON(it.data) }
-                callback(students)
-            }
-            .addOnFailureListener {
-                callback(emptyList()) // Return empty list on failure
             }
     }
 
@@ -236,5 +231,50 @@ class FirebaseModel private constructor() {
                 callback(false, errorMessage ?: "Unknown error", null)
             }
         }
+    }
+
+    fun getSavedPosts(callback: (List<String>) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(emptyList())
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val savedPostIds = querySnapshot.documents.mapNotNull { doc ->
+                    doc.getString("postId")
+                }
+
+                callback(savedPostIds)
+            }
+            .addOnFailureListener {
+                callback(emptyList())
+            }
+    }
+
+    fun savePost(postId: String, callback: (Boolean, SavedPost?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false, null)
+
+        val savedPostRef = database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+
+        val savedPost = SavedPost(
+            userId = userId,
+            postId = postId,
+            savedAt = Timestamp.now().toDate().time
+        )
+
+        savedPostRef.set(savedPost.json)
+            .addOnSuccessListener { callback(true, savedPost) }
+            .addOnFailureListener { callback(false, null) }
+    }
+
+    fun removeSavedPost(postId: String, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return callback(false)
+
+        database.collection(Constants.COLLECTIONS.SAVED_POSTS)
+            .document("$userId-$postId")
+            .delete()
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
     }
 }

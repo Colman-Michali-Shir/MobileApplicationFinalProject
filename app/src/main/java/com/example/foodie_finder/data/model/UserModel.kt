@@ -27,7 +27,8 @@ class UserModel private constructor() {
                         val userWithProfileImage = user.copy(avatarUrl = url)
                         firebaseModel.updateUser(userWithProfileImage, callback)
                     },
-                    onError = { callback(true) }
+                    onError = { callback(true) },
+                    "profileImages"
                 )
 
             } ?: callback(false)
