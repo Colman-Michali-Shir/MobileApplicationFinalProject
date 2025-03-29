@@ -10,6 +10,7 @@ import com.example.foodie_finder.data.entities.FirebasePost
 import com.example.foodie_finder.data.entities.Post
 import com.example.foodie_finder.data.entities.SavedPost
 import com.example.foodie_finder.data.entities.User
+import com.example.foodie_finder.data.model.UserModel
 import com.example.foodie_finder.utils.extensions.toFirebaseTimestamp
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -145,7 +146,7 @@ class FirebaseModel private constructor() {
     fun updateUser(user: User, callback: (Boolean) -> Unit) {
         database.collection(Constants.COLLECTIONS.USERS).document(user.id)
             .update(user.json)
-            .addOnSuccessListener { updateLastUpdateTimeByUser(user, callback) }
+            .addOnSuccessListener { updateLastUpdateTimeByUser(callback) }
             .addOnFailureListener { callback(false) }
     }
 
@@ -235,11 +236,11 @@ class FirebaseModel private constructor() {
             .addOnFailureListener { callback(false) }
     }
 
-    private fun updateLastUpdateTimeByUser(user: User, callback: (Boolean) -> Unit) {
+    private fun updateLastUpdateTimeByUser(callback: (Boolean) -> Unit) {
         val currentTime = System.currentTimeMillis().toFirebaseTimestamp
 
         database.collection(Constants.COLLECTIONS.POSTS)
-            .whereEqualTo(Post.USER_ID, user)
+            .whereEqualTo(Post.USER_ID, UserModel.shared.getConnectedUserRef())
             .get()
             .addOnSuccessListener { posts ->
                 val batch = database.batch()
