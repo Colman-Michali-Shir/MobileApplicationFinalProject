@@ -21,6 +21,7 @@ data class Post(
     val content: String,
     val rating: Int,
     val imgUrl: String? = "",
+    val isDeleted: Boolean = false,
     val lastUpdateTime: Long? = null,
     val creationTime: Long
 ) : Parcelable {
@@ -46,6 +47,7 @@ data class Post(
         const val CONTENT = "content"
         const val RATING = "rating"
         const val IMAGE_URL = "imgUrl"
+        const val IS_DELETED = "isDeleted"
         const val LAST_UPDATE_TIME = "lastUpdateTime"
         const val CREATION_TIME = "creationTime"
 
@@ -58,6 +60,7 @@ data class Post(
             val content = json[CONTENT] as? String ?: ""
             val rating = (json[RATING] as? Number)?.toInt() ?: 0
             val imgUrl = json[IMAGE_URL] as? String ?: ""
+            val isDeleted = json[IS_DELETED] as? Boolean ?: false
             val lastUpdateTime = json[LAST_UPDATE_TIME] as? Timestamp
             val creationTime = json[CREATION_TIME] as? Timestamp
             val lastUpdatedLongTimestamp = lastUpdateTime?.toDate()?.time
@@ -73,6 +76,7 @@ data class Post(
                 content = content,
                 rating = rating,
                 imgUrl = imgUrl,
+                isDeleted = isDeleted,
                 lastUpdateTime = lastUpdatedLongTimestamp,
                 creationTime = creationTimeLongTimestamp
             )
@@ -89,6 +93,7 @@ data class Post(
             CONTENT to content,
             RATING to rating,
             IMAGE_URL to imgUrl,
+            IS_DELETED to isDeleted,
             LAST_UPDATE_TIME to FieldValue.serverTimestamp(),
             CREATION_TIME to creationTime.toFirebaseTimestamp
         )

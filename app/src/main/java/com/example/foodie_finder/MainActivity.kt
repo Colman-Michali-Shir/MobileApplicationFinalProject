@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.foodie_finder.auth.AuthManager
@@ -56,12 +57,46 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        binding?.mainBottomNav?.let { mainBottomNav ->
-            navController?.let { navController ->
-                NavigationUI.setupWithNavController(
-                    mainBottomNav,
-                    navController
-                )
+        binding?.mainBottomNav?.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    navController?.navigate(
+                        R.id.homeFragment, null, NavOptions.Builder()
+                            .setPopUpTo(R.id.homeFragment, true)
+                            .build()
+                    )
+                    true
+                }
+
+                R.id.profileFragment -> {
+                    navController?.navigate(
+                        R.id.profileFragment, null, NavOptions.Builder()
+                            .setPopUpTo(R.id.profileFragment, true)
+                            .build()
+                    )
+                    true
+                }
+
+                R.id.savedPostsFragment -> {
+                    navController?.navigate(
+                        R.id.savedPostsFragment, null, NavOptions.Builder()
+                            .setPopUpTo(R.id.savedPostsFragment, true)
+                            .build()
+                    )
+                    true
+                }
+
+                R.id.searchFragment -> {
+                    navController?.navigate(R.id.searchFragment)
+                    true
+                }
+
+                R.id.newPostFragment -> {
+                    navController?.navigate(R.id.newPostFragment)
+                    true
+                }
+
+                else -> false
             }
         }
 
