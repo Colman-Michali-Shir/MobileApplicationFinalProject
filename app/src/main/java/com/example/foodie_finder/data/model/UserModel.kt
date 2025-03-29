@@ -3,9 +3,9 @@ package com.example.foodie_finder.data.model
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.foodie_finder.data.local.User
-import com.example.foodie_finder.data.remote.CloudinaryModel
-import com.example.foodie_finder.data.remote.FirebaseModel
+import com.example.foodie_finder.data.entities.User
+import com.example.foodie_finder.data.services.CloudinaryModel
+import com.example.foodie_finder.data.services.FirebaseModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 

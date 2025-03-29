@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.foodie_finder.ui.view.LoginFragment"
+        android:name="com.example.foodie_finder.fragments.login.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.foodie_finder.ui.view.RegisterFragment"
+        android:name="com.example.foodie_finder.fragments.register.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register">
         <action
@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.foodie_finder.ui.view.HomeFragment"
+        android:name="com.example.foodie_finder.fragments.home.HomeFragment"
         tools:layout="@layout/fragment_posts_list">
         <action
             android:id="@+id/action_homeFragment_to_editPostFragment"
@@ -51,30 +51,30 @@
 
     <fragment
         android:id="@+id/editPostFragment"
-        android:name="com.example.foodie_finder.ui.view.EditPostFragment"
+        android:name="com.example.foodie_finder.fragments.editPost.EditPostFragment"
         android:label="Edit Post"
         app:nullable="false"
         tools:layout="@layout/fragment_edit_post">
         <argument
             android:name="post"
-            app:argType="com.example.foodie_finder.data.local.Post" />
+            app:argType="com.example.foodie_finder.data.entities.Post" />
     </fragment>
 
     <fragment
         android:id="@+id/newPostFragment"
-        android:name="com.example.foodie_finder.ui.view.AddPostFragment"
+        android:name="com.example.foodie_finder.fragments.addPost.AddPostFragment"
         android:label="Add Post"
         tools:layout="@layout/fragment_new_post" />
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.foodie_finder.ui.view.SearchFragment"
+        android:name="com.example.foodie_finder.fragments.search.SearchFragment"
         android:label="Search"
         tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.foodie_finder.ui.view.ProfileFragment"
+        android:name="com.example.foodie_finder.fragments.profile.ProfileFragment"
         android:label="Search"
         tools:layout="@layout/fragment_profile">
         <action
@@ -89,7 +89,7 @@
 
     <fragment
         android:id="@+id/savedPostsFragment"
-        android:name="com.example.foodie_finder.ui.view.SavedPostsFragment"
+        android:name="com.example.foodie_finder.fragments.savedPosts.SavedPostsFragment"
         android:label="Search"
         tools:layout="@layout/fragment_saved_posts">
         <action
