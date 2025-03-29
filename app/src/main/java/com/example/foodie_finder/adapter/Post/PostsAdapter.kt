@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie_finder.auth.AuthManager
-import com.example.foodie_finder.data.local.Post
+import com.example.foodie_finder.data.entities.Post
 import com.example.foodie_finder.databinding.PostRowBinding
 import com.example.foodie_finder.interfaces.OnItemClickListener
 

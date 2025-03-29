@@ -3,12 +3,12 @@ package com.example.foodie_finder.data.model
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import com.example.foodie_finder.base.Callback
-import com.example.foodie_finder.data.local.AppLocalDb
-import com.example.foodie_finder.data.local.AppLocalDbRepository
-import com.example.foodie_finder.data.local.FirebasePost
-import com.example.foodie_finder.data.local.Post
-import com.example.foodie_finder.data.remote.CloudinaryModel
-import com.example.foodie_finder.data.remote.FirebaseModel
+import com.example.foodie_finder.data.entities.FirebasePost
+import com.example.foodie_finder.data.entities.Post
+import com.example.foodie_finder.data.services.AppLocalDb
+import com.example.foodie_finder.data.services.AppLocalDbRepository
+import com.example.foodie_finder.data.services.CloudinaryModel
+import com.example.foodie_finder.data.services.FirebaseModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.Executors
@@ -137,7 +137,6 @@ class PostModel private constructor() {
     }
 
     fun createPost(post: FirebasePost, image: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
-
         firebaseModel.createPost(post) { isSuccessful ->
             if (isSuccessful) {
                 image?.let {

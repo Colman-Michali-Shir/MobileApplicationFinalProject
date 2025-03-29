@@ -1,15 +1,16 @@
 package com.example.foodie_finder.data.model
 
 import androidx.lifecycle.MutableLiveData
-import com.example.foodie_finder.data.model.GooglePlaces.GooglePlacesClient
-import com.example.foodie_finder.data.model.GooglePlaces.Restaurant
 import com.example.foodie_finder.data.model.PostModel.LoadingState
+import com.example.foodie_finder.data.networking.GooglePlacesClient
+import com.example.foodie_finder.data.networking.Restaurant
 import java.util.concurrent.Executors
 
 class RestaurantModel private constructor() {
     private var executor = Executors.newSingleThreadExecutor()
+    private val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
+
     val restaurants: MutableLiveData<List<Restaurant>> = MutableLiveData()
-    val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
 
     companion object {
         val shared = RestaurantModel()

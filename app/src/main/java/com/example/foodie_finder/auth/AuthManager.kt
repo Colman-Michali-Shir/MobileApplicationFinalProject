@@ -1,6 +1,6 @@
 package com.example.foodie_finder.auth
 
-import com.example.foodie_finder.data.local.User
+import com.example.foodie_finder.data.entities.User
 import com.example.foodie_finder.data.model.UserModel
 import com.google.firebase.auth.FirebaseAuth
 

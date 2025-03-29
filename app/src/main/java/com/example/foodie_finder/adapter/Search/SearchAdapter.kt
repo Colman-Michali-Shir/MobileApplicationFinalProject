@@ -3,7 +3,7 @@ package com.example.foodie_finder.adapter.Search
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodie_finder.data.model.GooglePlaces.Restaurant
+import com.example.foodie_finder.data.networking.Restaurant
 import com.example.foodie_finder.databinding.SearchRowBinding
 
 class SearchAdapter(
