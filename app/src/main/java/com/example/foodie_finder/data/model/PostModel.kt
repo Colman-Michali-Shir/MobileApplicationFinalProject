@@ -93,7 +93,7 @@ class PostModel private constructor() {
             executor.execute {
                 var currentTime = lastUpdated
                 for (post in posts) {
-                    if (post.deleted) {
+                    if (post.isDeleted) {
                         database.postDao().deletePost(post.id)
                     } else {
                         database.postDao().createPost(post)
@@ -118,7 +118,7 @@ class PostModel private constructor() {
             executor.execute {
                 var currentTime = lastUpdated
                 for (post in posts) {
-                    if (post.deleted) {
+                    if (post.isDeleted) {
                         database.postDao().deletePost(post.id)
                     } else {
                         database.postDao().createPost(post)

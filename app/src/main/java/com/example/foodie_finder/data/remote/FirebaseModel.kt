@@ -138,7 +138,7 @@ class FirebaseModel private constructor() {
     fun deletePost(postId: String, callback: DeletePostCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
             .document(postId)
-            .update("deleted", true, "lastUpdateTime", FieldValue.serverTimestamp())
+            .update("isDeleted", true, "lastUpdateTime", FieldValue.serverTimestamp())
             .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
