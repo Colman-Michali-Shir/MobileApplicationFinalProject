@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
@@ -137,7 +138,7 @@ class FirebaseModel private constructor() {
     fun deletePost(postId: String, callback: DeletePostCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
             .document(postId)
-            .delete()
+            .update("deleted", true, "lastUpdateTime", FieldValue.serverTimestamp())
             .addOnCompleteListener { callback(it.isSuccessful) }
     }
 

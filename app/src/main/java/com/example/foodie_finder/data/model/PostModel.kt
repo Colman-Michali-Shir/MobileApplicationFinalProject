@@ -93,10 +93,14 @@ class PostModel private constructor() {
             executor.execute {
                 var currentTime = lastUpdated
                 for (post in posts) {
-                    database.postDao().createPost(post)
-                    post.lastUpdateTime?.let {
-                        if (currentTime < it) {
-                            currentTime = it
+                    if (post.deleted) {
+                        database.postDao().deletePost(post.id)
+                    } else {
+                        database.postDao().createPost(post)
+                        post.lastUpdateTime?.let {
+                            if (currentTime < it) {
+                                currentTime = it
+                            }
                         }
                     }
                 }
@@ -113,12 +117,15 @@ class PostModel private constructor() {
         firebaseModel.getPostsByUser(lastUpdated) { posts ->
             executor.execute {
                 var currentTime = lastUpdated
-
                 for (post in posts) {
-                    database.postDao().createPost(post)
-                    post.lastUpdateTime?.let {
-                        if (currentTime < it) {
-                            currentTime = it
+                    if (post.deleted) {
+                        database.postDao().deletePost(post.id)
+                    } else {
+                        database.postDao().createPost(post)
+                        post.lastUpdateTime?.let {
+                            if (currentTime < it) {
+                                currentTime = it
+                            }
                         }
                     }
                 }
