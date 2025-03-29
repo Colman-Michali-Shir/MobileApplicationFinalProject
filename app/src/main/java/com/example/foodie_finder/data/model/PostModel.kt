@@ -1,6 +1,7 @@
 package com.example.foodie_finder.data.model
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.foodie_finder.base.Callback
 import com.example.foodie_finder.data.entities.FirebasePost
@@ -89,6 +90,7 @@ class PostModel private constructor() {
     fun refreshAllPosts() {
         loadingState.postValue(LoadingState.LOADING)
         val lastUpdated: Long = Post.lastUpdated
+        Log.d("SHIRRRRRR", "1111111111111 $lastUpdated")
         firebaseModel.getAllPosts(lastUpdated) { posts ->
             executor.execute {
                 var currentTime = lastUpdated

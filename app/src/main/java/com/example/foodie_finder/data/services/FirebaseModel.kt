@@ -145,7 +145,7 @@ class FirebaseModel private constructor() {
     fun updateUser(user: User, callback: (Boolean) -> Unit) {
         database.collection(Constants.COLLECTIONS.USERS).document(user.id)
             .update(user.json)
-            .addOnSuccessListener { callback(true) }
+            .addOnSuccessListener { updateLastUpdateTimeByUser(user, callback) }
             .addOnFailureListener { callback(false) }
     }
 
@@ -232,6 +232,27 @@ class FirebaseModel private constructor() {
             .document("$userId-$postId")
             .delete()
             .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
+    }
+
+    private fun updateLastUpdateTimeByUser(user: User, callback: (Boolean) -> Unit) {
+        val currentTime = System.currentTimeMillis().toFirebaseTimestamp
+
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .whereEqualTo(Post.USER_ID, user)
+            .get()
+            .addOnSuccessListener { posts ->
+                val batch = database.batch()
+
+                for (post in posts) {
+                    batch.update(
+                        post.reference,
+                        mapOf(Post.LAST_UPDATE_TIME to currentTime)
+                    )
+                }
+
+                batch.commit().addOnCompleteListener { callback(it.isSuccessful) }
+            }
             .addOnFailureListener { callback(false) }
     }
 
